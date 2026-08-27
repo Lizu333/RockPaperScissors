@@ -233,8 +233,23 @@ function getUsers()
 function showScreen(screenId) 
 {
 
-    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-    document.getElementById(screenId).classList.add("active");
+    document.querySelectorAll(".screen").forEach(s => 
+    {
+
+        s.classList.remove("active");
+        s.classList.add("hidden");
+
+    });
+
+    const targetScreen = document.getElementById(screenId);
+
+    if (targetScreen) 
+    {
+
+        targetScreen.classList.remove("hidden");
+        targetScreen.classList.add("active");
+
+    }
 
 }
 
@@ -640,8 +655,21 @@ document.getElementById("profile-btn").addEventListener("click", () =>
 document.getElementById("settings-btn").addEventListener("click", () => openModal("settings-modal"));
 
 
-document.getElementById("menu-game-btn").addEventListener("click", () => showScreen("menu-screen"));
-document.getElementById("menu-btn").addEventListener("click", () => showScreen("menu-screen"));
+const menuGameBtn = document.getElementById("menu-game-btn");
+if (menuGameBtn) 
+{
+
+    menuGameBtn.addEventListener("click", () => showScreen("start-screen"));
+
+}
+
+const menuBtn = document.getElementById("menu-btn");
+if (menuBtn) 
+{
+
+    menuBtn.addEventListener("click", () => showScreen("start-screen"));
+
+}
 
 
 document.getElementById("reset-btn").addEventListener("click", resetGame);
