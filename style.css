@@ -308,23 +308,6 @@ button
     
 }
 
-.game-header-buttons 
-{
-
-    display: flex;
-
-    gap: 8px;
-
-}
-
-.game-header-buttons .reset-btn 
-{
-
-    min-width: 110px;
-    padding: 8px 14px;
-
-}
-
 .top-controls-container 
 {
 
@@ -332,16 +315,36 @@ button
     flex-direction: column;
     align-items: flex-end;
 
-    gap: 10px;
+    gap: 12px;
 
 }
 
-.top-controls-container .top-settings-bar 
+.top-controls-container 
+.top-settings-bar 
 {
 
     position: static;
     display: flex;
     gap: 6px;
+
+}
+
+.game-header-buttons 
+{
+
+    display: flex;
+    flex-direction: row;
+
+    gap: 8px;
+    margin-top: 0;
+
+}
+
+.game-header-buttons .reset-btn 
+{
+
+    min-width: 100px;
+    padding: 8px 14px;
 
 }
 
