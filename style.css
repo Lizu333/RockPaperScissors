@@ -1306,7 +1306,7 @@ button
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: 12px;
+        gap: 16px;
 
     }
 
@@ -1324,6 +1324,8 @@ button
         align-items: center;
         justify-content: center;
         width: 100%;
+        gap: 16px;
+        margin-bottom: 12px;
 
     }
 
@@ -1332,6 +1334,7 @@ button
 
         justify-content: center;
         width: 100%;
+        margin-bottom: 8px;
 
     }
 
@@ -1340,6 +1343,7 @@ button
 
         width: 100%;
         justify-content: center;
+        margin-bottom: 16px;
 
     }
 
@@ -1350,6 +1354,7 @@ button
         align-items: center;
         justify-content: center;
         width: 100%;
+        margin: 0 auto;
         gap: 8px;
 
     }
@@ -1360,6 +1365,7 @@ button
         width: 100%;
         max-width: 180px;
         padding: 10px;
+        margin: 0 auto;
 
     }
 
