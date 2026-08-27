@@ -1296,19 +1296,25 @@ button
         max-width: 100%;
         padding: 16px;
         border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
     }
 
-    #game-screen 
+    /* Minden játékképernyő blokk középre igazítása */
+    .game-screen, #game-screen 
     {
 
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         width: 100%;
 
     }
 
+    /* Fejléc és gombok középre igazítása */
     .game-header 
     {
 
@@ -1329,23 +1335,12 @@ button
 
     }
 
-    .top-controls-container 
+    .top-controls-container, .top-settings-bar, .game-header-buttons 
     {
 
         display: flex;
-        flex-direction: column;
+        justify-content: center;
         align-items: center;
-        justify-content: center;
-        width: 100%;
-        gap: 12px;
-
-    }
-
-    .top-settings-bar 
-    {
-
-        display: flex;
-        justify-content: center;
         width: 100%;
 
     }
@@ -1353,23 +1348,24 @@ button
     .game-header-buttons 
     {
 
-        display: flex;
-        justify-content: center;
-        width: 100%;
+        margin-bottom: 16px;
 
     }
 
-    .scoreboard 
+    /* Pontszámláló (Játékos 0 - 0 Ellenfél) középre igazítása */
+    .scoreboard, .score-board, .scores 
     {
 
         display: flex;
         justify-content: center;
         align-items: center;
+        text-align: center;
         width: 100%;
-        margin: 16px 0;
+        margin: 12px auto;
 
     }
 
+    /* Kártyák és harci mező szigorú középre igazítása */
     .battle 
     {
 
@@ -1387,9 +1383,9 @@ button
     {
 
         width: 100%;
-        max-width: 220px;
+        max-width: 200px;
         padding: 12px;
-        margin: 0 auto;
+        margin: 0 auto !important;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1417,10 +1413,23 @@ button
 
     }
 
-    .result, #round-status 
+    .result, #round-status, .status-message 
     {
 
         text-align: center;
+        width: 100%;
+        margin: 12px 0;
+
+    }
+
+    /* Alsó fegyverválasztó gombok középre igazítása */
+    .controls, .choices-container 
+    {
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         width: 100%;
 
     }
@@ -1433,6 +1442,7 @@ button
         align-items: center;
         width: 100%;
         gap: 12px;
+        margin: 0 auto;
 
     }
 
