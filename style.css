@@ -71,9 +71,6 @@ button
 
     justify-content: center;
 
-    max-width: 90%;
-    margin: 0 auto;
-
 }
 
 .top-settings-bar 
@@ -270,14 +267,6 @@ button
 
 }
 
-#menu-screen 
-.primary-btn 
-{
-
-    width: min(200px, 100%);
-
-}
-
 .menu-buttons 
 {
 
@@ -285,36 +274,7 @@ button
     justify-content: center;
 
     gap: 12px;
-    margin: 16px auto 0;
-
-    width: min(200px, 100%);
-
-}
-
-.menu-buttons button 
-{
-
-    flex: 1;
-
-}
-
-.top-controls-container 
-{
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-
-    gap: 8px;
-
-}
-
-.top-controls-container .top-settings-bar 
-{
-
-    position: static;
-    display: flex;
-    gap: 6px;
+    margin-top: 16px;
 
 }
 
@@ -325,24 +285,46 @@ button
     justify-content: space-between;
     align-items: flex-start;
 
+    width: 100%;
+
+    margin-bottom: 20px;
+    
 }
 
 .game-header-buttons 
 {
 
     display: flex;
-    flex-direction: row;
 
     gap: 8px;
-    margin-top: 0;
 
 }
 
 .game-header-buttons .reset-btn 
 {
 
-    min-width: 100px;
+    min-width: 110px;
     padding: 8px 14px;
+
+}
+
+.top-controls-container 
+{
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    gap: 10px;
+
+}
+
+.top-controls-container .top-settings-bar 
+{
+
+    position: static;
+    display: flex;
+    gap: 6px;
 
 }
 
@@ -1278,4 +1260,398 @@ button
 
 }
 
+@media (max-width: 600px)
+{
 
+    body
+    {
+
+        padding: 10px;
+
+    }
+
+    .game-container
+    {
+
+        width: 100%;
+        min-height: calc(100vh - 20px);
+        padding: 20px 14px;
+        border-radius: 18px;
+
+    }
+
+    .top-settings-bar
+    {
+
+        top: 12px;
+        right: 12px;
+        gap: 6px;
+
+    }
+
+    .icon-btn
+    {
+
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+
+    }
+
+    #menu-screen
+    {
+
+        padding: 55px 5px 20px;
+
+    }
+
+    .logo
+    {
+
+        width: 72px;
+        height: 72px;
+        margin-bottom: 24px;
+
+    }
+
+    .logo-heart-text
+    {
+
+        font-size: 44px;
+
+    }
+
+    #menu-screen h1
+    {
+
+        font-size: 30px;
+
+    }
+
+    .description
+    {
+
+        font-size: 13px;
+        margin-bottom: 22px;
+
+    }
+
+    .menu-buttons
+    {
+
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+
+    }
+
+    .primary-btn, .secondary-btn, .danger-btn
+    {
+
+        width: 100%;
+        padding: 13px 20px;
+
+    }
+
+    .game-header
+    {
+
+        margin-top: 45px;
+        margin-bottom: 15px;
+
+    }
+
+    .game-header h1
+    {
+
+        font-size: 24px;
+
+    }
+
+    .game-header-buttons
+    {
+
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+
+    }
+
+    .game-header-buttons .reset-btn
+    {
+
+        width: 100%;
+        min-width: 0;
+
+    }
+
+    .top-controls-container
+    {
+
+        width: 100%;
+        align-items: stretch;
+
+    }
+
+    .top-controls-container .top-settings-bar
+    {
+
+        justify-content: center;
+
+    }
+
+    .scoreboard
+    {
+
+        gap: 25px;
+        margin-bottom: 22px;
+
+    }
+
+    .score-num
+    {
+
+        font-size: 32px;
+
+    }
+
+    .battle
+    {
+
+        grid-template-columns: 1fr;
+        gap: 8px;
+
+    }
+
+    .card
+    {
+
+        min-height: 135px;
+        padding: 15px;
+
+    }
+
+    .choice-display
+    {
+
+        font-size: 32px;
+        height: 42px;
+
+    }
+
+    .vs
+    {
+
+        margin: 0;
+
+    }
+
+    .result
+    {
+
+        margin-top: 18px;
+        font-size: 16px;
+
+    }
+
+    .choices
+    {
+
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 16px;
+
+    }
+
+    .choice-btn
+    {
+
+        padding: 14px;
+
+    }
+
+    #end-screen
+    {
+
+        padding: 50px 5px 20px;
+
+    }
+
+    .final-score
+    {
+
+        font-size: 32px;
+        margin: 18px 0 25px;
+
+    }
+
+    .end-buttons
+    {
+
+        flex-direction: column;
+        gap: 10px;
+
+    }
+
+    .end-buttons button
+    {
+
+        width: 100%;
+
+    }
+
+    .modal
+    {
+
+        padding: 10px;
+
+    }
+
+    .modal-content
+    {
+
+        width: 100%;
+        max-height: calc(100vh - 20px);
+        overflow-y: auto;
+        padding: 25px 18px;
+        border-radius: 16px;
+
+    }
+
+    .modal-close
+    {
+
+        top: 14px;
+        right: 14px;
+
+    }
+
+    .gender-selection
+    {
+
+        gap: 8px;
+
+    }
+
+    .gender-btn
+    {
+
+        padding: 10px 6px;
+        font-size: 12px;
+
+    }
+
+    .auth-buttons
+    {
+
+        flex-direction: column;
+        gap: 8px;
+
+    }
+
+    .setting-row
+    {
+
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+
+    }
+
+    .theme-preset-options
+    {
+
+        justify-content: flex-start;
+
+    }
+
+    .setting-language
+    {
+
+        width: 100%;
+
+    }
+
+    .setting-lang-btn
+    {
+
+        flex: 1;
+
+    }
+
+    .sound-toggle
+    {
+
+        width: 100%;
+        justify-content: center;
+
+    }
+
+    .statistics-grid
+    {
+
+        grid-template-columns: 1fr 1fr;
+
+    }
+
+    .main-title-svg
+    {
+
+        gap: 10px;
+        margin-bottom: 12px;
+
+    }
+
+    .main-title-svg span
+    {
+
+        font-size: 22px;
+
+    }
+
+    .icon-only-btn
+    {
+
+        width: 100%;
+
+    }
+
+    .creator-tab-container
+    {
+
+        bottom: 10px;
+        right: 10px;
+
+    }
+
+    .creator-tab-btn
+    {
+
+        padding: 7px;
+
+    }
+
+    .creator-tab-btn:hover
+    {
+
+        padding: 7px 10px;
+
+    }
+
+    .creator-info
+    {
+
+        margin: 18px 0;
+
+    }
+
+    .github-link
+    {
+
+        width: 100%;
+        justify-content: center;
+        font-size: 14px;
+
+    }
+
+}
