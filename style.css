@@ -295,19 +295,6 @@ button
 
 }
 
-.game-header 
-{
-
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-
-    width: 100%;
-
-    margin-bottom: 20px;
-    
-}
-
 .top-controls-container 
 {
 
@@ -315,17 +302,25 @@ button
     flex-direction: column;
     align-items: flex-end;
 
-    gap: 12px;
+    gap: 8px;
 
 }
 
-.top-controls-container 
-.top-settings-bar 
+.top-controls-container .top-settings-bar 
 {
 
     position: static;
     display: flex;
     gap: 6px;
+
+}
+
+.game-header 
+{
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 
 }
 
