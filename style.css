@@ -1277,3 +1277,127 @@ button
     }
 
 }
+
+@media (max-width: 768px) 
+{
+
+    body 
+    {
+
+        padding: 10px;
+        zoom: 100%;
+
+    }
+
+    .game-container 
+    {
+
+        width: 100%;
+        max-width: 100%;
+        padding: 16px;
+        border-radius: 16px;
+
+    }
+
+    .game-header 
+    {
+
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+
+    }
+
+    .top-controls-container 
+    {
+
+        align-items: center;
+        width: 100%;
+
+    }
+
+    .top-settings-bar 
+    {
+
+        justify-content: center;
+
+    }
+
+    .game-header-buttons 
+    {
+
+        width: 100%;
+        justify-content: center;
+
+    }
+
+   .battle 
+    {
+
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 8px;
+
+    }
+
+    .card 
+    {
+
+        width: 100%;
+        max-width: 180px;
+        padding: 10px;
+
+    }
+
+    .choice-display 
+    {
+
+        font-size: 2rem;
+        height: 60px;
+
+    }
+
+    .vs 
+    {
+
+        margin: 2px 0;
+        font-size: 0.9rem;
+
+    }
+
+    .choices 
+    {
+
+        gap: 12px;
+
+    }
+
+    .choice-btn 
+    {
+
+        width: 60px;
+        height: 60px;
+
+    }
+
+    .modal-content 
+    {
+
+        width: 95%;
+        padding: 16px;
+        max-height: 90vh;
+        overflow-y: auto;
+
+    }
+
+    .statistics-grid 
+    {
+
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+
+    }
+
+}
