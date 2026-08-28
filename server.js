@@ -9,8 +9,7 @@ require("dotenv").config();
 const app = express();
 const PORT = 3000;
 
-const db = new Database("database.sqlite");
-
+const db = new Database(path.join(__dirname, "database.sqlite"));
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 
@@ -23,7 +22,6 @@ db.exec(`
         theme TEXT NOT NULL DEFAULT 'pink-brown',
         joined TEXT NOT NULL
     );
-
     CREATE TABLE IF NOT EXISTS statistics (
         user_id INTEGER PRIMARY KEY,
         games_played INTEGER NOT NULL DEFAULT 0,
@@ -56,7 +54,8 @@ app.use(
     })
 );
 
-app.use(express.static(path.join(__dirname)));
+
+app.use(express.static(path.join(__dirname, "public")));
 
 function getStatistics(userId) {
     return db
@@ -77,16 +76,13 @@ function getStatistics(userId) {
 
 function ensureStatistics(userId) {
     let stats = getStatistics(userId);
-
     if (!stats) {
         db.prepare(`
             INSERT INTO statistics (user_id)
             VALUES (?)
         `).run(userId);
-
         stats = getStatistics(userId);
     }
-
     return stats;
 }
 
@@ -94,18 +90,15 @@ function getFinalResult(playerScore, computerScore) {
     if (playerScore > computerScore) {
         return "win";
     }
-
     if (computerScore > playerScore) {
         return "loss";
     }
-
     return null;
 }
 
 app.post("/api/register", async (req, res) => {
     try {
         const { username, password, gender } = req.body;
-
         if (!username || !password || !gender) {
             return res.status(400).json({
                 error: "Minden mező kitöltése kötelező!"
@@ -113,21 +106,15 @@ app.post("/api/register", async (req, res) => {
         }
 
         const cleanUsername = username.trim();
-
-        if (
-            cleanUsername.length < 2 ||
-            cleanUsername.length > 20
-        ) {
+        if (cleanUsername.length < 2 || cleanUsername.length > 20) {
             return res.status(400).json({
-                error:
-                    "A felhasználónév 2-20 karakter hosszú lehet!"
+                error: "A felhasználónév 2-20 karakter hosszú lehet!"
             });
         }
 
         if (password.length < 8) {
             return res.status(400).json({
-                error:
-                    "A jelszónak legalább 8 karakteresnek kell lennie!"
+                error: "A jelszónak legalább 8 karakteresnek kell lennie!"
             });
         }
 
@@ -138,9 +125,7 @@ app.post("/api/register", async (req, res) => {
         }
 
         const existingUser = db
-            .prepare(
-                "SELECT id FROM users WHERE username = ?"
-            )
+            .prepare("SELECT id FROM users WHERE username = ?")
             .get(cleanUsername);
 
         if (existingUser) {
@@ -150,12 +135,7 @@ app.post("/api/register", async (req, res) => {
         }
 
         const passwordHash = await bcrypt.hash(password, 12);
-
-        const theme =
-            gender === "girl"
-                ? "pink-brown"
-                : "blue-brown";
-
+        const theme = gender === "girl" ? "pink-brown" : "blue-brown";
         const joined = new Date().toLocaleDateString("hu-HU", {
             year: "numeric",
             month: "2-digit",
@@ -173,13 +153,7 @@ app.post("/api/register", async (req, res) => {
                 )
                 VALUES (?, ?, ?, ?, ?)
             `)
-            .run(
-                cleanUsername,
-                passwordHash,
-                gender,
-                theme,
-                joined
-            );
+            .run(cleanUsername, passwordHash, gender, theme, joined);
 
         db.prepare(`
             INSERT INTO statistics (user_id)
@@ -200,16 +174,11 @@ app.post("/api/register", async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-
-        if (
-            error &&
-            error.code === "SQLITE_CONSTRAINT_UNIQUE"
-        ) {
+        if (error && error.code === "SQLITE_CONSTRAINT_UNIQUE") {
             return res.status(409).json({
                 error: "Ez a felhasználónév már foglalt!"
             });
         }
-
         res.status(500).json({
             error: "Szerverhiba történt."
         });
@@ -219,11 +188,9 @@ app.post("/api/register", async (req, res) => {
 app.post("/api/login", async (req, res) => {
     try {
         const { username, password } = req.body;
-
         if (!username || !password) {
             return res.status(400).json({
-                error:
-                    "Add meg a felhasználónevet és a jelszót!"
+                error: "Add meg a felhasználónevet és a jelszót!"
             });
         }
 
@@ -237,8 +204,7 @@ app.post("/api/login", async (req, res) => {
 
         if (!user) {
             return res.status(401).json({
-                error:
-                    "Hibás felhasználónév vagy jelszó!"
+                error: "Hibás felhasználónév vagy jelszó!"
             });
         }
 
@@ -249,8 +215,7 @@ app.post("/api/login", async (req, res) => {
 
         if (!passwordCorrect) {
             return res.status(401).json({
-                error:
-                    "Hibás felhasználónév vagy jelszó!"
+                error: "Hibás felhasználónév vagy jelszó!"
             });
         }
 
@@ -268,7 +233,6 @@ app.post("/api/login", async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-
         res.status(500).json({
             error: "Szerverhiba történt."
         });
@@ -282,7 +246,6 @@ app.post("/api/logout", (req, res) => {
                 error: "Nem sikerült kijelentkezni."
             });
         }
-
         res.json({
             success: true
         });
@@ -311,7 +274,6 @@ app.get("/api/me", (req, res) => {
 
     if (!user) {
         req.session.destroy(() => {});
-
         return res.json({
             loggedIn: false
         });
@@ -339,7 +301,6 @@ app.put("/api/theme", (req, res) => {
     }
 
     const { theme } = req.body;
-
     const allowedThemes = [
         "cream-teal",
         "wine-pink",
@@ -398,12 +359,7 @@ app.post("/api/game/round", (req, res) => {
     }
 
     const { playerChoice } = req.body;
-
-    const allowedChoices = [
-        "rock",
-        "paper",
-        "scissors"
-    ];
+    const allowedChoices = ["rock", "paper", "scissors"];
 
     if (!allowedChoices.includes(playerChoice)) {
         return res.status(400).json({
@@ -412,35 +368,23 @@ app.post("/api/game/round", (req, res) => {
     }
 
     const game = req.session.game;
-
     if (!game || !game.active || game.finished) {
         return res.status(400).json({
             error: "Nincs aktív játék."
         });
     }
 
-    const choices = [
-        "rock",
-        "paper",
-        "scissors"
-    ];
-
+    const choices = ["rock", "paper", "scissors"];
     const computerChoice =
-        choices[
-            Math.floor(Math.random() * choices.length)
-        ];
+        choices[Math.floor(Math.random() * choices.length)];
 
     let result;
-
     if (playerChoice === computerChoice) {
         result = "draw";
     } else if (
-        (playerChoice === "rock" &&
-            computerChoice === "scissors") ||
-        (playerChoice === "paper" &&
-            computerChoice === "rock") ||
-        (playerChoice === "scissors" &&
-            computerChoice === "paper")
+        (playerChoice === "rock" && computerChoice === "scissors") ||
+        (playerChoice === "paper" && computerChoice === "rock") ||
+        (playerChoice === "scissors" && computerChoice === "paper")
     ) {
         result = "win";
         game.playerScore++;
@@ -450,7 +394,6 @@ app.post("/api/game/round", (req, res) => {
     }
 
     const choiceColumn = playerChoice;
-
     db.prepare(`
         UPDATE statistics
         SET ${choiceColumn} = ${choiceColumn} + 1
@@ -466,25 +409,20 @@ app.post("/api/game/round", (req, res) => {
     }
 
     const gameFinished =
-        game.playerScore >= 5 ||
-        game.computerScore >= 5;
+        game.playerScore >= 5 || game.computerScore >= 5;
 
     let finalResult = null;
-
     if (gameFinished) {
         finalResult = getFinalResult(
             game.playerScore,
             game.computerScore
         );
-
         game.active = false;
         game.finished = true;
         game.finalResult = finalResult;
     }
 
-    const updatedStats = getStatistics(
-        req.session.userId
-    );
+    const updatedStats = getStatistics(req.session.userId);
 
     res.json({
         success: true,
@@ -507,7 +445,6 @@ app.post("/api/game/finish", (req, res) => {
     }
 
     const game = req.session.game;
-
     if (!game || !game.finished) {
         return res.status(400).json({
             error: "Nincs befejezett játék."
@@ -516,21 +453,13 @@ app.post("/api/game/finish", (req, res) => {
 
     if (!game.settled) {
         const finalResult = game.finalResult;
-
-        if (
-            finalResult !== "win" &&
-            finalResult !== "loss"
-        ) {
+        if (finalResult !== "win" && finalResult !== "loss") {
             return res.status(400).json({
                 error: "Érvénytelen játékállapot."
             });
         }
 
-        const column =
-            finalResult === "win"
-                ? "wins"
-                : "losses";
-
+        const column = finalResult === "win" ? "wins" : "losses";
         const transaction = db.transaction(() => {
             db.prepare(`
                 UPDATE statistics
@@ -540,15 +469,11 @@ app.post("/api/game/finish", (req, res) => {
                 WHERE user_id = ?
             `).run(req.session.userId);
         });
-
         transaction();
-
         game.settled = true;
     }
 
-    const updatedStats = getStatistics(
-        req.session.userId
-    );
+    const updatedStats = getStatistics(req.session.userId);
 
     res.json({
         success: true,
@@ -582,14 +507,11 @@ app.delete("/api/statistics", (req, res) => {
     });
 });
 
+
 app.use((req, res) => {
-    res.sendFile(
-        path.join(__dirname, "index.html")
-    );
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(PORT, () => {
-    console.log(
-        `Szerver: http://localhost:${PORT}`
-    );
+    console.log(`Szerver: http://localhost:${PORT}`);
 });
