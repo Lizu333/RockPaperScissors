@@ -451,6 +451,7 @@ button
 .card-title 
 {
 
+    align-items:center;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -1286,6 +1287,7 @@ button
         top: 12px;
         right: 12px;
         gap: 6px;
+        align-items: center;
 
     }
 
@@ -1358,6 +1360,7 @@ button
 
         margin-top: 45px;
         margin-bottom: 15px;
+        align-items: center;
 
     }
 
