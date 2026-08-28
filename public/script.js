@@ -1,5 +1,9 @@
-﻿let playerScore = 0;
+﻿alert("A SCRIPT.JS BETÖLTŐDÖTT!");
+
+let playerScore = 0;
 let computerScore = 0;
+let targetScore = 5;
+
 let currentLanguage = "hu";
 let currentTheme = "pink-brown";
 let soundEnabled = true;
@@ -16,17 +20,16 @@ let statistics = {
 
 let audioCtx = null;
 let currentUser = null;
+
 let gameFinished = false;
 let gameStarting = false;
 let roundInProgress = false;
 
 function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function initAudio() {
+async function initAudio() {
     if (!audioCtx) {
         const AudioContext =
             window.AudioContext ||
@@ -40,17 +43,21 @@ function initAudio() {
     }
 
     if (audioCtx.state === "suspended") {
-        audioCtx.resume();
+        await audioCtx.resume();
     }
 }
 
-window.addEventListener("click", initAudio, {
-    once: true
-});
+window.addEventListener(
+    "click",
+    initAudio,
+    { once: true }
+);
 
-window.addEventListener("keydown", initAudio, {
-    once: true
-});
+window.addEventListener(
+    "keydown",
+    initAudio,
+    { once: true }
+);
 
 function playSound(type) {
     if (!soundEnabled) {
@@ -73,152 +80,180 @@ function playSound(type) {
 
     if (type === "click") {
         osc.type = "sine";
-        osc.frequency.setValueAtTime(500, now);
-        gain.gain.setValueAtTime(0.08, now);
+
+        osc.frequency.setValueAtTime(
+            500,
+            now
+        );
+
+        gain.gain.setValueAtTime(
+            0.08,
+            now
+        );
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             now + 0.05
         );
+
         osc.start(now);
         osc.stop(now + 0.05);
-    }
-
-    else if (type === "win") {
+    } else if (type === "win") {
         osc.type = "triangle";
-        osc.frequency.setValueAtTime(440, now);
-        osc.frequency.setValueAtTime(554.37, now + 0.08);
-        gain.gain.setValueAtTime(0.12, now);
+
+        osc.frequency.setValueAtTime(
+            440,
+            now
+        );
+
+        osc.frequency.setValueAtTime(
+            554.37,
+            now + 0.08
+        );
+
+        gain.gain.setValueAtTime(
+            0.12,
+            now
+        );
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             now + 0.25
         );
+
         osc.start(now);
         osc.stop(now + 0.25);
-    }
-
-    else if (type === "lose") {
+    } else if (type === "lose") {
         osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(280, now);
+
+        osc.frequency.setValueAtTime(
+            280,
+            now
+        );
+
         osc.frequency.linearRampToValueAtTime(
             140,
             now + 0.2
         );
-        gain.gain.setValueAtTime(0.1, now);
+
+        gain.gain.setValueAtTime(
+            0.1,
+            now
+        );
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             now + 0.2
         );
+
         osc.start(now);
         osc.stop(now + 0.2);
-    }
-
-    else if (type === "draw") {
+    } else if (type === "draw") {
         osc.type = "sine";
-        osc.frequency.setValueAtTime(320, now);
-        gain.gain.setValueAtTime(0.08, now);
+
+        osc.frequency.setValueAtTime(
+            320,
+            now
+        );
+
+        gain.gain.setValueAtTime(
+            0.08,
+            now
+        );
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             now + 0.12
         );
+
         osc.start(now);
         osc.stop(now + 0.12);
-    }
-
-    else if (type === "gameover-win") {
+    } else if (type === "gameover-win") {
         osc.type = "triangle";
-        osc.frequency.setValueAtTime(523.25, now);
+
+        osc.frequency.setValueAtTime(
+            523.25,
+            now
+        );
+
         osc.frequency.setValueAtTime(
             659.25,
             now + 0.1
         );
+
         osc.frequency.setValueAtTime(
             783.99,
             now + 0.2
         );
-        gain.gain.setValueAtTime(0.15, now);
+
+        gain.gain.setValueAtTime(
+            0.15,
+            now
+        );
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             now + 0.45
         );
+
         osc.start(now);
         osc.stop(now + 0.45);
-    }
-
-    else if (type === "computer") {
+    } else if (type === "computer") {
         osc.type = "sine";
-        osc.frequency.setValueAtTime(380, now);
+
+        osc.frequency.setValueAtTime(
+            380,
+            now
+        );
+
         osc.frequency.linearRampToValueAtTime(
             620,
             now + 0.08
         );
-        gain.gain.setValueAtTime(0.06, now);
+
+        gain.gain.setValueAtTime(
+            0.06,
+            now
+        );
+
         gain.gain.exponentialRampToValueAtTime(
             0.001,
             now + 0.12
         );
+
         osc.start(now);
         osc.stop(now + 0.12);
     }
 }
 
 const choiceIcons = {
-    rock: `
-        <svg xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z"/>
-            <path d="M11.99 22 14 12l7.822 3.184"/>
-            <path d="M14 12 8.47 2.302"/>
-        </svg>
-    `,
+    rock: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z"/><path d="M11.99 22 14 12l7.822 3.184"/><path d="M14 12 8.47 2.302"/></svg>`,
 
-    paper: `
-        <svg xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M15 12h-5"/>
-            <path d="M15 8h-5"/>
-            <path d="M19 17V5a2 2 0 0 0-2-2H4"/>
-            <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a2 2 0 0 0-2 2v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>
-        </svg>
-    `,
+    paper: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a2 2 0 0 0-2 2v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg>`,
 
-    scissors: `
-        <svg xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round">
-            <circle cx="6" cy="6" r="3"/>
-            <path d="M8.12 8.12 12 12"/>
-            <path d="M20 4 8.12 15.88"/>
-            <circle cx="6" cy="18" r="3"/>
-            <path d="M14.8 14.8 20 20"/>
-        </svg>
-    `
+    scissors: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>`
+};
+
+const choiceNames = {
+    hu: {
+        rock: "KŐ",
+        paper: "PAPÍR",
+        scissors: "OLLÓ"
+    },
+
+    en: {
+        rock: "ROCK",
+        paper: "PAPER",
+        scissors: "SCISSORS"
+    }
 };
 
 const translations = {
     en: {
         title: "Rock - Paper - Scissors",
         description:
-            "Reach 5 points first and be the winner!",
+            "Reach the target score first and be the winner!",
+        targetScore: "Target Score:",
         startGame: "START GAME",
         profile: "PROFILE",
         settings: "SETTINGS",
@@ -251,17 +286,27 @@ const translations = {
         girl: "Girl",
         boy: "Boy",
         logout: "LOGOUT",
-        computerChoosing: "Computer is choosing...",
+        roundStarted: "Round started...",
+        computerChoosing:
+            "Computer is choosing...",
         reveal: "REVEAL!",
         roundWin: "You won this round!",
         roundLoss: "You lost this round!",
-        roundDraw: "It's a draw this round!"
+        roundDraw:
+            "It's a draw this round!",
+        endWinTitle: "YOU WIN!",
+        endWinMessage:
+            "Congratulations, you reached the target score first!",
+        endLossTitle: "YOU LOST!",
+        endLossMessage:
+            "The opponent reached the target score first."
     },
 
     hu: {
         title: "Kő - Papír - Olló",
         description:
-            "Érd el elsőként az 5 pontot és nyerj!",
+            "Érd el elsőként a célpontszámot és nyerj!",
+        targetScore: "Célpontszám:",
         startGame: "JÁTÉK INDÍTÁSA",
         profile: "PROFIL",
         settings: "BEÁLLÍTÁSOK",
@@ -278,7 +323,8 @@ const translations = {
         draws: "DÖNTETLEN",
         winRate: "GYŐZELMI ARÁNY",
         favoriteChoice: "LEGTÖBBET HASZNÁLT",
-        resetStatistics: "STATISZTIKÁK TÖRLÉSE",
+        resetStatistics:
+            "STATISZTIKÁK TÖRLÉSE",
         language: "NYELV",
         theme: "TÉMA",
         sound: "HANG",
@@ -294,22 +340,34 @@ const translations = {
         girl: "Lány",
         boy: "Fiú",
         logout: "KIJELENTKEZÉS",
-        computerChoosing: "A gép választ...",
+        roundStarted: "Kör elindult...",
+        computerChoosing:
+            "A gép választ...",
         reveal: "FELFEDÉS!",
-        roundWin: "Megnyerted ezt a kört!",
-        roundLoss: "Elvesztetted ezt a kört!",
-        roundDraw: "Döntetlen ebben a körben!"
+        roundWin:
+            "Megnyerted ezt a kört!",
+        roundLoss:
+            "Elvesztetted ezt a kört!",
+        roundDraw:
+            "Döntetlen ebben a körben!",
+        endWinTitle: "NYERTÉL!",
+        endWinMessage:
+            "Gratulálunk, te érted el előbb a célpontszámot!",
+        endLossTitle: "VESZTETTÉL!",
+        endLossMessage:
+            "Az ellenfél érte el előbb a célpontszámot."
     }
 };
 
 function showScreen(screenId) {
     document
         .querySelectorAll(".screen")
-        .forEach(screen => {
-            screen.classList.remove("active");
-        });
+        .forEach(screen =>
+            screen.classList.remove("active")
+        );
 
-    const screen = document.getElementById(screenId);
+    const screen =
+        document.getElementById(screenId);
 
     if (screen) {
         screen.classList.add("active");
@@ -317,7 +375,8 @@ function showScreen(screenId) {
 }
 
 function openModal(modalId) {
-    const modal = document.getElementById(modalId);
+    const modal =
+        document.getElementById(modalId);
 
     if (modal) {
         modal.classList.add("active");
@@ -325,7 +384,8 @@ function openModal(modalId) {
 }
 
 function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
+    const modal =
+        document.getElementById(modalId);
 
     if (modal) {
         modal.classList.remove("active");
@@ -369,19 +429,29 @@ function applyStatistics(data) {
     updateStatisticsUI();
 }
 
+async function parseResponse(response) {
+    try {
+        return await response.json();
+    } catch {
+        return {};
+    }
+}
+
 async function checkLogin() {
     try {
         const response =
             await fetch("/api/me");
 
         const data =
-            await response.json();
+            await parseResponse(response);
 
         if (!data.loggedIn) {
             currentUser = null;
             statistics = emptyStatistics();
+
             updateProfileUI();
             updateStatisticsUI();
+
             return;
         }
 
@@ -394,7 +464,10 @@ async function checkLogin() {
             );
         }
 
-        applyStatistics(data.statistics);
+        applyStatistics(
+            data.statistics
+        );
+
         updateProfileUI();
     } catch (error) {
         console.error(error);
@@ -402,7 +475,10 @@ async function checkLogin() {
 }
 
 async function startGame() {
-    if (gameStarting || roundInProgress) {
+    if (
+        gameStarting ||
+        roundInProgress
+    ) {
         return;
     }
 
@@ -415,19 +491,19 @@ async function startGame() {
 
     try {
         const response =
-            await fetch(
-                "/api/game/start",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    }
-                }
-            );
+            await fetch("/api/game/start", {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    targetScore
+                })
+            });
 
         const data =
-            await response.json();
+            await parseResponse(response);
 
         if (!response.ok) {
             if (response.status === 401) {
@@ -444,6 +520,15 @@ async function startGame() {
 
         computerScore =
             Number(data.computerScore) || 0;
+
+        if (
+            Number.isInteger(
+                Number(data.targetScore)
+            )
+        ) {
+            targetScore =
+                Number(data.targetScore);
+        }
 
         gameFinished = false;
         roundInProgress = false;
@@ -495,11 +580,14 @@ async function startGame() {
     }
 }
 
-function setChoiceButtonsDisabled(disabled) {
+function setChoiceButtonsDisabled(
+    disabled
+) {
     document
         .querySelectorAll(".choice-btn")
         .forEach(btn => {
             btn.disabled = disabled;
+
             btn.classList.toggle(
                 "disabled",
                 disabled
@@ -507,15 +595,23 @@ function setChoiceButtonsDisabled(disabled) {
         });
 }
 
-function setChoiceArea(choiceId, choice) {
+function setChoiceArea(
+    choiceId,
+    choice
+) {
     const element =
-        document.getElementById(choiceId);
+        document.getElementById(
+            choiceId
+        );
 
     if (!element) {
         return;
     }
 
-    if (choice && choiceIcons[choice]) {
+    if (
+        choice &&
+        choiceIcons[choice]
+    ) {
         element.innerHTML =
             choiceIcons[choice];
     } else {
@@ -523,7 +619,9 @@ function setChoiceArea(choiceId, choice) {
     }
 }
 
-async function playRound(playerChoice) {
+async function playRound(
+    playerChoice
+) {
     if (
         !currentUser ||
         gameFinished ||
@@ -533,6 +631,7 @@ async function playRound(playerChoice) {
     }
 
     roundInProgress = true;
+
     setChoiceButtonsDisabled(true);
 
     const playerChoiceElement =
@@ -556,7 +655,9 @@ async function playRound(playerChoice) {
         );
 
     const resultElement =
-        document.getElementById("result");
+        document.getElementById(
+            "result"
+        );
 
     playerChoiceElement.classList.remove(
         "choice-reveal"
@@ -566,16 +667,26 @@ async function playRound(playerChoice) {
         "choice-reveal"
     );
 
-    playerChoiceElement.textContent = "?";
-    computerChoiceElement.textContent = "?";
+    resultElement.textContent =
+        translations[
+            currentLanguage
+        ].roundStarted;
 
     playerChoiceName.textContent =
-        translations[currentLanguage].waiting;
+        choiceNames[
+            currentLanguage
+        ][playerChoice] ||
+        playerChoice.toUpperCase();
+
+    setChoiceArea(
+        "player-choice",
+        playerChoice
+    );
+
+    computerChoiceElement.textContent =
+        "?";
 
     computerChoiceName.textContent =
-        translations[currentLanguage].computerChoosing;
-
-    resultElement.textContent =
         translations[
             currentLanguage
         ].computerChoosing;
@@ -584,57 +695,55 @@ async function playRound(playerChoice) {
 
     try {
         const responsePromise =
-            fetch(
-                "/api/game/round",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-                    body: JSON.stringify({
-                        playerChoice
-                    })
-                }
-            );
+            fetch("/api/game/round", {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    playerChoice
+                })
+            });
 
-        const countdownValues = [
-            "3",
-            "2",
-            "1"
+        const choicesKeys = [
+            "rock",
+            "paper",
+            "scissors"
         ];
 
-        for (const value of countdownValues) {
-            resultElement.textContent =
-                value;
+        for (let i = 0; i < 6; i++) {
+            const randomChoice =
+                choicesKeys[i % 3];
+
+            setChoiceArea(
+                "computer-choice",
+                randomChoice
+            );
 
             playSound("computer");
 
-            await sleep(350);
+            await sleep(120);
         }
-
-        resultElement.textContent =
-            translations[
-                currentLanguage
-            ].reveal;
-
-        await sleep(300);
 
         const response =
             await responsePromise;
 
         const data =
-            await response.json();
+            await parseResponse(response);
 
         if (!response.ok) {
             console.error(
                 data.error ||
-                "A kör indítása sikertelen."
+                    "A kör indítása sikertelen."
             );
 
-            if (response.status === 401) {
+            if (
+                response.status === 401
+            ) {
                 currentUser = null;
                 updateProfileUI();
+                showScreen("menu-screen");
             }
 
             return;
@@ -646,13 +755,13 @@ async function playRound(playerChoice) {
         );
 
         playerChoiceName.textContent =
-            data.playerChoice.toUpperCase();
+            choiceNames[
+                currentLanguage
+            ][data.playerChoice];
 
         playerChoiceElement.classList.add(
             "choice-reveal"
         );
-
-        await sleep(250);
 
         setChoiceArea(
             "computer-choice",
@@ -660,13 +769,15 @@ async function playRound(playerChoice) {
         );
 
         computerChoiceName.textContent =
-            data.computerChoice.toUpperCase();
+            choiceNames[
+                currentLanguage
+            ][data.computerChoice];
 
         computerChoiceElement.classList.add(
             "choice-reveal"
         );
 
-        await sleep(350);
+        await sleep(200);
 
         playerScore =
             Number(data.playerScore) || 0;
@@ -691,7 +802,9 @@ async function playRound(playerChoice) {
                 ].roundDraw;
 
             playSound("draw");
-        } else if (data.result === "win") {
+        } else if (
+            data.result === "win"
+        ) {
             resultText =
                 translations[
                     currentLanguage
@@ -717,7 +830,7 @@ async function playRound(playerChoice) {
         if (data.gameFinished) {
             gameFinished = true;
 
-            await sleep(900);
+            await sleep(1000);
 
             await finishGame(
                 data.finalResult
@@ -726,14 +839,16 @@ async function playRound(playerChoice) {
             return;
         }
 
-        await sleep(650);
+        await sleep(800);
 
         resultElement.textContent =
             translations[
                 currentLanguage
             ].chooseWeapon;
 
-        setChoiceButtonsDisabled(false);
+        setChoiceButtonsDisabled(
+            false
+        );
     } catch (error) {
         console.error(error);
         setChoiceButtonsDisabled(false);
@@ -752,7 +867,8 @@ async function finishGame(
     const finalResult =
         finalResultFromRound ||
         (
-            playerScore > computerScore
+            playerScore >
+            computerScore
                 ? "win"
                 : "loss"
         );
@@ -771,52 +887,53 @@ async function finishGame(
             );
 
         const data =
-            await response.json();
+            await parseResponse(response);
 
         if (response.ok) {
             applyStatistics(
                 data.statistics
-            );
-        } else {
-            console.error(
-                data.error ||
-                "A játék lezárása sikertelen."
             );
         }
     } catch (error) {
         console.error(error);
     }
 
+    const winMsg =
+        currentLanguage === "hu"
+            ? `Gratulálunk, te érted el előbb a ${targetScore} pontot!`
+            : `Congratulations, you reached ${targetScore} points first!`;
+
+    const lossMsg =
+        currentLanguage === "hu"
+            ? `Az ellenfél érte el előbb a ${targetScore} pontot.`
+            : `The opponent reached ${targetScore} points first.`;
+
     if (finalResult === "win") {
         document.getElementById(
             "end-title"
         ).textContent =
-            currentLanguage === "hu"
-                ? "NYERTÉL!"
-                : "YOU WIN!";
+            translations[
+                currentLanguage
+            ].endWinTitle;
 
         document.getElementById(
             "end-message"
-        ).textContent =
-            currentLanguage === "hu"
-                ? "Gratulálunk, te érted el előbb az 5 pontot!"
-                : "Congratulations!";
+        ).textContent = winMsg;
 
-        playSound("gameover-win");
+        playSound(
+            "gameover-win"
+        );
     } else {
         document.getElementById(
             "end-title"
         ).textContent =
-            currentLanguage === "hu"
-                ? "VESZTETTÉL!"
-                : "YOU LOST!";
+            translations[
+                currentLanguage
+            ].endLossTitle;
 
         document.getElementById(
             "end-message"
-        ).textContent =
-            currentLanguage === "hu"
-                ? "Az ellenfél érte el előbb az 5 pontot."
-                : "Better luck next time!";
+        ).textContent = lossMsg;
 
         playSound("lose");
     }
@@ -827,7 +944,8 @@ async function finishGame(
 
     document.getElementById(
         "final-computer-score"
-    ).textContent = computerScore;
+    ).textContent =
+        computerScore;
 
     setChoiceButtonsDisabled(true);
 
@@ -920,7 +1038,7 @@ async function registerUser(
             );
 
         const data =
-            await response.json();
+            await parseResponse(response);
 
         if (!response.ok) {
             errorElement.textContent =
@@ -933,13 +1051,14 @@ async function registerUser(
         currentUser = data.user;
 
         if (data.user.theme) {
-            setTheme(
+            await setTheme(
                 data.user.theme,
                 false
             );
         }
 
         await loadUserStatistics();
+
         updateProfileUI();
     } catch (error) {
         console.error(error);
@@ -980,7 +1099,7 @@ async function loginUser(
             );
 
         const data =
-            await response.json();
+            await parseResponse(response);
 
         if (!response.ok) {
             errorElement.textContent =
@@ -997,13 +1116,14 @@ async function loginUser(
         currentUser = data.user;
 
         if (data.user.theme) {
-            setTheme(
+            await setTheme(
                 data.user.theme,
                 false
             );
         }
 
         await loadUserStatistics();
+
         updateProfileUI();
     } catch (error) {
         console.error(error);
@@ -1031,8 +1151,10 @@ async function logoutUser() {
     statistics = emptyStatistics();
 
     resetGame();
+
     updateProfileUI();
     updateStatisticsUI();
+
     showScreen("menu-screen");
 }
 
@@ -1046,13 +1168,16 @@ async function loadUserStatistics() {
             await fetch("/api/me");
 
         const data =
-            await response.json();
+            await parseResponse(response);
 
         if (!data.loggedIn) {
             currentUser = null;
-            statistics = emptyStatistics();
+            statistics =
+                emptyStatistics();
+
             updateProfileUI();
             updateStatisticsUI();
+
             return;
         }
 
@@ -1090,8 +1215,11 @@ function updateProfileUI() {
         );
 
     if (currentUser) {
-        authForms.style.display = "none";
-        loggedInView.style.display = "block";
+        authForms.style.display =
+            "none";
+
+        loggedInView.style.display =
+            "block";
 
         currentUsernameElem.textContent =
             currentUser.username;
@@ -1101,8 +1229,11 @@ function updateProfileUI() {
 
         updateStatisticsUI();
     } else {
-        authForms.style.display = "block";
-        loggedInView.style.display = "none";
+        authForms.style.display =
+            "block";
+
+        loggedInView.style.display =
+            "none";
     }
 }
 
@@ -1110,6 +1241,19 @@ async function setTheme(
     themeKey,
     saveToServer = true
 ) {
+    const allowedThemes = [
+        "cream-teal",
+        "wine-pink",
+        "olive-cream",
+        "pink-brown",
+        "blue-brown",
+        "yellow-plum"
+    ];
+
+    if (!allowedThemes.includes(themeKey)) {
+        return;
+    }
+
     currentTheme = themeKey;
 
     document.body.setAttribute(
@@ -1122,26 +1266,35 @@ async function setTheme(
         themeKey
     );
 
-    if (!saveToServer || !currentUser) {
+    if (
+        !saveToServer ||
+        !currentUser
+    ) {
         return;
     }
 
     try {
-        await fetch(
-            "/api/theme",
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-                body: JSON.stringify({
-                    theme: themeKey
-                })
-            }
-        );
+        const response =
+            await fetch(
+                "/api/theme",
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        theme: themeKey
+                    })
+                }
+            );
 
-        currentUser.theme = themeKey;
+        if (!response.ok) {
+            return;
+        }
+
+        currentUser.theme =
+            themeKey;
     } catch (error) {
         console.error(error);
     }
@@ -1160,7 +1313,9 @@ function setLanguage(lang) {
     );
 
     document
-        .querySelectorAll("[data-i18n]")
+        .querySelectorAll(
+            "[data-i18n]"
+        )
         .forEach(elem => {
             const key =
                 elem.dataset.i18n;
@@ -1175,11 +1330,14 @@ function setLanguage(lang) {
         });
 
     document
-        .querySelectorAll(".setting-lang-btn")
+        .querySelectorAll(
+            ".setting-lang-btn"
+        )
         .forEach(btn => {
             btn.classList.toggle(
                 "active",
-                btn.dataset.settingLang === lang
+                btn.dataset.settingLang ===
+                    lang
             );
         });
 
@@ -1192,17 +1350,16 @@ function setLanguage(lang) {
         soundToggleText.textContent =
             soundEnabled
                 ? translations[
-                    currentLanguage
-                ].on
+                      currentLanguage
+                  ].on
                 : translations[
-                    currentLanguage
-                ].off;
+                      currentLanguage
+                  ].off;
     }
 
     if (
-        document.getElementById(
-            "player-choice-name"
-        )
+        !roundInProgress &&
+        !gameFinished
     ) {
         document.getElementById(
             "player-choice-name"
@@ -1210,19 +1367,20 @@ function setLanguage(lang) {
             translations[
                 currentLanguage
             ].waiting;
-    }
 
-    if (
-        document.getElementById(
-            "computer-choice-name"
-        )
-    ) {
         document.getElementById(
             "computer-choice-name"
         ).textContent =
             translations[
                 currentLanguage
             ].waiting;
+
+        document.getElementById(
+            "result"
+        ).textContent =
+            translations[
+                currentLanguage
+            ].chooseWeapon;
     }
 }
 
@@ -1305,11 +1463,11 @@ function updateStatisticsUI() {
     const winRate =
         statistics.gamesPlayed > 0
             ? Math.round(
-                (
-                    statistics.wins /
-                    statistics.gamesPlayed
-                ) * 100
-            )
+                  (
+                      statistics.wins /
+                      statistics.gamesPlayed
+                  ) * 100
+              )
             : 0;
 
     if (winRateElement) {
@@ -1329,6 +1487,45 @@ document
                     "sound-toggle"
                 ) {
                     playSound("click");
+                }
+            }
+        );
+    });
+
+document
+    .querySelectorAll(
+        ".target-score-btn"
+    )
+    .forEach(btn => {
+        btn.addEventListener(
+            "click",
+            () => {
+                document
+                    .querySelectorAll(
+                        ".target-score-btn"
+                    )
+                    .forEach(b =>
+                        b.classList.remove(
+                            "active"
+                        )
+                    );
+
+                btn.classList.add(
+                    "active"
+                );
+
+                const score =
+                    parseInt(
+                        btn.dataset.score,
+                        10
+                    );
+
+                if (
+                    [3, 5, 7].includes(
+                        score
+                    )
+                ) {
+                    targetScore = score;
                 }
             }
         );
@@ -1386,7 +1583,9 @@ if (profileBtn) {
         "click",
         () => {
             updateProfileUI();
-            openModal("profile-modal");
+            openModal(
+                "profile-modal"
+            );
         }
     );
 }
@@ -1493,7 +1692,9 @@ document
                     btn.dataset.close;
 
                 if (modalId) {
-                    closeModal(modalId);
+                    closeModal(
+                        modalId
+                    );
                 }
             }
         );
@@ -1506,11 +1707,10 @@ document
     .forEach(btn => {
         btn.addEventListener(
             "click",
-            () => {
+            () =>
                 setTheme(
                     btn.dataset.theme
-                );
-            }
+                )
         );
     });
 
@@ -1521,11 +1721,10 @@ document
     .forEach(btn => {
         btn.addEventListener(
             "click",
-            () => {
+            () =>
                 setLanguage(
                     btn.dataset.settingLang
-                );
-            }
+                )
         );
     });
 
@@ -1538,11 +1737,11 @@ if (soundToggle) {
     soundToggle.addEventListener(
         "click",
         () => {
-            if (!soundEnabled) {
-                soundEnabled = true;
+            soundEnabled =
+                !soundEnabled;
+
+            if (soundEnabled) {
                 playSound("click");
-            } else {
-                soundEnabled = false;
             }
 
             document.getElementById(
@@ -1550,11 +1749,11 @@ if (soundToggle) {
             ).textContent =
                 soundEnabled
                     ? translations[
-                        currentLanguage
-                    ].on
+                          currentLanguage
+                      ].on
                     : translations[
-                        currentLanguage
-                    ].off;
+                          currentLanguage
+                      ].off;
         }
     );
 }
@@ -1643,17 +1842,17 @@ if (resetStatisticsBtn) {
                     await fetch(
                         "/api/statistics",
                         {
-                            method: "DELETE"
+                            method:
+                                "DELETE"
                         }
                     );
 
                 const data =
-                    await response.json();
+                    await parseResponse(
+                        response
+                    );
 
                 if (!response.ok) {
-                    console.error(
-                        data.error
-                    );
                     return;
                 }
 

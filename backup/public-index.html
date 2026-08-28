@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lizu&lt;3</title>
-    <link rel="stylesheet" href="\style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -32,7 +32,14 @@
            
             </h1>
             
-            <p class="description" data-i18n="description">Érd el elsőként az 5 pontot és nyerj!</p>
+            <p class="description" data-i18n="description">Érd el elsőként a célpontszámot és nyerj!</p>
+
+            <div class="target-score-selector">
+                <span data-i18n="targetScore">Célpontszám:</span>
+                <button class="target-score-btn active" data-score="5">5</button>
+                <button class="target-score-btn" data-score="10">10</button>
+                <button class="target-score-btn" data-score="15">15</button>
+            </div>
 
             <button id="start-btn" class="primary-btn" data-i18n="startGame">START GAME</button>
 
