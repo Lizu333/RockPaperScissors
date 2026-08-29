@@ -12,65 +12,104 @@
     <main class="game-container">
 
         <section id="menu-screen" class="screen active">
+
             <div class="logo">
                 <span class="logo-heart-text">♡</span>
             </div>
 
-            <h1 class="main-title-svg">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="title-icon">
-                    <path d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z" />
-                    <path d="M11.99 22 14 12l7.822 3.184" />
-                    <path d="M14 12 8.47 2.302" />
-                </svg>
-
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="title-icon">
-                    <path d="M15 12h-5" />
-                    <path d="M15 8h-5" />
-                    <path d="M19 17V5a2 2 0 0 0-2-2H4" />
-                    <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
-                </svg>
-
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="title-icon">
-                    <circle cx="6" cy="6" r="3" />
-                    <path d="M8.12 8.12 12 12" />
-                    <path d="M20 4 8.12 15.88" />
-                    <circle cx="6" cy="18" r="3" />
-                    <path d="M14.8 14.8 20 20" />
-                </svg>
+            <h1 class="games-title">
+                <span data-i18n="siteTitle">LizuGames</span>
             </h1>
 
-            <p class="description" data-i18n="description">
-                Érd el elsőként az 5 pontot és nyerj!
+            <p class="games-subtitle" data-i18n="selectGame">
+                Válassz egy játékot!
             </p>
 
-            <button id="start-btn" class="primary-btn" data-i18n="startGame">
-                START GAME
-            </button>
+            <div class="games-grid">
+
+                <button id="rps-game-btn" class="game-card">
+
+                    <div class="game-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+
+                            <path
+                                d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z" />
+                            <path d="M11.99 22 14 12l7.822 3.184" />
+                            <path d="M14 12 8.47 2.302" />
+                        </svg>
+                    </div>
+
+                    <div class="game-card-content">
+                        <h2 data-i18n="rpsTitle">
+                            Kő - Papír - Olló
+                        </h2>
+
+                        <p data-i18n="rpsDescription">
+                            Érd el elsőként a célpontszámot!
+                        </p>
+                    </div>
+
+                    <span class="game-card-arrow">→</span>
+
+                </button>
+
+                <button id="2048-game-btn" class="game-card game-card-disabled" disabled>
+
+                    <div class="game-card-icon">
+                        <span class="game-2048-icon">2048</span>
+                    </div>
+
+                    <div class="game-card-content">
+                        <h2 data-i18n="game2048Title">
+                            2048
+                        </h2>
+
+                        <p data-i18n="game2048Description">
+                            Rakd össze a 2048-as csempét!
+                        </p>
+                    </div>
+
+                    <span class="game-card-badge" data-i18n="comingSoon">
+                        HAMAROSAN
+                    </span>
+
+                </button>
+
+            </div>
+
 
             <div class="menu-buttons">
+
                 <button id="profile-btn" class="secondary-btn icon-only-btn" title="Profil" aria-label="Profil">
+
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
                         <circle cx="12" cy="8" r="5" />
                         <path d="M20 21a8 8 0 0 0-16 0" />
+
                     </svg>
+
                 </button>
+
 
                 <button id="settings-btn" class="secondary-btn icon-only-btn" title="Beállítások"
                     aria-label="Beállítások">
+
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0-0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+
+                        <path
+                            d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0-0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
                         <circle cx="12" cy="12" r="3" />
+
                     </svg>
+
                 </button>
+
             </div>
+
         </section>
 
         <section id="game-screen" class="screen">
@@ -111,7 +150,8 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
-                                <path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528" />
+                                <path
+                                    d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528" />
                             </svg>
                         </button>
 
@@ -120,7 +160,8 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
-                                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                                <path
+                                    d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
                                 <path d="M12 8v4" />
                                 <path d="M12 16h.01" />
                             </svg>
@@ -197,7 +238,8 @@
                 <button class="choice-btn" data-choice="rock" aria-label="Kő">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z" />
+                        <path
+                            d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z" />
                         <path d="M11.99 22 14 12l7.822 3.184" />
                         <path d="M14 12 8.47 2.302" />
                     </svg>
@@ -209,7 +251,8 @@
                         <path d="M15 12h-5" />
                         <path d="M15 8h-5" />
                         <path d="M19 17V5a2 2 0 0 0-2-2H4" />
-                        <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
+                        <path
+                            d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
                     </svg>
                 </button>
 
@@ -224,6 +267,96 @@
                     </svg>
                 </button>
             </div>
+        </section>
+
+        <section id="game-2048-screen" class="screen">
+
+            <header class="game-2048-header">
+
+                <button id="2048-menu-btn" class="icon-btn" title="Főmenü" aria-label="Főmenü">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+                        <path d="M15 18l-6-6 6-6" />
+
+                    </svg>
+
+                </button>
+
+
+                <h1>2048</h1>
+
+
+                <div class="game-2048-score-container">
+
+                    <div class="game-2048-score-box">
+                        <span data-i18n="score2048">PONTSZÁM</span>
+                        <strong id="2048-score">0</strong>
+                    </div>
+
+                    <div class="game-2048-score-box">
+                        <span data-i18n="best2048">REKORD</span>
+                        <strong id="2048-best">0</strong>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <div class="game-2048-intro">
+
+                <div>
+                    <h2 data-i18n="game2048Title">
+                        2048
+                    </h2>
+
+                    <p data-i18n="game2048Instructions">
+                        Kombináld az azonos számokat, és érd el a 2048-at!
+                    </p>
+                </div>
+
+                <button id="2048-new-game-btn" class="primary-btn" data-i18n="new2048Game">
+                    ÚJ JÁTÉK
+                </button>
+
+            </div>
+
+
+            <div id="2048-board" class="game-2048-board" aria-label="2048 game board">
+            </div>
+
+
+            <p id="2048-message" class="game-2048-message" data-i18n="game2048Ready">
+                Használd a nyilakat a csempék mozgatásához!
+            </p>
+
+
+            <div id="2048-overlay" class="game-2048-overlay">
+
+                <div class="game-2048-overlay-content">
+
+                    <h2 id="2048-overlay-title">
+                        2048
+                    </h2>
+
+                    <p id="2048-overlay-text">
+                        -
+                    </p>
+
+                    <button id="2048-overlay-new-game" class="primary-btn" data-i18n="new2048Game">
+                        ÚJ JÁTÉK
+                    </button>
+
+                    <button id="2048-overlay-menu" class="secondary-btn" data-i18n="mainMenu">
+                        FŐMENÜ
+                    </button>
+
+                </div>
+
+            </div>
+
         </section>
 
         <section id="end-screen" class="screen">
@@ -450,23 +583,23 @@
                     </div>
 
                     <div class="theme-preset-options">
-                        <button class="theme-preset-btn" data-theme="cream-teal"
-                            style="--c1: #ffefb3; --c2: #013e37;" title="Cream & Teal"></button>
+                        <button class="theme-preset-btn" data-theme="cream-teal" style="--c1: #ffefb3; --c2: #013e37;"
+                            title="Cream & Teal"></button>
 
-                        <button class="theme-preset-btn" data-theme="wine-pink"
-                            style="--c1: #70020f; --c2: #ffdee2;" title="Wine & Pink"></button>
+                        <button class="theme-preset-btn" data-theme="wine-pink" style="--c1: #70020f; --c2: #ffdee2;"
+                            title="Wine & Pink"></button>
 
-                        <button class="theme-preset-btn" data-theme="olive-cream"
-                            style="--c1: #9ca764; --c2: #f1e8c7;" title="Olive & Cream"></button>
+                        <button class="theme-preset-btn" data-theme="olive-cream" style="--c1: #9ca764; --c2: #f1e8c7;"
+                            title="Olive & Cream"></button>
 
-                        <button class="theme-preset-btn" data-theme="pink-brown"
-                            style="--c1: #efcedb; --c2: #4f2b1f;" title="Pink & Brown"></button>
+                        <button class="theme-preset-btn" data-theme="pink-brown" style="--c1: #efcedb; --c2: #4f2b1f;"
+                            title="Pink & Brown"></button>
 
-                        <button class="theme-preset-btn" data-theme="blue-brown"
-                            style="--c1: #a0beda; --c2: #34211b;" title="Blue & Brown"></button>
+                        <button class="theme-preset-btn" data-theme="blue-brown" style="--c1: #a0beda; --c2: #34211b;"
+                            title="Blue & Brown"></button>
 
-                        <button class="theme-preset-btn" data-theme="yellow-plum"
-                            style="--c1: #ffec8e; --c2: #631d3f;" title="Yellow & Plum"></button>
+                        <button class="theme-preset-btn" data-theme="yellow-plum" style="--c1: #ffec8e; --c2: #631d3f;"
+                            title="Yellow & Plum"></button>
                     </div>
                 </div>
 
@@ -673,8 +806,7 @@
                     </p>
 
                     <p>
-                        <a href="https://formspree.io/legal/privacy-policy/" target="_blank"
-                            rel="noopener noreferrer">
+                        <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">
                             Formspree Adatvédelmi Tájékoztató
                         </a>
                     </p>
@@ -769,8 +901,7 @@
                 <button class="modal-close" data-close="creator-modal">×</button>
 
                 <div class="creator-info">
-                    <a href="https://github.com/Lizu333" target="_blank" rel="noopener noreferrer"
-                        class="github-link">
+                    <a href="https://github.com/Lizu333" target="_blank" rel="noopener noreferrer" class="github-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                             viewBox="0 0 16 16">
                             <path
@@ -794,7 +925,8 @@
             aria-label="More about the creator">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
+                <path
+                    d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
                 <path d="M20 2v4" />
                 <path d="M22 4h-4" />
                 <circle cx="4" cy="20" r="2" />

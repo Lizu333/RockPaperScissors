@@ -198,6 +198,13 @@ const translations = {
     en: {
         title: "Rock - Paper - Scissors",
         description: "Reach the target score first and be the winner!",
+        siteTitle: "LizuGames",
+        selectGame: "Choose a game",
+        rpsTitle: "Rock - Paper - Scissors",
+        rpsDescription: "Reach the target score first!",
+        game2048Title: "2048",
+        game2048Description: "Reach 2048!",
+        comingSoon: "COMING SOON",
         startGame: "START GAME",
         profile: "PROFILE",
         settings: "SETTINGS",
@@ -459,6 +466,13 @@ const translations = {
     hu: {
         title: "Kő - Papír - Olló",
         description: "Érd el elsőként a célpontszámot és nyerj!",
+        siteTitle: "LizuGames",
+        selectGame: "Válassz egy játékot!",
+        rpsTitle: "Kő - Papír - Olló",
+        rpsDescription: "Érd el elsőként a célpontszámot!",
+        game2048Title: "2048",
+        game2048Description: "Érd el a 2048-at!",
+        comingSoon: "HAMAROSAN",
         startGame: "JÁTÉK INDÍTÁSA",
         profile: "PROFIL",
         settings: "BEÁLLÍTÁSOK",
@@ -1488,7 +1502,7 @@ function updateDifficultyUI() {
             btn.classList.toggle(
                 "active",
                 Number(btn.dataset.difficulty) ===
-                    currentDifficulty
+                currentDifficulty
             );
         });
 }
@@ -1705,10 +1719,10 @@ function updateStatisticsUI() {
     const winRate =
         statistics.gamesPlayed > 0
             ? Math.round(
-                  (statistics.wins /
-                      statistics.gamesPlayed) *
-                      100
-              )
+                (statistics.wins /
+                    statistics.gamesPlayed) *
+                100
+            )
             : 0;
 
     if (winRateElement) {
@@ -1747,12 +1761,11 @@ if (themeModalBtn) {
     );
 }
 
+const rpsGameBtn =
+    document.getElementById("rps-game-btn");
 
-const startBtn =
-    document.getElementById("start-btn");
-
-if (startBtn) {
-    startBtn.addEventListener(
+if (rpsGameBtn) {
+    rpsGameBtn.addEventListener(
         "click",
         startGame
     );
