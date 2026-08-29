@@ -9,7 +9,11 @@ require("dotenv").config();
 const app = express();
 const PORT = 3000;
 
+const ALLOWED_DIFFICULTIES = [3, 5, 10];
+const DEFAULT_DIFFICULTY = 5;
+
 const db = new Database(path.join(__dirname, "database.sqlite"));
+
 db.pragma("journal_mode = WAL");
 db.pragma("foreign_keys = ON");
 
@@ -18,10 +22,13 @@ db.exec(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
-        gender TEXT NOT NULL,
+        gender TEXT NOT NULL DEFAULT '',
         theme TEXT NOT NULL DEFAULT 'pink-brown',
+        difficulty INTEGER NOT NULL DEFAULT 5,
+        privacy_accepted_at TEXT,
         joined TEXT NOT NULL
     );
+
     CREATE TABLE IF NOT EXISTS statistics (
         user_id INTEGER PRIMARY KEY,
         games_played INTEGER NOT NULL DEFAULT 0,
@@ -34,6 +41,23 @@ db.exec(`
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 `);
+
+const userColumns = db
+    .prepare("PRAGMA table_info(users)")
+    .all()
+    .map(col => col.name);
+
+if (!userColumns.includes("difficulty")) {
+    db.exec(
+        `ALTER TABLE users ADD COLUMN difficulty INTEGER NOT NULL DEFAULT ${DEFAULT_DIFFICULTY}`
+    );
+}
+
+if (!userColumns.includes("privacy_accepted_at")) {
+    db.exec(
+        "ALTER TABLE users ADD COLUMN privacy_accepted_at TEXT"
+    );
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -53,7 +77,6 @@ app.use(
         }
     })
 );
-
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -76,13 +99,16 @@ function getStatistics(userId) {
 
 function ensureStatistics(userId) {
     let stats = getStatistics(userId);
+
     if (!stats) {
         db.prepare(`
             INSERT INTO statistics (user_id)
             VALUES (?)
         `).run(userId);
+
         stats = getStatistics(userId);
     }
+
     return stats;
 }
 
@@ -90,23 +116,50 @@ function getFinalResult(playerScore, computerScore) {
     if (playerScore > computerScore) {
         return "win";
     }
+
     if (computerScore > playerScore) {
         return "loss";
     }
+
     return null;
+}
+
+function getUserDifficulty(userId) {
+    const user = db
+        .prepare("SELECT difficulty FROM users WHERE id = ?")
+        .get(userId);
+
+    if (
+        user &&
+        ALLOWED_DIFFICULTIES.includes(Number(user.difficulty))
+    ) {
+        return Number(user.difficulty);
+    }
+
+    return DEFAULT_DIFFICULTY;
 }
 
 app.post("/api/register", async (req, res) => {
     try {
-        const { username, password, gender } = req.body;
-        if (!username || !password || !gender) {
+        const {
+            username,
+            password,
+            gender,
+            privacyAccepted
+        } = req.body;
+
+        if (!username || !password) {
             return res.status(400).json({
-                error: "Minden mező kitöltése kötelező!"
+                error: "A felhasználónév és a jelszó megadása kötelező!"
             });
         }
 
         const cleanUsername = username.trim();
-        if (cleanUsername.length < 2 || cleanUsername.length > 20) {
+
+        if (
+            cleanUsername.length < 2 ||
+            cleanUsername.length > 20
+        ) {
             return res.status(400).json({
                 error: "A felhasználónév 2-20 karakter hosszú lehet!"
             });
@@ -118,9 +171,15 @@ app.post("/api/register", async (req, res) => {
             });
         }
 
-        if (gender !== "girl" && gender !== "boy") {
+        const cleanGender =
+            gender === "girl" || gender === "boy"
+                ? gender
+                : "";
+
+        if (!privacyAccepted) {
             return res.status(400).json({
-                error: "Érvénytelen nem!"
+                error:
+                    "Az adatvédelmi tájékoztató elfogadása kötelező a regisztrációhoz!"
             });
         }
 
@@ -135,12 +194,20 @@ app.post("/api/register", async (req, res) => {
         }
 
         const passwordHash = await bcrypt.hash(password, 12);
-        const theme = gender === "girl" ? "pink-brown" : "blue-brown";
+
+        let theme = "pink-brown";
+
+        if (cleanGender === "boy") {
+            theme = "blue-brown";
+        }
+
         const joined = new Date().toLocaleDateString("hu-HU", {
             year: "numeric",
             month: "2-digit",
             day: "2-digit"
         });
+
+        const privacyAcceptedAt = new Date().toISOString();
 
         const result = db
             .prepare(`
@@ -149,11 +216,21 @@ app.post("/api/register", async (req, res) => {
                     password_hash,
                     gender,
                     theme,
+                    difficulty,
+                    privacy_accepted_at,
                     joined
                 )
-                VALUES (?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             `)
-            .run(cleanUsername, passwordHash, gender, theme, joined);
+            .run(
+                cleanUsername,
+                passwordHash,
+                cleanGender,
+                theme,
+                DEFAULT_DIFFICULTY,
+                privacyAcceptedAt,
+                joined
+            );
 
         db.prepare(`
             INSERT INTO statistics (user_id)
@@ -167,18 +244,24 @@ app.post("/api/register", async (req, res) => {
             success: true,
             user: {
                 username: cleanUsername,
-                gender,
+                gender: cleanGender,
                 theme,
+                difficulty: DEFAULT_DIFFICULTY,
                 joined
             }
         });
     } catch (error) {
         console.error(error);
-        if (error && error.code === "SQLITE_CONSTRAINT_UNIQUE") {
+
+        if (
+            error &&
+            error.code === "SQLITE_CONSTRAINT_UNIQUE"
+        ) {
             return res.status(409).json({
                 error: "Ez a felhasználónév már foglalt!"
             });
         }
+
         res.status(500).json({
             error: "Szerverhiba történt."
         });
@@ -188,6 +271,7 @@ app.post("/api/register", async (req, res) => {
 app.post("/api/login", async (req, res) => {
     try {
         const { username, password } = req.body;
+
         if (!username || !password) {
             return res.status(400).json({
                 error: "Add meg a felhasználónevet és a jelszót!"
@@ -228,11 +312,13 @@ app.post("/api/login", async (req, res) => {
                 username: user.username,
                 gender: user.gender,
                 theme: user.theme,
+                difficulty: user.difficulty,
                 joined: user.joined
             }
         });
     } catch (error) {
         console.error(error);
+
         res.status(500).json({
             error: "Szerverhiba történt."
         });
@@ -246,6 +332,7 @@ app.post("/api/logout", (req, res) => {
                 error: "Nem sikerült kijelentkezni."
             });
         }
+
         res.json({
             success: true
         });
@@ -266,6 +353,7 @@ app.get("/api/me", (req, res) => {
                 username,
                 gender,
                 theme,
+                difficulty,
                 joined
             FROM users
             WHERE id = ?
@@ -274,6 +362,7 @@ app.get("/api/me", (req, res) => {
 
     if (!user) {
         req.session.destroy(() => {});
+
         return res.json({
             loggedIn: false
         });
@@ -287,6 +376,7 @@ app.get("/api/me", (req, res) => {
             username: user.username,
             gender: user.gender,
             theme: user.theme,
+            difficulty: user.difficulty,
             joined: user.joined
         },
         statistics: stats
@@ -301,6 +391,7 @@ app.put("/api/theme", (req, res) => {
     }
 
     const { theme } = req.body;
+
     const allowedThemes = [
         "cream-teal",
         "wine-pink",
@@ -328,6 +419,33 @@ app.put("/api/theme", (req, res) => {
     });
 });
 
+app.put("/api/difficulty", (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({
+            error: "Nincs bejelentkezve."
+        });
+    }
+
+    const parsedDifficulty = Number(req.body.difficulty);
+
+    if (!ALLOWED_DIFFICULTIES.includes(parsedDifficulty)) {
+        return res.status(400).json({
+            error: "Érvénytelen nehézségi szint."
+        });
+    }
+
+    db.prepare(`
+        UPDATE users
+        SET difficulty = ?
+        WHERE id = ?
+    `).run(parsedDifficulty, req.session.userId);
+
+    res.json({
+        success: true,
+        difficulty: parsedDifficulty
+    });
+});
+
 app.post("/api/game/start", (req, res) => {
     if (!req.session.userId) {
         return res.status(401).json({
@@ -335,9 +453,12 @@ app.post("/api/game/start", (req, res) => {
         });
     }
 
+    const targetScore = getUserDifficulty(req.session.userId);
+
     req.session.game = {
         playerScore: 0,
         computerScore: 0,
+        targetScore,
         active: true,
         finished: false,
         settled: false,
@@ -347,7 +468,8 @@ app.post("/api/game/start", (req, res) => {
     res.json({
         success: true,
         playerScore: 0,
-        computerScore: 0
+        computerScore: 0,
+        targetScore
     });
 });
 
@@ -359,7 +481,12 @@ app.post("/api/game/round", (req, res) => {
     }
 
     const { playerChoice } = req.body;
-    const allowedChoices = ["rock", "paper", "scissors"];
+
+    const allowedChoices = [
+        "rock",
+        "paper",
+        "scissors"
+    ];
 
     if (!allowedChoices.includes(playerChoice)) {
         return res.status(400).json({
@@ -368,23 +495,33 @@ app.post("/api/game/round", (req, res) => {
     }
 
     const game = req.session.game;
+
     if (!game || !game.active || game.finished) {
         return res.status(400).json({
             error: "Nincs aktív játék."
         });
     }
 
-    const choices = ["rock", "paper", "scissors"];
+    const choices = [
+        "rock",
+        "paper",
+        "scissors"
+    ];
+
     const computerChoice =
         choices[Math.floor(Math.random() * choices.length)];
 
     let result;
+
     if (playerChoice === computerChoice) {
         result = "draw";
     } else if (
-        (playerChoice === "rock" && computerChoice === "scissors") ||
-        (playerChoice === "paper" && computerChoice === "rock") ||
-        (playerChoice === "scissors" && computerChoice === "paper")
+        (playerChoice === "rock" &&
+            computerChoice === "scissors") ||
+        (playerChoice === "paper" &&
+            computerChoice === "rock") ||
+        (playerChoice === "scissors" &&
+            computerChoice === "paper")
     ) {
         result = "win";
         game.playerScore++;
@@ -393,10 +530,9 @@ app.post("/api/game/round", (req, res) => {
         game.computerScore++;
     }
 
-    const choiceColumn = playerChoice;
     db.prepare(`
         UPDATE statistics
-        SET ${choiceColumn} = ${choiceColumn} + 1
+        SET ${playerChoice} = ${playerChoice} + 1
         WHERE user_id = ?
     `).run(req.session.userId);
 
@@ -408,21 +544,28 @@ app.post("/api/game/round", (req, res) => {
         `).run(req.session.userId);
     }
 
+    const targetScore =
+        game.targetScore || DEFAULT_DIFFICULTY;
+
     const gameFinished =
-        game.playerScore >= 5 || game.computerScore >= 5;
+        game.playerScore >= targetScore ||
+        game.computerScore >= targetScore;
 
     let finalResult = null;
+
     if (gameFinished) {
         finalResult = getFinalResult(
             game.playerScore,
             game.computerScore
         );
+
         game.active = false;
         game.finished = true;
         game.finalResult = finalResult;
     }
 
-    const updatedStats = getStatistics(req.session.userId);
+    const updatedStats =
+        getStatistics(req.session.userId);
 
     res.json({
         success: true,
@@ -431,6 +574,7 @@ app.post("/api/game/round", (req, res) => {
         result,
         playerScore: game.playerScore,
         computerScore: game.computerScore,
+        targetScore,
         gameFinished,
         finalResult,
         statistics: updatedStats
@@ -445,6 +589,7 @@ app.post("/api/game/finish", (req, res) => {
     }
 
     const game = req.session.game;
+
     if (!game || !game.finished) {
         return res.status(400).json({
             error: "Nincs befejezett játék."
@@ -453,13 +598,21 @@ app.post("/api/game/finish", (req, res) => {
 
     if (!game.settled) {
         const finalResult = game.finalResult;
-        if (finalResult !== "win" && finalResult !== "loss") {
+
+        if (
+            finalResult !== "win" &&
+            finalResult !== "loss"
+        ) {
             return res.status(400).json({
                 error: "Érvénytelen játékállapot."
             });
         }
 
-        const column = finalResult === "win" ? "wins" : "losses";
+        const column =
+            finalResult === "win"
+                ? "wins"
+                : "losses";
+
         const transaction = db.transaction(() => {
             db.prepare(`
                 UPDATE statistics
@@ -469,11 +622,14 @@ app.post("/api/game/finish", (req, res) => {
                 WHERE user_id = ?
             `).run(req.session.userId);
         });
+
         transaction();
+
         game.settled = true;
     }
 
-    const updatedStats = getStatistics(req.session.userId);
+    const updatedStats =
+        getStatistics(req.session.userId);
 
     res.json({
         success: true,
@@ -507,9 +663,10 @@ app.delete("/api/statistics", (req, res) => {
     });
 });
 
-
-app.use((req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+app.get("/{*splat}", (req, res) => {
+    res.sendFile(
+        path.join(__dirname, "public", "index.html")
+    );
 });
 
 app.listen(PORT, () => {
