@@ -205,6 +205,23 @@ const translations = {
         game2048Title: "2048",
         game2048Description: "Reach 2048!",
         comingSoon: "COMING SOON",
+        siteTitle: "LizuGames",
+        selectGame: "Choose a game",
+        rpsTitle: "Rock - Paper - Scissors",
+        rpsDescription: "Reach the target score first!",
+        game2048Title: "2048",
+        game2048Description: "Combine the tiles and reach 2048!",
+        comingSoon: "COMING SOON",
+
+        score2048: "SCORE",
+        best2048: "BEST",
+        game2048Instructions: "Combine matching tiles and reach 2048!",
+        new2048Game: "NEW GAME",
+        game2048Ready: "Use the arrow keys to move the tiles!",
+        game2048Won: "You reached 2048!",
+        game2048WonText: "Congratulations! You can continue playing or start a new game.",
+        game2048Over: "GAME OVER",
+        game2048OverText: "No more moves are possible.",
         startGame: "START GAME",
         profile: "PROFILE",
         settings: "SETTINGS",
@@ -472,6 +489,22 @@ const translations = {
         rpsDescription: "Érd el elsőként a célpontszámot!",
         game2048Title: "2048",
         game2048Description: "Érd el a 2048-at!",
+        siteTitle: "LizuGames",
+        selectGame: "Válassz egy játékot!",
+        rpsTitle: "Kő - Papír - Olló",
+        rpsDescription: "Érd el elsőként a célpontszámot!",
+        game2048Title: "2048",
+        game2048Description: "Rakd össze a 2048-as csempét!",
+        comingSoon: "HAMAROSAN",
+        score2048: "PONTSZÁM",
+        best2048: "REKORD",
+        game2048Instructions: "Kombináld az azonos számokat, és érd el a 2048-at!",
+        new2048Game: "ÚJ JÁTÉK",
+        game2048Ready: "Használd a nyilakat a csempék mozgatásához!",
+        game2048Won: "Elérted a 2048-at!",
+        game2048WonText: "Gratulálok! Folytathatod a játékot, vagy indíthatsz egy újat.",
+        game2048Over: "JÁTÉK VÉGE",
+        game2048OverText: "Nincs több lehetséges lépés.",
         comingSoon: "HAMAROSAN",
         startGame: "JÁTÉK INDÍTÁSA",
         profile: "PROFIL",
@@ -2217,3 +2250,766 @@ setDifficulty(
 setLanguage(savedLanguage);
 
 checkLogin();
+
+/* =========================================
+   LIZUGAMES - 2048 GAME
+   ========================================= */
+
+let game2048Board = [];
+let game2048Score = 0;
+let game2048Best = Number(
+    localStorage.getItem("lizugames2048Best")
+) || 0;
+
+let game2048Won = false;
+let game2048GameOver = false;
+
+let game2048TouchStartX = 0;
+let game2048TouchStartY = 0;
+
+
+const game2048BoardElement =
+    document.getElementById("2048-board");
+
+const game2048ScoreElement =
+    document.getElementById("2048-score");
+
+const game2048BestElement =
+    document.getElementById("2048-best");
+
+const game2048MessageElement =
+    document.getElementById("2048-message");
+
+const game2048Overlay =
+    document.getElementById("2048-overlay");
+
+const game2048OverlayTitle =
+    document.getElementById("2048-overlay-title");
+
+const game2048OverlayText =
+    document.getElementById("2048-overlay-text");
+
+
+function create2048EmptyBoard() {
+
+    return Array.from(
+        { length: 4 },
+        () => Array(4).fill(0)
+    );
+
+}
+
+
+function start2048Game() {
+
+    game2048Board = create2048EmptyBoard();
+
+    game2048Score = 0;
+    game2048Won = false;
+    game2048GameOver = false;
+
+    hide2048Overlay();
+
+    add2048RandomTile();
+    add2048RandomTile();
+
+    update2048Score();
+    render2048Board();
+
+    set2048Message(
+        translations[currentLanguage].game2048Ready
+    );
+
+}
+
+
+function add2048RandomTile() {
+
+    const emptyCells = [];
+
+    for (let row = 0; row < 4; row++) {
+
+        for (let col = 0; col < 4; col++) {
+
+            if (game2048Board[row][col] === 0) {
+
+                emptyCells.push({
+                    row,
+                    col
+                });
+
+            }
+
+        }
+
+    }
+
+
+    if (emptyCells.length === 0) {
+        return;
+    }
+
+
+    const randomCell =
+        emptyCells[
+        Math.floor(
+            Math.random() * emptyCells.length
+        )
+        ];
+
+
+    game2048Board[randomCell.row][randomCell.col] =
+        Math.random() < 0.9 ? 2 : 4;
+
+}
+
+
+function render2048Board() {
+
+    if (!game2048BoardElement) {
+        return;
+    }
+
+    game2048BoardElement.innerHTML = "";
+
+
+    for (let row = 0; row < 4; row++) {
+
+        for (let col = 0; col < 4; col++) {
+
+            const cell =
+                document.createElement("div");
+
+            const value =
+                game2048Board[row][col];
+
+            cell.className =
+                "game-2048-cell";
+
+            if (value > 0) {
+
+                cell.textContent = value;
+                cell.dataset.value = value;
+
+            }
+
+
+            game2048BoardElement.appendChild(cell);
+
+        }
+
+    }
+
+}
+
+
+function update2048Score() {
+
+    if (game2048ScoreElement) {
+        game2048ScoreElement.textContent =
+            game2048Score;
+    }
+
+
+    if (game2048Score > game2048Best) {
+
+        game2048Best = game2048Score;
+
+        localStorage.setItem(
+            "lizugames2048Best",
+            game2048Best
+        );
+
+    }
+
+
+    if (game2048BestElement) {
+
+        game2048BestElement.textContent =
+            game2048Best;
+
+    }
+
+}
+
+
+function set2048Message(message) {
+
+    if (game2048MessageElement) {
+        game2048MessageElement.textContent =
+            message;
+    }
+
+}
+
+
+function move2048(direction) {
+
+    if (
+        game2048GameOver ||
+        !game2048Board.length
+    ) {
+        return;
+    }
+
+
+    const previousBoard =
+        JSON.stringify(game2048Board);
+
+
+    if (direction === "left") {
+        move2048Left();
+    }
+
+    if (direction === "right") {
+        move2048Right();
+    }
+
+    if (direction === "up") {
+        move2048Up();
+    }
+
+    if (direction === "down") {
+        move2048Down();
+    }
+
+
+    const newBoard =
+        JSON.stringify(game2048Board);
+
+
+    if (previousBoard === newBoard) {
+
+        if (!can2048Move()) {
+            end2048Game(false);
+        }
+
+        return;
+    }
+
+
+    add2048RandomTile();
+
+    update2048Score();
+    render2048Board();
+
+
+    if (!game2048Won && has2048Won()) {
+
+        game2048Won = true;
+
+        show2048Overlay(
+            translations[currentLanguage].game2048Won,
+            translations[currentLanguage].game2048WonText
+        );
+
+        return;
+    }
+
+
+    if (!can2048Move()) {
+
+        end2048Game(false);
+
+    }
+
+}
+
+
+function merge2048Line(line) {
+
+    const filtered =
+        line.filter(value => value !== 0);
+
+
+    const merged = [];
+    let gainedScore = 0;
+
+
+    for (
+        let index = 0;
+        index < filtered.length;
+        index++
+    ) {
+
+        if (
+            filtered[index] ===
+            filtered[index + 1]
+        ) {
+
+            const mergedValue =
+                filtered[index] * 2;
+
+            merged.push(mergedValue);
+
+            gainedScore += mergedValue;
+
+            index++;
+
+        } else {
+
+            merged.push(filtered[index]);
+
+        }
+
+    }
+
+
+    while (merged.length < 4) {
+        merged.push(0);
+    }
+
+
+    game2048Score += gainedScore;
+
+
+    return merged;
+
+}
+
+
+function move2048Left() {
+
+    for (let row = 0; row < 4; row++) {
+
+        game2048Board[row] =
+            merge2048Line(
+                game2048Board[row]
+            );
+
+    }
+
+}
+
+
+function move2048Right() {
+
+    for (let row = 0; row < 4; row++) {
+
+        const reversed =
+            [...game2048Board[row]].reverse();
+
+        game2048Board[row] =
+            merge2048Line(reversed)
+                .reverse();
+
+    }
+
+}
+
+
+function move2048Up() {
+
+    for (let col = 0; col < 4; col++) {
+
+        const column = [];
+
+        for (let row = 0; row < 4; row++) {
+
+            column.push(
+                game2048Board[row][col]
+            );
+
+        }
+
+
+        const merged =
+            merge2048Line(column);
+
+
+        for (let row = 0; row < 4; row++) {
+
+            game2048Board[row][col] =
+                merged[row];
+
+        }
+
+    }
+
+}
+
+
+function move2048Down() {
+
+    for (let col = 0; col < 4; col++) {
+
+        const column = [];
+
+        for (let row = 0; row < 4; row++) {
+
+            column.push(
+                game2048Board[row][col]
+            );
+
+        }
+
+
+        const merged =
+            merge2048Line(
+                column.reverse()
+            ).reverse();
+
+
+        for (let row = 0; row < 4; row++) {
+
+            game2048Board[row][col] =
+                merged[row];
+
+        }
+
+    }
+
+}
+
+
+function has2048Won() {
+
+    for (let row = 0; row < 4; row++) {
+
+        for (let col = 0; col < 4; col++) {
+
+            if (
+                game2048Board[row][col] >= 2048
+            ) {
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+function can2048Move() {
+
+    for (let row = 0; row < 4; row++) {
+
+        for (let col = 0; col < 4; col++) {
+
+            if (
+                game2048Board[row][col] === 0
+            ) {
+
+                return true;
+
+            }
+
+
+            if (
+                col < 3 &&
+                game2048Board[row][col] ===
+                game2048Board[row][col + 1]
+            ) {
+
+                return true;
+
+            }
+
+
+            if (
+                row < 3 &&
+                game2048Board[row][col] ===
+                game2048Board[row + 1][col]
+            ) {
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+function end2048Game(won) {
+
+    game2048GameOver = true;
+
+
+    if (won) {
+
+        show2048Overlay(
+            translations[currentLanguage].game2048Won,
+            translations[currentLanguage].game2048WonText
+        );
+
+    } else {
+
+        show2048Overlay(
+            translations[currentLanguage].game2048Over,
+            translations[currentLanguage].game2048OverText
+        );
+
+    }
+
+}
+
+
+function show2048Overlay(title, text) {
+
+    if (game2048OverlayTitle) {
+        game2048OverlayTitle.textContent =
+            title;
+    }
+
+
+    if (game2048OverlayText) {
+        game2048OverlayText.textContent =
+            text;
+    }
+
+
+    if (game2048Overlay) {
+        game2048Overlay.classList.add("active");
+    }
+
+}
+
+
+function hide2048Overlay() {
+
+    if (game2048Overlay) {
+        game2048Overlay.classList.remove(
+            "active"
+        );
+    }
+
+}
+
+
+/* =========================================
+   2048 BILLENTYŰZET
+   ========================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            !document
+                .getElementById("game-2048-screen")
+                ?.classList.contains("active")
+        ) {
+            return;
+        }
+
+
+        const keyMap = {
+
+            ArrowLeft: "left",
+            ArrowRight: "right",
+            ArrowUp: "up",
+            ArrowDown: "down"
+
+        };
+
+
+        const direction =
+            keyMap[event.key];
+
+
+        if (!direction) {
+            return;
+        }
+
+
+        event.preventDefault();
+
+        move2048(direction);
+
+    }
+);
+
+
+/* =========================================
+   2048 MOBIL SWIPE
+   ========================================= */
+
+if (game2048BoardElement) {
+
+    game2048BoardElement.addEventListener(
+        "touchstart",
+        event => {
+
+            const touch =
+                event.changedTouches[0];
+
+            game2048TouchStartX =
+                touch.clientX;
+
+            game2048TouchStartY =
+                touch.clientY;
+
+        },
+        { passive: true }
+    );
+
+
+    game2048BoardElement.addEventListener(
+        "touchend",
+        event => {
+
+            const touch =
+                event.changedTouches[0];
+
+            const deltaX =
+                touch.clientX -
+                game2048TouchStartX;
+
+            const deltaY =
+                touch.clientY -
+                game2048TouchStartY;
+
+
+            const minSwipeDistance = 30;
+
+
+            if (
+                Math.abs(deltaX) <
+                minSwipeDistance &&
+                Math.abs(deltaY) <
+                minSwipeDistance
+            ) {
+                return;
+            }
+
+
+            if (
+                Math.abs(deltaX) >
+                Math.abs(deltaY)
+            ) {
+
+                move2048(
+                    deltaX > 0
+                        ? "right"
+                        : "left"
+                );
+
+            } else {
+
+                move2048(
+                    deltaY > 0
+                        ? "down"
+                        : "up"
+                );
+
+            }
+
+        },
+        { passive: true }
+    );
+
+}
+
+
+/* =========================================
+   2048 GOMBOK
+   ========================================= */
+
+const game2048Button =
+    document.getElementById("2048-game-btn");
+
+if (game2048Button) {
+
+    game2048Button.addEventListener(
+        "click",
+        () => {
+
+            showScreen(
+                "game-2048-screen"
+            );
+
+            start2048Game();
+
+        }
+    );
+
+}
+
+
+const game2048MenuButton =
+    document.getElementById("2048-menu-btn");
+
+if (game2048MenuButton) {
+
+    game2048MenuButton.addEventListener(
+        "click",
+        () => {
+
+            hide2048Overlay();
+
+            showScreen(
+                "menu-screen"
+            );
+
+        }
+    );
+
+}
+
+
+const game2048NewGameButton =
+    document.getElementById(
+        "2048-new-game-btn"
+    );
+
+if (game2048NewGameButton) {
+
+    game2048NewGameButton.addEventListener(
+        "click",
+        start2048Game
+    );
+
+}
+
+
+const game2048OverlayNewGame =
+    document.getElementById(
+        "2048-overlay-new-game"
+    );
+
+if (game2048OverlayNewGame) {
+
+    game2048OverlayNewGame.addEventListener(
+        "click",
+        start2048Game
+    );
+
+}
+
+
+const game2048OverlayMenu =
+    document.getElementById(
+        "2048-overlay-menu"
+    );
+
+if (game2048OverlayMenu) {
+
+    game2048OverlayMenu.addEventListener(
+        "click",
+        () => {
+
+            hide2048Overlay();
+
+            showScreen(
+                "menu-screen"
+            );
+
+        }
+    );
+
+}
+
+
+update2048Score();
