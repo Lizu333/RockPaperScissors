@@ -14,11 +14,40 @@ let statistics = {
     draws: 0,
     rock: 0,
     paper: 0,
-    scissors: 0
+    scissors: 0,
+    matches2048: 0,
+    maxScore2048: 0,
+    undosUsed2048: 0
 };
+
+let activeProfileGame = "rps";
 
 let audioCtx = null;
 let currentUser = null;
+let csrfToken = null;
+
+(function setupCsrfFetchWrapper() {
+    const originalFetch = window.fetch.bind(window);
+
+    window.fetch = (input, init = {}) => {
+        const method = (init.method || "GET").toUpperCase();
+
+        if (
+            csrfToken &&
+            ["POST", "PUT", "DELETE", "PATCH"].includes(method)
+        ) {
+            init = {
+                ...init,
+                headers: {
+                    ...(init.headers || {}),
+                    "X-CSRF-Token": csrfToken
+                }
+            };
+        }
+
+        return originalFetch(input, init);
+    };
+})();
 
 let gameFinished = false;
 let gameStarting = false;
@@ -217,11 +246,19 @@ const translations = {
         best2048: "BEST",
         game2048Instructions: "Combine matching tiles and reach 2048!",
         new2048Game: "NEW GAME",
-        game2048Ready: "Use the arrow keys to move the tiles!",
+        game2048Ready: "Use the arrow keys or move the tiles!",
         game2048Won: "You reached 2048!",
         game2048WonText: "Congratulations! You can continue playing or start a new game.",
         game2048Over: "GAME OVER",
         game2048OverText: "No more moves are possible.",
+        game2048ServerError: "A server error occurred. Please try again!",
+        game2048NetworkError: "Could not connect to the server. Check your connection and try again!",
+        undo2048: "UNDO",
+        matches2048: "MATCHES PLAYED",
+        bestScore2048Stat: "BEST SCORE",
+        undosUsed2048: "UNDOS USED",
+        confirmResetStats2048:
+            "Are you sure you want to delete your 2048 statistics history?",
         startGame: "START GAME",
         profile: "PROFILE",
         settings: "SETTINGS",
@@ -271,7 +308,7 @@ const translations = {
         roundWin: "You won this round!",
         roundLoss: "You lost this round!",
         roundDraw: "It's a draw this round!",
-        moreAboutCreator: "More about the creator",
+        moreAboutCreator: "About the creator",
         reportTitle: "REPORT A BUG",
         reportDescription:
             "If you experienced a bug in the game, let us know!",
@@ -494,18 +531,26 @@ const translations = {
         rpsTitle: "Kő - Papír - Olló",
         rpsDescription: "Érd el elsőként a célpontszámot!",
         game2048Title: "2048",
-        game2048Description: "Rakd össze a 2048-as csempét!",
+        game2048Description: "Érd el a 2048-at!",
         comingSoon: "HAMAROSAN",
         score2048: "PONTSZÁM",
         best2048: "REKORD",
         game2048Instructions: "Kombináld az azonos számokat, és érd el a 2048-at!",
         new2048Game: "ÚJ JÁTÉK",
-        game2048Ready: "Használd a nyilakat a csempék mozgatásához!",
+        game2048Ready: "Használd a nyilakat vagy mozgasd a kártyákat!",
         game2048Won: "Elérted a 2048-at!",
         game2048WonText: "Gratulálok! Folytathatod a játékot, vagy indíthatsz egy újat.",
         game2048Over: "JÁTÉK VÉGE",
         game2048OverText: "Nincs több lehetséges lépés.",
+        game2048ServerError: "Hiba történt a szerverrel való kommunikáció során. Próbáld újra!",
+        game2048NetworkError: "Nem sikerült kapcsolódni a szerverhez. Ellenőrizd a kapcsolatot, és próbáld újra!",
         comingSoon: "HAMAROSAN",
+        undo2048: "VISSZAVONÁS",
+        matches2048: "JÁTSZOTT MECCSEK",
+        bestScore2048Stat: "LEGJOBB PONTSZÁM",
+        undosUsed2048: "HASZNÁLT VISSZAVONÁSOK",
+        confirmResetStats2048:
+            "Biztos törlöd a 2048 statisztikai előzményeidet?",
         startGame: "JÁTÉK INDÍTÁSA",
         profile: "PROFIL",
         settings: "BEÁLLÍTÁSOK",
@@ -556,7 +601,7 @@ const translations = {
         roundWin: "Megnyerted ezt a kört!",
         roundLoss: "Elvesztetted ezt a kört!",
         roundDraw: "Döntetlen ebben a körben!",
-        moreAboutCreator: "Tudj meg többet a készítőről",
+        moreAboutCreator: "A készítőről",
         reportTitle: "HIBABEJELENTÉS",
         reportDescription:
             "Ha hibát tapasztaltál a játékban, írd meg nekünk!",
@@ -822,7 +867,10 @@ function emptyStatistics() {
         draws: 0,
         rock: 0,
         paper: 0,
-        scissors: 0
+        scissors: 0,
+        matches2048: 0,
+        maxScore2048: 0,
+        undosUsed2048: 0
     };
 }
 
@@ -839,7 +887,10 @@ function applyStatistics(data) {
         draws: Number(data.draws) || 0,
         rock: Number(data.rock) || 0,
         paper: Number(data.paper) || 0,
-        scissors: Number(data.scissors) || 0
+        scissors: Number(data.scissors) || 0,
+        matches2048: Number(data.matches_2048) || 0,
+        maxScore2048: Number(data.max_score_2048) || 0,
+        undosUsed2048: Number(data.undos_used_2048) || 0
     };
 
     updateStatisticsUI();
@@ -853,6 +904,7 @@ async function checkLogin() {
 
         if (!data.loggedIn) {
             currentUser = null;
+            csrfToken = null;
             statistics = emptyStatistics();
 
             updateProfileUI();
@@ -862,6 +914,7 @@ async function checkLogin() {
         }
 
         currentUser = data.user;
+        csrfToken = data.csrfToken || null;
 
         if (data.user.theme) {
             setTheme(data.user.theme, false);
@@ -1303,6 +1356,7 @@ async function registerUser(
         }
 
         currentUser = data.user;
+        csrfToken = data.csrfToken || null;
 
         if (data.user.theme) {
             setTheme(data.user.theme, false);
@@ -1365,6 +1419,7 @@ async function loginUser(username, password) {
         }
 
         currentUser = data.user;
+        csrfToken = data.csrfToken || null;
 
         if (data.user.theme) {
             setTheme(data.user.theme, false);
@@ -1399,6 +1454,7 @@ async function logoutUser() {
     }
 
     currentUser = null;
+    csrfToken = null;
     statistics = emptyStatistics();
 
     resetGame();
@@ -1421,6 +1477,7 @@ async function loadUserStatistics() {
 
         if (!data.loggedIn) {
             currentUser = null;
+            csrfToken = null;
             statistics = emptyStatistics();
 
             updateProfileUI();
@@ -1430,6 +1487,7 @@ async function loadUserStatistics() {
         }
 
         currentUser = data.user;
+        csrfToken = data.csrfToken || null;
 
         setDifficulty(
             data.user.difficulty || 5,
@@ -1530,7 +1588,7 @@ async function setTheme(
 
 function updateDifficultyUI() {
     document
-        .querySelectorAll(".setting-difficulty-btn")
+        .querySelectorAll(".target-score-btn")
         .forEach(btn => {
             btn.classList.toggle(
                 "active",
@@ -1762,7 +1820,81 @@ function updateStatisticsUI() {
         winRateElement.textContent =
             `${winRate}%`;
     }
+
+    const matches2048Elem =
+        document.getElementById("matches-2048");
+
+    const bestScore2048Elem =
+        document.getElementById("best-score-2048");
+
+    const undosUsed2048Elem =
+        document.getElementById("undos-used-2048");
+
+    if (matches2048Elem) {
+        matches2048Elem.textContent =
+            statistics.matches2048;
+    }
+
+    if (bestScore2048Elem) {
+        bestScore2048Elem.textContent =
+            statistics.maxScore2048;
+    }
+
+    if (undosUsed2048Elem) {
+        undosUsed2048Elem.textContent =
+            statistics.undosUsed2048;
+    }
 }
+
+
+function setActiveProfileGame(game) {
+    activeProfileGame = game;
+
+    document
+        .querySelectorAll(".profile-game-tab")
+        .forEach(btn => {
+            const isActive =
+                btn.dataset.profileGame === game;
+
+            btn.classList.toggle("active", isActive);
+            btn.setAttribute(
+                "aria-selected",
+                isActive ? "true" : "false"
+            );
+        });
+
+    const rpsBlock =
+        document.getElementById("rps-stats-block");
+
+    const game2048Block =
+        document.getElementById("game2048-stats-block");
+
+    if (rpsBlock) {
+        rpsBlock.classList.toggle(
+            "active",
+            game === "rps"
+        );
+    }
+
+    if (game2048Block) {
+        game2048Block.classList.toggle(
+            "active",
+            game === "2048"
+        );
+    }
+}
+
+
+document
+    .querySelectorAll(".profile-game-tab")
+    .forEach(btn => {
+        btn.addEventListener(
+            "click",
+            () => setActiveProfileGame(
+                btn.dataset.profileGame
+            )
+        );
+    });
 
 document.querySelectorAll("button").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -1934,7 +2066,7 @@ document
 
 
 document
-    .querySelectorAll(".setting-difficulty-btn")
+    .querySelectorAll(".target-score-btn")
     .forEach(btn => {
         btn.addEventListener(
             "click",
@@ -2111,16 +2243,29 @@ if (resetStatisticsBtn) {
                 return;
             }
 
+            const isRps =
+                activeProfileGame === "rps";
+
+            const endpoint =
+                isRps
+                    ? "/api/statistics"
+                    : "/api/statistics/2048";
+
+            const confirmMessage =
+                translations[currentLanguage][
+                isRps
+                    ? "confirmResetStats"
+                    : "confirmResetStats2048"
+                ];
+
             openConfirmModal(
-                translations[
-                    currentLanguage
-                ].confirmResetStats,
+                confirmMessage,
 
                 async () => {
                     try {
                         const response =
                             await fetch(
-                                "/api/statistics",
+                                endpoint,
                                 {
                                     method: "DELETE"
                                 }
@@ -2137,8 +2282,19 @@ if (resetStatisticsBtn) {
                             return;
                         }
 
-                        statistics =
-                            emptyStatistics();
+                        if (isRps) {
+                            statistics.gamesPlayed = 0;
+                            statistics.wins = 0;
+                            statistics.losses = 0;
+                            statistics.draws = 0;
+                            statistics.rock = 0;
+                            statistics.paper = 0;
+                            statistics.scissors = 0;
+                        } else {
+                            statistics.matches2048 = 0;
+                            statistics.maxScore2048 = 0;
+                            statistics.undosUsed2048 = 0;
+                        }
 
                         updateStatisticsUI();
 
@@ -2231,29 +2387,7 @@ if (creatorModalBtn) {
     );
 }
 
-
-const savedTheme =
-    localStorage.getItem("gameTheme") ||
-    "pink-brown";
-
-const savedLanguage =
-    localStorage.getItem("gameLanguage") ||
-    "hu";
-
-setTheme(savedTheme, false);
-
-setDifficulty(
-    currentDifficulty,
-    false
-);
-
-setLanguage(savedLanguage);
-
-checkLogin();
-
-/* =========================================
-   LIZUGAMES - 2048 GAME
-   ========================================= */
+/*2048*/
 
 let game2048Board = [];
 let game2048Score = 0;
@@ -2266,6 +2400,12 @@ let game2048GameOver = false;
 
 let game2048TouchStartX = 0;
 let game2048TouchStartY = 0;
+
+let game2048Active = false;
+let game2048History = [];
+let game2048UndosRemaining = 0;
+let game2048MergedCells = new Set();
+let game2048NewCell = null;
 
 
 const game2048BoardElement =
@@ -2289,6 +2429,9 @@ const game2048OverlayTitle =
 const game2048OverlayText =
     document.getElementById("2048-overlay-text");
 
+const game2048UndoButton =
+    document.getElementById("2048-undo-btn");
+
 
 function create2048EmptyBoard() {
 
@@ -2300,13 +2443,159 @@ function create2048EmptyBoard() {
 }
 
 
-function start2048Game() {
+async function finish2048Match() {
+
+    if (!game2048Active || !currentUser) {
+        game2048Active = false;
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            "/api/game2048/finish",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    score: game2048Score
+                })
+            }
+        );
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (parseError) {
+            console.error(
+                "A /api/game2048/finish válasza nem érvényes JSON:",
+                parseError
+            );
+        }
+
+        if (!response.ok) {
+            console.error(
+                `A 2048 meccs lezárása sikertelen (státusz: ${response.status}):`,
+                data && data.error
+            );
+        } else if (data && data.statistics) {
+            applyStatistics(data.statistics);
+        }
+
+    } catch (error) {
+        console.error(
+            "Hálózati hiba a 2048 meccs lezárásakor:",
+            error
+        );
+
+    } finally {
+        game2048Active = false;
+    }
+
+}
+
+
+function update2048UndoUI() {
+
+    if (!game2048UndoButton) {
+        return;
+    }
+
+    const label =
+        translations[currentLanguage].undo2048;
+
+    game2048UndoButton.textContent =
+        `${label} (${game2048UndosRemaining})`;
+
+    game2048UndoButton.disabled =
+        game2048UndosRemaining <= 0 ||
+        !game2048History.length;
+
+}
+
+
+async function start2048Game() {
+
+    if (!currentUser) {
+        openModal("profile-modal");
+        return;
+    }
+
+    await finish2048Match();
+
+    try {
+        const response = await fetch(
+            "/api/game2048/start",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (parseError) {
+            console.error(
+                "A /api/game2048/start válasza nem érvényes JSON:",
+                parseError
+            );
+        }
+
+        if (!response.ok) {
+            console.error(
+                `A 2048 jatek inditasa sikertelen (statusz: ${response.status}):`,
+                data && data.error
+            );
+
+            if (response.status === 401) {
+                currentUser = null;
+                updateProfileUI();
+                openModal("profile-modal");
+            } else {
+                set2048Message(
+                    translations[currentLanguage].game2048ServerError
+                );
+            }
+
+            return;
+        }
+
+        if (!data) {
+            set2048Message(
+                translations[currentLanguage].game2048ServerError
+            );
+            return;
+        }
+
+        game2048UndosRemaining =
+            Number(data.undosRemaining) || 0;
+
+        game2048Active = true;
+
+    } catch (error) {
+        console.error(
+            "Hálózati hiba a 2048 játék indításakor:",
+            error
+        );
+        set2048Message(
+            translations[currentLanguage].game2048NetworkError
+        );
+        return;
+    }
 
     game2048Board = create2048EmptyBoard();
 
     game2048Score = 0;
     game2048Won = false;
     game2048GameOver = false;
+
+    game2048History = [];
+    game2048MergedCells = new Set();
+    game2048NewCell = null;
 
     hide2048Overlay();
 
@@ -2315,12 +2604,14 @@ function start2048Game() {
 
     update2048Score();
     render2048Board();
+    update2048UndoUI();
 
     set2048Message(
         translations[currentLanguage].game2048Ready
     );
 
 }
+
 
 
 function add2048RandomTile() {
@@ -2361,6 +2652,11 @@ function add2048RandomTile() {
     game2048Board[randomCell.row][randomCell.col] =
         Math.random() < 0.9 ? 2 : 4;
 
+    game2048NewCell = {
+        row: randomCell.row,
+        col: randomCell.col
+    };
+
 }
 
 
@@ -2390,6 +2686,22 @@ function render2048Board() {
 
                 cell.textContent = value;
                 cell.dataset.value = value;
+
+                if (
+                    game2048NewCell &&
+                    game2048NewCell.row === row &&
+                    game2048NewCell.col === col
+                ) {
+                    cell.classList.add("tile-new");
+                }
+
+                if (
+                    game2048MergedCells.has(
+                        `${row}-${col}`
+                    )
+                ) {
+                    cell.classList.add("tile-merged");
+                }
 
             }
 
@@ -2456,6 +2768,11 @@ function move2048(direction) {
     const previousBoard =
         JSON.stringify(game2048Board);
 
+    const previousScore = game2048Score;
+    const previousWon = game2048Won;
+
+    game2048MergedCells = new Set();
+
 
     if (direction === "left") {
         move2048Left();
@@ -2480,6 +2797,8 @@ function move2048(direction) {
 
     if (previousBoard === newBoard) {
 
+        game2048Score = previousScore;
+
         if (!can2048Move()) {
             end2048Game(false);
         }
@@ -2488,10 +2807,22 @@ function move2048(direction) {
     }
 
 
+    game2048History.push({
+        board: JSON.parse(previousBoard),
+        score: previousScore,
+        won: previousWon
+    });
+
+    if (game2048History.length > 50) {
+        game2048History.shift();
+    }
+
+    game2048NewCell = null;
     add2048RandomTile();
 
     update2048Score();
     render2048Board();
+    update2048UndoUI();
 
 
     if (!game2048Won && has2048Won()) {
@@ -2523,6 +2854,7 @@ function merge2048Line(line) {
 
 
     const merged = [];
+    const mergedFlags = [];
     let gainedScore = 0;
 
 
@@ -2541,6 +2873,7 @@ function merge2048Line(line) {
                 filtered[index] * 2;
 
             merged.push(mergedValue);
+            mergedFlags.push(true);
 
             gainedScore += mergedValue;
 
@@ -2549,6 +2882,7 @@ function merge2048Line(line) {
         } else {
 
             merged.push(filtered[index]);
+            mergedFlags.push(false);
 
         }
 
@@ -2557,13 +2891,17 @@ function merge2048Line(line) {
 
     while (merged.length < 4) {
         merged.push(0);
+        mergedFlags.push(false);
     }
 
 
     game2048Score += gainedScore;
 
 
-    return merged;
+    return {
+        merged,
+        mergedFlags
+    };
 
 }
 
@@ -2572,10 +2910,22 @@ function move2048Left() {
 
     for (let row = 0; row < 4; row++) {
 
-        game2048Board[row] =
+        const result =
             merge2048Line(
                 game2048Board[row]
             );
+
+        game2048Board[row] = result.merged;
+
+        for (let col = 0; col < 4; col++) {
+
+            if (result.mergedFlags[col]) {
+                game2048MergedCells.add(
+                    `${row}-${col}`
+                );
+            }
+
+        }
 
     }
 
@@ -2589,9 +2939,26 @@ function move2048Right() {
         const reversed =
             [...game2048Board[row]].reverse();
 
-        game2048Board[row] =
-            merge2048Line(reversed)
-                .reverse();
+        const result =
+            merge2048Line(reversed);
+
+        const mergedRow =
+            [...result.merged].reverse();
+
+        const flagsRow =
+            [...result.mergedFlags].reverse();
+
+        game2048Board[row] = mergedRow;
+
+        for (let col = 0; col < 4; col++) {
+
+            if (flagsRow[col]) {
+                game2048MergedCells.add(
+                    `${row}-${col}`
+                );
+            }
+
+        }
 
     }
 
@@ -2613,14 +2980,20 @@ function move2048Up() {
         }
 
 
-        const merged =
+        const result =
             merge2048Line(column);
 
 
         for (let row = 0; row < 4; row++) {
 
             game2048Board[row][col] =
-                merged[row];
+                result.merged[row];
+
+            if (result.mergedFlags[row]) {
+                game2048MergedCells.add(
+                    `${row}-${col}`
+                );
+            }
 
         }
 
@@ -2644,16 +3017,28 @@ function move2048Down() {
         }
 
 
-        const merged =
+        const result =
             merge2048Line(
-                column.reverse()
-            ).reverse();
+                [...column].reverse()
+            );
+
+        const finalCol =
+            [...result.merged].reverse();
+
+        const finalFlags =
+            [...result.mergedFlags].reverse();
 
 
         for (let row = 0; row < 4; row++) {
 
             game2048Board[row][col] =
-                merged[row];
+                finalCol[row];
+
+            if (finalFlags[row]) {
+                game2048MergedCells.add(
+                    `${row}-${col}`
+                );
+            }
 
         }
 
@@ -2732,6 +3117,105 @@ function can2048Move() {
 }
 
 
+async function undo2048() {
+
+    if (
+        !currentUser ||
+        !game2048Active ||
+        game2048UndosRemaining <= 0 ||
+        !game2048History.length
+    ) {
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            "/api/game2048/undo",
+            {
+                method: "POST"
+            }
+        );
+
+        let data = null;
+        try {
+            data = await response.json();
+        } catch (parseError) {
+            console.error(
+                "A /api/game2048/undo válasza nem érvényes JSON:",
+                parseError
+            );
+        }
+
+        if (!response.ok) {
+            console.error(
+                `A visszavonás sikertelen (státusz: ${response.status}):`,
+                data && data.error
+            );
+
+            if (response.status === 401) {
+                currentUser = null;
+                updateProfileUI();
+                openModal("profile-modal");
+            } else {
+                set2048Message(
+                    translations[currentLanguage].game2048ServerError
+                );
+            }
+
+            return;
+        }
+
+        if (!data) {
+            set2048Message(
+                translations[currentLanguage].game2048ServerError
+            );
+            return;
+        }
+
+        const previous =
+            game2048History.pop();
+
+        game2048Board = previous.board;
+        game2048Score = previous.score;
+        game2048Won = previous.won;
+        game2048GameOver = false;
+
+        game2048UndosRemaining =
+            Number(data.undosRemaining) || 0;
+
+        game2048MergedCells = new Set();
+        game2048NewCell = null;
+
+        hide2048Overlay();
+        update2048Score();
+        render2048Board();
+        update2048UndoUI();
+
+        set2048Message(
+            translations[currentLanguage].game2048Ready
+        );
+
+        if (data.statistics) {
+            applyStatistics(data.statistics);
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
+
+if (game2048UndoButton) {
+
+    game2048UndoButton.addEventListener(
+        "click",
+        undo2048
+    );
+
+}
+
+
 function end2048Game(won) {
 
     game2048GameOver = true;
@@ -2745,6 +3229,8 @@ function end2048Game(won) {
         );
 
     } else {
+
+        finish2048Match();
 
         show2048Overlay(
             translations[currentLanguage].game2048Over,
@@ -2788,10 +3274,6 @@ function hide2048Overlay() {
 }
 
 
-/* =========================================
-   2048 BILLENTYŰZET
-   ========================================= */
-
 document.addEventListener(
     "keydown",
     event => {
@@ -2832,9 +3314,6 @@ document.addEventListener(
 );
 
 
-/* =========================================
-   2048 MOBIL SWIPE
-   ========================================= */
 
 if (game2048BoardElement) {
 
@@ -2853,6 +3332,15 @@ if (game2048BoardElement) {
 
         },
         { passive: true }
+    );
+
+
+    game2048BoardElement.addEventListener(
+        "touchmove",
+        event => {
+            event.preventDefault();
+        },
+        { passive: false }
     );
 
 
@@ -2913,10 +3401,6 @@ if (game2048BoardElement) {
 }
 
 
-/* =========================================
-   2048 GOMBOK
-   ========================================= */
-
 const game2048Button =
     document.getElementById("2048-game-btn");
 
@@ -2925,6 +3409,11 @@ if (game2048Button) {
     game2048Button.addEventListener(
         "click",
         () => {
+
+            if (!currentUser) {
+                openModal("profile-modal");
+                return;
+            }
 
             showScreen(
                 "game-2048-screen"
@@ -2947,6 +3436,7 @@ if (game2048MenuButton) {
         "click",
         () => {
 
+            finish2048Match();
             hide2048Overlay();
 
             showScreen(
@@ -3000,6 +3490,7 @@ if (game2048OverlayMenu) {
         "click",
         () => {
 
+            finish2048Match();
             hide2048Overlay();
 
             showScreen(
@@ -3013,3 +3504,23 @@ if (game2048OverlayMenu) {
 
 
 update2048Score();
+update2048UndoUI();
+
+const savedTheme =
+    localStorage.getItem("gameTheme") ||
+    "pink-brown";
+
+const savedLanguage =
+    localStorage.getItem("gameLanguage") ||
+    "hu";
+
+setTheme(savedTheme, false);
+
+setDifficulty(
+    currentDifficulty,
+    false
+);
+
+setLanguage(savedLanguage);
+
+checkLogin();
