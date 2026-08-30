@@ -25,9 +25,10 @@
 
                 <button id="settings-btn" class="icon-btn" title="Beállítások" aria-label="Beállítások">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-settings-icon lucide-settings">
                         <path
-                            d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0-0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+                            d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
                         <circle cx="12" cy="12" r="3" />
                     </svg>
                 </button>
@@ -50,6 +51,7 @@
                         <path d="M12 16h.01" />
                     </svg>
                 </button>
+
             </div>
 
             <div class="logo">
@@ -66,28 +68,19 @@
 
             <div class="games-grid">
 
-
                 <button id="rps-game-btn" class="game-card">
 
                     <div class="game-card-icon">
-
                         <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-
                             <path
                                 d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z" />
-
                             <path d="M11.99 22 14 12l7.822 3.184" />
-
                             <path d="M14 12 8.47 2.302" />
-
                         </svg>
-
                     </div>
 
-
                     <div class="game-card-content">
-
                         <h2 data-i18n="rpsTitle">
                             Kő - Papír - Olló
                         </h2>
@@ -95,9 +88,7 @@
                         <p data-i18n="rpsDescription">
                             Érd el elsőként a célpontszámot!
                         </p>
-
                     </div>
-
 
                     <span class="game-card-arrow">
                         →
@@ -108,16 +99,12 @@
                 <button id="2048-game-btn" class="game-card">
 
                     <div class="game-card-icon">
-
                         <span class="game-2048-icon">
                             2048
                         </span>
-
                     </div>
 
-
                     <div class="game-card-content">
-
                         <h2 data-i18n="game2048Title">
                             2048
                         </h2>
@@ -125,9 +112,7 @@
                         <p data-i18n="game2048Description">
                             Rakd össze a 2048-as csempét!
                         </p>
-
                     </div>
-
 
                     <span class="game-card-arrow">
                         →
@@ -135,32 +120,19 @@
 
                 </button>
 
-
-                <button id="tictactoe-game-btn" class="game-card game-card-disabled" disabled aria-disabled="true">
-
-                    <span class="game-card-coming-soon" data-i18n="comingSoon">
-                        HAMAROSAN
-                    </span>
-
+                <button id="tictactoe-game-btn" class="game-card">
 
                     <div class="game-card-icon">
-
                         <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-
                             <path d="M8 2v20" />
                             <path d="M16 2v20" />
-
                             <path d="M2 8h20" />
                             <path d="M2 16h20" />
-
                         </svg>
-
                     </div>
 
-
-                    <div class="game-card-content" data-i18n="tictactoeTitle">
-
+                    <div class="game-card-content">
                         <h2 data-i18n="tictactoeTitle">
                             Tic-Tac-Toe
                         </h2>
@@ -168,9 +140,7 @@
                         <p data-i18n="tictactoeDescription">
                             3 a sorban.
                         </p>
-
                     </div>
-
 
                     <span class="game-card-arrow">
                         →
@@ -178,34 +148,24 @@
 
                 </button>
 
-
                 <button id="sudoku-game-btn" class="game-card game-card-disabled" disabled aria-disabled="true">
 
                     <span class="game-card-coming-soon" data-i18n="comingSoon">
                         HAMAROSAN
                     </span>
 
-
                     <div class="game-card-icon">
-
                         <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-
                             <rect x="3" y="3" width="18" height="18" rx="2" />
-
                             <path d="M3 9h18" />
                             <path d="M3 15h18" />
-
                             <path d="M9 3v18" />
                             <path d="M15 3v18" />
-
                         </svg>
-
                     </div>
 
-
-                    <div class="game-card-content" data-i18n="sudokuTitle">
-
+                    <div class="game-card-content">
                         <h2 data-i18n="sudokuTitle">
                             Sudoku
                         </h2>
@@ -213,9 +173,7 @@
                         <p data-i18n="sudokuDescription">
                             A klasszikus Sudoku játék.
                         </p>
-
                     </div>
-
 
                     <span class="game-card-arrow">
                         →
@@ -228,23 +186,41 @@
         </section>
 
         <section id="game-screen" class="screen">
+
             <header class="game-header">
+
                 <h1 data-i18n="title">
                     Kő - Papír - Olló
                 </h1>
 
                 <div class="top-controls-container">
+
                     <div class="target-score-selector">
-                        <span class="target-score-selector-label" data-i18n="targetScoreLabel">Cél:</span>
+
+                        <span class="target-score-selector-label" data-i18n="targetScoreLabel">
+                            Cél:
+                        </span>
 
                         <div class="target-score-buttons">
-                            <button class="target-score-btn" data-difficulty="3">3</button>
-                            <button class="target-score-btn" data-difficulty="5">5</button>
-                            <button class="target-score-btn" data-difficulty="10">10</button>
+
+                            <button class="target-score-btn" data-difficulty="3">
+                                3
+                            </button>
+
+                            <button class="target-score-btn" data-difficulty="5">
+                                5
+                            </button>
+
+                            <button class="target-score-btn" data-difficulty="10">
+                                10
+                            </button>
+
                         </div>
+
                     </div>
 
                     <div class="game-header-buttons">
+
                         <button id="menu-game-btn" class="reset-btn" data-i18n="mainMenu">
                             FŐMENÜ
                         </button>
@@ -252,56 +228,85 @@
                         <button id="reset-btn" class="reset-btn" data-i18n="reset">
                             ÚJ JÁTÉK
                         </button>
+
                     </div>
+
                 </div>
+
             </header>
 
             <div class="scoreboard">
+
                 <div class="score-box">
+
                     <span class="score-label" data-i18n="you">
                         JÁTÉKOS
                     </span>
-                    <strong id="player-score" class="score-num">0</strong>
+
+                    <strong id="player-score" class="score-num">
+                        0
+                    </strong>
+
                 </div>
 
-                <div class="score-divider">—</div>
+                <div class="score-divider">
+                    —
+                </div>
 
                 <div class="score-box">
+
                     <span class="score-label" data-i18n="opponent">
                         ELLENFÉL
                     </span>
-                    <strong id="computer-score" class="score-num">0</strong>
+
+                    <strong id="computer-score" class="score-num">
+                        0
+                    </strong>
+
                 </div>
+
             </div>
 
             <div id="target-score-info" class="target-score-info"></div>
 
             <div class="battle">
+
                 <div class="player-card card">
+
                     <span class="card-title" data-i18n="you">
                         JÁTÉKOS
                     </span>
 
-                    <div id="player-choice" class="choice-display">?</div>
+                    <div id="player-choice" class="choice-display">
+                        ?
+                    </div>
 
                     <span id="player-choice-name" class="choice-name" data-i18n="waiting">
                         Várakozás...
                     </span>
+
                 </div>
 
-                <div class="vs">VS</div>
+                <div class="vs">
+                    VS
+                </div>
 
                 <div class="computer-card card">
+
                     <span class="card-title" data-i18n="opponent">
                         ELLENFÉL
                     </span>
 
-                    <div id="computer-choice" class="choice-display">?</div>
+                    <div id="computer-choice" class="choice-display">
+                        ?
+                    </div>
 
                     <span id="computer-choice-name" class="choice-name" data-i18n="waiting">
                         Várakozás...
                     </span>
+
                 </div>
+
             </div>
 
             <div id="result" class="result" data-i18n="chooseWeapon">
@@ -311,7 +316,9 @@
             <div id="round-status"></div>
 
             <div class="choices">
+
                 <button class="choice-btn" data-choice="rock" aria-label="Kő">
+
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path
@@ -319,20 +326,24 @@
                         <path d="M11.99 22 14 12l7.822 3.184" />
                         <path d="M14 12 8.47 2.302" />
                     </svg>
+
                 </button>
 
                 <button class="choice-btn" data-choice="paper" aria-label="Papír">
+
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M15 12h-5" />
                         <path d="M15 8h-5" />
                         <path d="M19 17V5a2 2 0 0 0-2-2H4" />
                         <path
-                            d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
+                            d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a2 2 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
                     </svg>
+
                 </button>
 
                 <button class="choice-btn" data-choice="scissors" aria-label="Olló">
+
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="6" cy="6" r="3" />
@@ -341,8 +352,11 @@
                         <circle cx="6" cy="18" r="3" />
                         <path d="M14.8 14.8 20 20" />
                     </svg>
+
                 </button>
+
             </div>
+
         </section>
 
         <section id="game-2048-screen" class="screen">
@@ -353,37 +367,49 @@
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-
                         <path d="M15 18l-6-6 6-6" />
-
                     </svg>
 
                 </button>
 
-
-                <h1>2048</h1>
-
+                <h1>
+                    2048
+                </h1>
 
                 <div class="game-2048-score-container">
 
                     <div class="game-2048-score-box">
-                        <span data-i18n="score2048">PONTSZÁM</span>
-                        <strong id="2048-score">0</strong>
+
+                        <span data-i18n="score2048">
+                            PONTSZÁM
+                        </span>
+
+                        <strong id="2048-score">
+                            0
+                        </strong>
+
                     </div>
 
                     <div class="game-2048-score-box">
-                        <span data-i18n="best2048">REKORD</span>
-                        <strong id="2048-best">0</strong>
+
+                        <span data-i18n="best2048">
+                            REKORD
+                        </span>
+
+                        <strong id="2048-best">
+                            0
+                        </strong>
+
                     </div>
 
                 </div>
 
             </header>
 
-
             <div class="game-2048-intro">
 
                 <div>
+
                     <h2 data-i18n="game2048Title">
                         2048
                     </h2>
@@ -391,9 +417,11 @@
                     <p data-i18n="game2048Instructions">
                         Kombináld az azonos számokat, és érd el a 2048-at!
                     </p>
+
                 </div>
 
                 <div class="game-2048-actions">
+
                     <button id="2048-undo-btn" class="secondary-btn" data-i18n="undo2048">
                         VISSZAVONÁS
                     </button>
@@ -401,19 +429,17 @@
                     <button id="2048-new-game-btn" class="primary-btn" data-i18n="new2048Game">
                         ÚJ JÁTÉK
                     </button>
+
                 </div>
 
             </div>
 
-
             <div id="2048-board" class="game-2048-board" aria-label="2048 game board">
             </div>
-
 
             <p id="2048-message" class="game-2048-message" data-i18n="game2048Ready">
                 Használd a nyilakat a számok mozgatásához!
             </p>
-
 
             <div id="2048-overlay" class="game-2048-overlay">
 
@@ -441,20 +467,151 @@
 
         </section>
 
+        <section id="tictactoe-screen" class="screen">
+
+            <header class="game-header">
+
+                <h1 data-i18n="tictactoeTitle">
+                    Tic-Tac-Toe
+                </h1>
+
+                <div class="top-controls-container">
+
+                    <div class="target-score-selector">
+
+                        <span class="target-score-selector-label" data-i18n="boardSizeLabel">
+                            Pálya:
+                        </span>
+
+                        <div class="target-score-buttons">
+
+                            <button id="tictactoe-3x3-btn" class="target-score-btn active">
+                                3 × 3
+                            </button>
+
+                            <button id="tictactoe-5x5-btn" class="target-score-btn">
+                                5 × 5
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="game-header-buttons">
+
+                        <button id="tictactoe-menu-btn" class="reset-btn" data-i18n="mainMenu">
+                            FŐMENÜ
+                        </button>
+
+                        <button id="tictactoe-new-game-btn" class="reset-btn" data-i18n="reset">
+                            ÚJ JÁTÉK
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <div class="tictactoe-info">
+
+                <div class="tictactoe-player-info">
+
+                    <span class="card-title" data-i18n="you">
+                        JÁTÉKOS
+                    </span>
+
+                    <strong id="tictactoe-player-symbol">
+                        X
+                    </strong>
+
+                </div>
+
+                <div class="vs">
+                    VS
+                </div>
+
+                <div class="tictactoe-player-info">
+
+                    <span class="card-title" data-i18n="opponent">
+                        ELLENFÉL
+                    </span>
+
+                    <strong id="tictactoe-computer-symbol">
+                        O
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <div id="tictactoe-message" class="result">
+                Te következel!
+            </div>
+
+            <div id="tictactoe-board" class="tictactoe-board" aria-label="Tic-Tac-Toe játéktábla">
+            </div>
+
+        </section>
+
+        <section id="tictactoe-end-screen" class="screen">
+
+            <div class="end-icon">
+            </div>
+
+            <h1 id="tictactoe-end-title">
+                NYERTÉL!
+            </h1>
+
+            <p id="tictactoe-end-message">
+                Gratulálunk!
+            </p>
+
+            <div class="end-buttons">
+
+                <button id="tictactoe-new-game-end-btn" class="primary-btn" data-i18n="playAgain">
+                    ÚJ JÁTÉK
+                </button>
+
+                <button id="tictactoe-menu-end-btn" class="secondary-btn" data-i18n="mainMenu">
+                    FŐMENÜ
+                </button>
+
+            </div>
+
+        </section>
+
         <section id="end-screen" class="screen">
-            <div id="end-icon" class="end-icon"></div>
 
-            <h1 id="end-title">NYERTÉL!</h1>
+            <div id="end-icon" class="end-icon">
+            </div>
 
-            <p id="end-message">Gratulálunk!</p>
+            <h1 id="end-title">
+                NYERTÉL!
+            </h1>
+
+            <p id="end-message">
+                Gratulálunk!
+            </p>
 
             <div class="final-score">
-                <span id="final-player-score">0</span>
-                <strong>—</strong>
-                <span id="final-computer-score">0</span>
+
+                <span id="final-player-score">
+                    0
+                </span>
+
+                <strong>
+                    —
+                </strong>
+
+                <span id="final-computer-score">
+                    0
+                </span>
+
             </div>
 
             <div class="end-buttons">
+
                 <button id="play-again-btn" class="primary-btn" data-i18n="playAgain">
                     ÚJ JÁTÉK
                 </button>
@@ -462,19 +619,27 @@
                 <button id="menu-btn" class="secondary-btn" data-i18n="mainMenu">
                     FŐMENÜ
                 </button>
+
             </div>
+
         </section>
 
         <div id="profile-modal" class="modal">
+
             <div class="modal-content">
-                <button class="modal-close" data-close="profile-modal">×</button>
+
+                <button class="modal-close" data-close="profile-modal">
+                    ×
+                </button>
 
                 <h2 data-i18n="playerProfile">
                     JÁTÉKOS PROFIL
                 </h2>
 
                 <div id="auth-forms">
+
                     <div class="auth-inputs">
+
                         <input type="text" id="username-input" placeholder="Felhasználónév" maxlength="20"
                             autocomplete="username">
 
@@ -482,8 +647,11 @@
                             autocomplete="current-password">
 
                         <div class="gender-selection">
+
                             <label class="gender-btn">
+
                                 <input type="radio" name="gender" value="girl">
+
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="gender-icon">
@@ -491,11 +659,17 @@
                                     <path d="M9 19h6" />
                                     <circle cx="12" cy="9" r="6" />
                                 </svg>
-                                <span data-i18n="girl">Lány</span>
+
+                                <span data-i18n="girl">
+                                    Lány
+                                </span>
+
                             </label>
 
                             <label class="gender-btn">
+
                                 <input type="radio" name="gender" value="boy">
+
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="gender-icon">
@@ -503,19 +677,30 @@
                                     <path d="m21 3-6.75 6.75" />
                                     <circle cx="10" cy="14" r="6" />
                                 </svg>
-                                <span data-i18n="boy">Fiú</span>
+
+                                <span data-i18n="boy">
+                                    Fiú
+                                </span>
+
                             </label>
 
                             <label class="gender-btn">
+
                                 <input type="radio" name="gender" value="" checked>
+
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="gender-icon">
                                     <circle cx="12" cy="12" r="9" />
                                     <line x1="7" y1="12" x2="17" y2="12" />
                                 </svg>
-                                <span data-i18n="genderNone">Nem adom meg</span>
+
+                                <span data-i18n="genderNone">
+                                    Nem adom meg
+                                </span>
+
                             </label>
+
                         </div>
 
                         <p class="field-note" data-i18n="genderOptionalNote">
@@ -523,23 +708,31 @@
                         </p>
 
                         <div class="privacy-consent-row">
+
                             <label class="privacy-checkbox-label">
+
                                 <input type="checkbox" id="privacy-checkbox">
+
                                 <span data-i18n="privacyCheckboxLabel">
                                     Elolvastam és tudomásul veszem az adatvédelmi tájékoztatót.
                                 </span>
+
                             </label>
 
                             <button type="button" id="privacy-checkbox-link" class="privacy-link-btn"
                                 data-i18n="privacyCheckboxLink">
                                 Adatvédelmi tájékoztató megtekintése
                             </button>
+
                         </div>
 
-                        <p id="auth-error" class="error-text"></p>
+                        <p id="auth-error" class="error-text">
+                        </p>
+
                     </div>
 
                     <div class="auth-buttons">
+
                         <button id="login-btn" class="primary-btn" data-i18n="login">
                             BEJELENTKEZÉS
                         </button>
@@ -547,17 +740,28 @@
                         <button id="register-btn" class="secondary-btn" data-i18n="register">
                             REGISZTRÁCIÓ
                         </button>
+
                     </div>
+
                 </div>
 
                 <div id="logged-in-view" style="display: none;">
+
                     <div class="profile-header-info">
+
                         <div>
-                            <span data-i18n="loggedInAs">Bejelentkezve:</span>
-                            <strong id="current-username"></strong>
+
+                            <span data-i18n="loggedInAs">
+                                Bejelentkezve:
+                            </span>
+
+                            <strong id="current-username">
+                            </strong>
+
                         </div>
 
                         <div class="join-date-row">
+
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="ui-icon-svg">
@@ -573,12 +777,20 @@
                                 <path d="M16 17h.01" />
                             </svg>
 
-                            <span data-i18n="joinedDate">Csatlakozott:</span>
-                            <span id="user-join-date">-</span>
+                            <span data-i18n="joinedDate">
+                                Csatlakozott:
+                            </span>
+
+                            <span id="user-join-date">
+                                -
+                            </span>
+
                         </div>
+
                     </div>
 
                     <div class="profile-game-switch" role="tablist">
+
                         <button type="button" class="profile-game-tab active" data-profile-game="rps"
                             data-i18n="rpsTitle" role="tab" aria-selected="true">
                             Kő - Papír - Olló
@@ -588,76 +800,167 @@
                             data-i18n="game2048Title" role="tab" aria-selected="false">
                             2048
                         </button>
+
                     </div>
 
                     <div id="rps-stats-block" class="profile-stats-block active">
+
                         <div class="statistics-grid">
+
                             <div class="stat-card">
-                                <span data-i18n="gamesPlayed">LEJÁTSZOTT</span>
-                                <strong id="games-played">0</strong>
+
+                                <span data-i18n="gamesPlayed">
+                                    LEJÁTSZOTT
+                                </span>
+
+                                <strong id="games-played">
+                                    0
+                                </strong>
+
                             </div>
 
                             <div class="stat-card">
-                                <span data-i18n="wins">GYŐZELEM</span>
-                                <strong id="total-wins">0</strong>
+
+                                <span data-i18n="wins">
+                                    GYŐZELEM
+                                </span>
+
+                                <strong id="total-wins">
+                                    0
+                                </strong>
+
                             </div>
 
                             <div class="stat-card">
-                                <span data-i18n="losses">VERESÉG</span>
-                                <strong id="total-losses">0</strong>
+
+                                <span data-i18n="losses">
+                                    VERESÉG
+                                </span>
+
+                                <strong id="total-losses">
+                                    0
+                                </strong>
+
                             </div>
 
                             <div class="stat-card">
-                                <span data-i18n="draws">DÖNTETLEN</span>
-                                <strong id="total-draws">0</strong>
+
+                                <span data-i18n="draws">
+                                    DÖNTETLEN
+                                </span>
+
+                                <strong id="total-draws">
+                                    0
+                                </strong>
+
                             </div>
+
                         </div>
 
                         <div class="win-rate">
-                            <span data-i18n="winRate">GYŐZELMI ARÁNY</span>
-                            <strong id="win-rate">0%</strong>
+
+                            <span data-i18n="winRate">
+                                GYŐZELMI ARÁNY
+                            </span>
+
+                            <strong id="win-rate">
+                                0%
+                            </strong>
+
                         </div>
 
                         <div class="choice-statistics">
-                            <h3 data-i18n="favoriteChoice">LEGTÖBBET HASZNÁLT</h3>
+
+                            <h3 data-i18n="favoriteChoice">
+                                LEGTÖBBET HASZNÁLT
+                            </h3>
 
                             <div class="choice-stat">
-                                <span data-i18n="rock">KŐ</span>
-                                <strong id="rock-used">0</strong>
+
+                                <span data-i18n="rock">
+                                    KŐ
+                                </span>
+
+                                <strong id="rock-used">
+                                    0
+                                </strong>
+
                             </div>
 
                             <div class="choice-stat">
-                                <span data-i18n="paper">PAPÍR</span>
-                                <strong id="paper-used">0</strong>
+
+                                <span data-i18n="paper">
+                                    PAPÍR
+                                </span>
+
+                                <strong id="paper-used">
+                                    0
+                                </strong>
+
                             </div>
 
                             <div class="choice-stat">
-                                <span data-i18n="scissors">OLLÓ</span>
-                                <strong id="scissors-used">0</strong>
+
+                                <span data-i18n="scissors">
+                                    OLLÓ
+                                </span>
+
+                                <strong id="scissors-used">
+                                    0
+                                </strong>
+
                             </div>
+
                         </div>
+
                     </div>
 
                     <div id="game2048-stats-block" class="profile-stats-block">
+
                         <div class="statistics-grid">
+
                             <div class="stat-card">
-                                <span data-i18n="matches2048">JÁTSZOTT MECCSEK</span>
-                                <strong id="matches-2048">0</strong>
+
+                                <span data-i18n="matches2048">
+                                    JÁTSZOTT MECCSEK
+                                </span>
+
+                                <strong id="matches-2048">
+                                    0
+                                </strong>
+
                             </div>
 
                             <div class="stat-card">
-                                <span data-i18n="bestScore2048Stat">LEGJOBB PONTSZÁM</span>
-                                <strong id="best-score-2048">0</strong>
+
+                                <span data-i18n="bestScore2048Stat">
+                                    LEGJOBB PONTSZÁM
+                                </span>
+
+                                <strong id="best-score-2048">
+                                    0
+                                </strong>
+
                             </div>
 
                             <div class="stat-card">
-                                <span data-i18n="undosUsed2048">HASZNÁLT VISSZAVONÁSOK</span>
-                                <strong id="undos-used-2048">0</strong>
+
+                                <span data-i18n="undosUsed2048">
+                                    HASZNÁLT VISSZAVONÁSOK
+                                </span>
+
+                                <strong id="undos-used-2048">
+                                    0
+                                </strong>
+
                             </div>
+
                         </div>
+
                     </div>
 
                     <div class="profile-actions">
+
                         <button id="reset-statistics-btn" class="danger-btn" data-i18n="resetStatistics">
                             STATISZTIKÁK TÖRLÉSE
                         </button>
@@ -665,23 +968,37 @@
                         <button id="logout-btn" class="danger-btn" data-i18n="logout">
                             KIJELENTKEZÉS
                         </button>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
 
         <div id="settings-modal" class="modal">
-            <div class="modal-content">
-                <button class="modal-close" data-close="settings-modal">×</button>
 
-                <h2 data-i18n="settings">BEÁLLÍTÁSOK</h2>
+            <div class="modal-content">
+
+                <button class="modal-close" data-close="settings-modal">
+                    ×
+                </button>
+
+                <h2 data-i18n="settings">
+                    BEÁLLÍTÁSOK
+                </h2>
 
                 <div class="setting-row">
+
                     <div>
-                        <span class="setting-title" data-i18n="language">NYELV</span>
+                        <span class="setting-title" data-i18n="language">
+                            NYELV
+                        </span>
                     </div>
 
                     <div class="setting-language">
+
                         <button class="setting-lang-btn" data-setting-lang="hu">
                             MAGYAR
                         </button>
@@ -689,50 +1006,76 @@
                         <button class="setting-lang-btn" data-setting-lang="en">
                             ENGLISH
                         </button>
+
                     </div>
+
                 </div>
 
                 <div class="setting-row color-setting-row">
+
                     <div>
-                        <span class="setting-title" data-i18n="theme">TÉMA</span>
+                        <span class="setting-title" data-i18n="theme">
+                            TÉMA
+                        </span>
                     </div>
 
                     <div class="theme-preset-options">
+
                         <button class="theme-preset-btn" data-theme="cream-teal" style="--c1: #ffefb3; --c2: #013e37;"
-                            title="Cream & Teal"></button>
+                            title="Cream & Teal">
+                        </button>
 
                         <button class="theme-preset-btn" data-theme="wine-pink" style="--c1: #70020f; --c2: #ffdee2;"
-                            title="Wine & Pink"></button>
+                            title="Wine & Pink">
+                        </button>
 
                         <button class="theme-preset-btn" data-theme="olive-cream" style="--c1: #9ca764; --c2: #f1e8c7;"
-                            title="Olive & Cream"></button>
+                            title="Olive & Cream">
+                        </button>
 
                         <button class="theme-preset-btn" data-theme="pink-brown" style="--c1: #efcedb; --c2: #4f2b1f;"
-                            title="Pink & Brown"></button>
+                            title="Pink & Brown">
+                        </button>
 
                         <button class="theme-preset-btn" data-theme="blue-brown" style="--c1: #a0beda; --c2: #34211b;"
-                            title="Blue & Brown"></button>
+                            title="Blue & Brown">
+                        </button>
 
                         <button class="theme-preset-btn" data-theme="yellow-plum" style="--c1: #ffec8e; --c2: #631d3f;"
-                            title="Yellow & Plum"></button>
+                            title="Yellow & Plum">
+                        </button>
+
                     </div>
+
                 </div>
 
                 <div class="setting-row">
+
                     <div>
-                        <span class="setting-title" data-i18n="sound">HANG</span>
+                        <span class="setting-title" data-i18n="sound">
+                            HANG
+                        </span>
                     </div>
 
                     <button id="sound-toggle" class="sound-toggle">
-                        <span id="sound-toggle-text">BE</span>
+                        <span id="sound-toggle-text">
+                            BE
+                        </span>
                     </button>
+
                 </div>
+
             </div>
+
         </div>
 
         <div id="report-modal" class="modal">
+
             <div class="modal-content">
-                <button class="modal-close" data-close="report-modal">×</button>
+
+                <button class="modal-close" data-close="report-modal">
+                    ×
+                </button>
 
                 <h2 data-i18n="reportTitle">
                     HIBABEJELENTÉS
@@ -743,6 +1086,7 @@
                 </p>
 
                 <form action="https://formspree.io/f/xdenerve" method="POST" class="auth-inputs">
+
                     <input type="email" name="email" placeholder="E-mail címed" required>
 
                     <textarea name="message" placeholder="Hiba leírása..." rows="4" class="report-textarea"
@@ -751,30 +1095,36 @@
                     <button type="submit" class="primary-btn" data-i18n="send">
                         KÜLDÉS
                     </button>
+
                 </form>
+
             </div>
+
         </div>
 
         <div id="privacy-modal" class="modal">
+
             <div class="modal-content">
-                <button class="modal-close" data-close="privacy-modal">×</button>
+
+                <button class="modal-close" data-close="privacy-modal">
+                    ×
+                </button>
 
                 <h2 data-i18n="privacyTitle">
                     ADATVÉDELMI TÁJÉKOZTATÓ
                 </h2>
 
                 <div class="privacy-text" data-i18n-html="privacyText">
+
                     <p>
-                        Jelen tájékoztató az Európai Parlament és a Tanács (EU) 2016/679 rendelete (GDPR), valamint az
-                        elektronikus hírközlésről szóló 2003. évi C. törvény vonatkozó rendelkezései alapján
-                        ismerteti, hogy a Kő-Papír-Olló játék ("Játék") használata során milyen személyes adatokat
-                        kezelünk, milyen célból és jogalapon, meddig tároljuk azokat, valamint milyen jogok illetnek
-                        meg téged adatkezelés érintettjeként.
+
                     </p>
 
                     <br>
 
-                    <p><strong>1. Az adatkezelő</strong></p>
+                    <p>
+                        <strong>1. Az adatkezelő</strong>
+                    </p>
 
                     <p>
                         Az adatkezelő a Játék fejlesztője: Kecskés Lilla.
@@ -786,124 +1136,100 @@
 
                     <br>
 
-                    <p><strong>2. Kezelt adatok, célok és jogalapok</strong></p>
+                    <p>
+                        <strong>2. Kezelt adatok, célok és jogalapok</strong>
+                    </p>
 
                     <p>
-                        a) Regisztrációhoz kötelezően szükséges adatok (felhasználónév, jelszó kivonata): cél a fiók
-                        létrehozása és a bejelentkezés lehetővé tétele. Jogalap: a GDPR 6. cikk (1) bekezdés b) pontja -
-                        a veled mint érintettel kötött szerződés (a Játék szolgáltatásainak nyújtása) teljesítéséhez
-                        szükséges.
-                    </p>
-                    <br>
-                    <p>
-                        b) Opcionálisan megadható adat (nem): cél a felhasználói felület (pl. az alapértelmezett téma)
-                        személyre szabása. Jogalap: a GDPR 6. cikk (1) bekezdés a) pontja - kifejezett hozzájárulásod,
-                        amelyet a megadással önkéntesen adsz meg, és amelyet bármikor, indoklás nélkül visszavonhatsz
-                        az 1. pontban megadott elérhetőségen keresztül, a hozzájárulás visszavonása előtt végzett
-                        adatkezelés jogszerűségének érintése nélkül.
-                    </p>
-                    <br>
-                    <p>
-                        c) Beállítások és játékadatok (kiválasztott téma, nehézségi szint, játékstatisztikák -
-                        győzelmek, vereségek, döntetlenek, kő/papír/olló választások száma): cél a játékmenet és a
-                        személyre szabott élmény biztosítása. Jogalap: a GDPR 6. cikk (1) bekezdés b) pontja.
-                    </p>
-                    <br>
-                    <p>
-                        d) A fiók létrehozásának (regisztráció) dátuma, valamint a jelen tájékoztató elolvasásának és
-                        tudomásulvételének ténye és időpontja: cél az elszámoltathatóság elvének (GDPR 5. cikk (2)
-                        bekezdés) teljesítése, vagyis annak igazolása, hogy a hozzájárulásodat és a tájékoztatást
-                        megfelelően rögzítettük. Jogalap: a GDPR 6. cikk (1) bekezdés c) pontja, az adatkezelőre
-                        vonatkozó jogi kötelezettség teljesítése.
-                    </p>
-                    <br>
-                    <p>
-                        e) Munkamenet-azonosító (session cookie): cél a bejelentkezett állapot technikai fenntartása.
-                        Jogalap: a GDPR 6. cikk (1) bekezdés f) pontja, az adatkezelő azon jogos érdeke, hogy a
-                        bejelentkezés a böngésző bezárása után is fennmaradjon. Bővebben a 3. pontban.
-                    </p>
-                    <br>
-                    <p>
-                        f) Hibabejelentés esetén megadott e-mail cím és üzenetszöveg: kizárólag akkor kezeljük, ha a
-                        "Hibabejelentés" űrlapot kitöltve önként elküldöd. Cél a bejelentett hiba kivizsgálása és a
-                        veled történő kapcsolatfelvétel. Jogalap: a GDPR 6. cikk (1) bekezdés a) pontja, az űrlap
-                        elküldésével megadott hozzájárulásod.
+
                     </p>
 
                     <br>
 
-                    <p><strong>3. Sütik (cookie-k) és hasonló technológiák</strong></p>
-
                     <p>
-                        A Játék a bejelentkezés fenntartásához egyetlen, kizárólag technikailag szükséges
-                        munkamenet-sütit használ. A süti kizárólag egy véletlenszerű azonosítót tartalmaz, célja a
-                        bejelentkezett állapot felismerése, és nem szolgál nyomkövetésre, profilalkotásra vagy
-                        harmadik fél általi hirdetési célra. A süti csak HTTP-n keresztül érhető el (HttpOnly), és a
-                        böngésző csak azonos oldali kéréseknél küldi el (SameSite=Lax). Érvényessége legfeljebb 7 nap,
-                        illetve a kijelentkezésig tart. Mivel a süti a Játék alapvető működéséhez (a bejelentkezéshez)
-                        elengedhetetlenül szükséges, használatához az elektronikus hírközlésről szóló törvény alapján
-                        nem szükséges külön hozzájárulásod.
-                    </p>
 
-                    <p>
-                        Emellett a böngésződ a saját eszközödön, a böngésző helyi tárolójában (localStorage) menti a
-                        legutóbb kiválasztott nyelvet és témát, hogy legközelebb is ezekkel a beállításokkal töltsön
-                        be az oldal. Ez az adat nem kerül elküldésre a szerverünk felé, kivéve, ha bejelentkezel, és a
-                        témát a profilodhoz is elmented.
                     </p>
 
                     <br>
 
-                    <p><strong>4. A jelszó tárolásának módja</strong></p>
-
                     <p>
-                        A jelszavadat nem szöveges formában tároljuk. A regisztráció során megadott jelszót a szerver
-                        bcrypt algoritmussal, biztonságos hash-eléssel alakítja át, és kizárólag az így létrehozott
-                        jelszó-kivonatot tároljuk az adatbázisban. Az eredeti jelszavadat nem ismerjük, és azt
-                        semmilyen formában nem tudjuk visszaállítani.
+
                     </p>
 
                     <br>
 
-                    <p><strong>5. Adatbiztonsági intézkedések</strong></p>
-
                     <p>
-                        A jelszavak bcrypt hash-eléssel kerülnek tárolásra, a munkamenet-süti HttpOnly és SameSite
-                        beállításokkal védett, és a Játék adatbázisához kizárólag az adatkezelő fér hozzá. Ezen
-                        intézkedések célja, hogy a technika mindenkori állása szerint elvárható szinten védjék az
-                        adataidat a jogosulatlan hozzáféréstől, módosítástól, nyilvánosságra hozataltól vagy
-                        megsemmisítéstől.
+
                     </p>
 
                     <br>
 
-                    <p><strong>6. Az adatok tárolásának helye és időtartama</strong></p>
-
                     <p>
-                        Az adatok a Játék szerverén, egy SQLite adatbázisban kerülnek tárolásra. A Játék
-                        szerveralkalmazása a Render szolgáltatásán fut. A munkamenet-azonosító legfeljebb 7 napig,
-                        illetve a kijelentkezésig érvényes. A fiókodhoz és a statisztikáidhoz kapcsolódó egyéb
-                        adataidat a fiókod törléséig, vagy a törlés írásban (az 1. pontban megadott e-mail címen)
-                        történő kéréséig tároljuk; a kérés beérkezését követően az adataidat indokolatlan késedelem
-                        nélkül töröljük. A tárhelyszolgáltatás üzemeltetése során a Render technikai jellegű
-                        naplóadatokat (pl. a szerverhez intézett kérések IP-címe, időpontja) is rögzíthet, a saját
-                        adatvédelmi szabályzata szerint, kizárólag üzemeltetési és biztonsági célból.
+
                     </p>
 
                     <br>
 
-                    <p><strong>7. Hibabejelentés, a Formspree szolgáltatás és nemzetközi adattovábbítás</strong></p>
+                    <p>
+
+                    </p>
+
+                    <br>
 
                     <p>
-                        Amikor a "Hibabejelentés" űrlapon keresztül üzenetet küldesz, a megadott e-mail címedet és az
-                        üzenet szövegét a Formspree Inc. szolgáltatásán keresztül továbbítjuk az adatkezelőnek,
-                        kizárólag a hiba elhárítása céljából.
+                        <strong>3. Sütik (cookie-k) és hasonló technológiák</strong>
                     </p>
 
                     <p>
-                        Fontos: ez az adattovábbítás az Európai Gazdasági Térségen (EGT) kívülre, az Amerikai Egyesült
-                        Államokba történik. A Formspree saját tájékoztatása szerint megfelelő garanciákat alkalmaz a
-                        továbbított adatok védelmére.
+
+                    </p>
+
+                    <p>
+
+                    </p>
+
+                    <br>
+
+                    <p>
+                        <strong>4. A jelszó tárolásának módja</strong>
+                    </p>
+
+                    <p>
+
+                    </p>
+
+                    <br>
+
+                    <p>
+                        <strong>5. Adatbiztonsági intézkedések</strong>
+                    </p>
+
+                    <p>
+
+                    </p>
+
+                    <br>
+
+                    <p>
+                        <strong>6. Az adatok tárolásának helye és időtartama</strong>
+                    </p>
+
+                    <p>
+
+                    </p>
+
+                    <br>
+
+                    <p>
+                        <strong>7. Hibabejelentés, a Formspree szolgáltatás és nemzetközi adattovábbítás</strong>
+                    </p>
+
+                    <p>
+
+                    </p>
+
+                    <p>
+
                     </p>
 
                     <p>
@@ -914,116 +1240,137 @@
 
                     <br>
 
-                    <p><strong>8. Automatizált döntéshozatal és profilalkotás</strong></p>
+                    <p>
+                        <strong>8. Automatizált döntéshozatal és profilalkotás</strong>
+                    </p>
 
                     <p>
-                        A Játék működése során nem alkalmazunk a GDPR 22. cikke szerinti, kizárólag automatizált
-                        adatkezelésen - ideértve a profilalkotást is - alapuló döntéshozatalt, amely rád nézve
-                        joghatással járna vagy téged hasonlóképpen jelentős mértékben érintene.
+
                     </p>
 
                     <br>
 
-                    <p><strong>9. Az érintett jogai</strong></p>
-
                     <p>
-                        A GDPR alapján kérheted személyes adataidhoz való hozzáférést, azok helyesbítését, törlését
-                        ("elfeledtetéshez való jog"), az adatkezelés korlátozását, valamint tiltakozhatsz az adatkezelés
-                        ellen, illetve - ahol ez alkalmazandó - kérheted adataid hordozhatóságát. A kizárólag
-                        hozzájáruláson alapuló adatkezelés (pl. a nem megadása) esetén a hozzájárulásodat bármikor,
-                        indoklás nélkül visszavonhatod, ez azonban nem érinti a visszavonás előtti adatkezelés
-                        jogszerűségét.
+                        <strong>9. Az érintett jogai</strong>
                     </p>
 
                     <p>
-                        E jogaidat az adatkezelőnél, a klizu333@gmail.com címen gyakorolhatod. Amennyiben úgy ítéled
-                        meg, hogy adataid kezelése jogsértő, panaszt nyújthatsz be a Nemzeti Adatvédelmi és
-                        Információszabadság Hatóságnál (NAIH), vagy jogaid megsértése esetén az illetékes bírósághoz
-                        fordulhatsz.
+
                     </p>
 
                     <p>
-                        A NAIH elérhetőségei: székhely: 1055 Budapest, Falk Miksa utca 9-11.; postacím: 1363
-                        Budapest, Pf.: 9.; telefon: +36 (1) 391-1400; e-mail: ugyfelszolgalat@naih.hu; honlap:
-                        www.naih.hu.
+
+                    </p>
+
+                    <p>
+
                     </p>
 
                     <br>
 
-                    <p><strong>10. Kiskorúak</strong></p>
+                    <p>
+                        <strong>10. Kiskorúak</strong>
+                    </p>
 
                     <p>
-                        Amennyiben a Játékot 16 év alatti személy használja, javasoljuk, hogy a regisztrációt szülő vagy
-                        törvényes képviselő felügyelete és jóváhagyása mellett végezze el.
+
                     </p>
 
                     <br>
 
-                    <p><strong>11. A tájékoztató módosítása</strong></p>
+                    <p>
+                        <strong>11. A tájékoztató módosítása</strong>
+                    </p>
 
                     <p>
-                        Jelen tájékoztatót a Játék fejlesztése vagy a jogszabályi környezet változása esetén
-                        frissíthetjük. A mindenkor hatályos szöveg ezen az oldalon, a Játékon belül érhető el. A
-                        tájékoztató jelen változatának hatálybalépése: 2026. augusztus 29.
+
                     </p>
+
                 </div>
 
                 <button class="close-settings-btn secondary-btn" data-close="privacy-modal" data-i18n="close">
                     BEZÁRÁS
                 </button>
+
             </div>
+
         </div>
 
         <div id="confirm-modal" class="modal">
+
             <div class="modal-content confirm-modal-content">
-                <p id="confirm-message" class="confirm-message"></p>
+
+                <p id="confirm-message" class="confirm-message">
+                </p>
 
                 <div class="confirm-buttons">
+
                     <button id="confirm-yes-btn" class="confirm-btn confirm-yes" aria-label="Igen">
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 6 9 17l-5-5" />
                         </svg>
+
                     </button>
 
                     <button id="confirm-no-btn" class="confirm-btn confirm-no" aria-label="Nem">
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 6 6 18" />
                             <path d="m6 6 12 12" />
                         </svg>
+
                     </button>
+
                 </div>
+
             </div>
+
         </div>
 
         <div id="creator-modal" class="modal">
+
             <div class="modal-content creator-modal-content">
-                <button class="modal-close" data-close="creator-modal">×</button>
+
+                <button class="modal-close" data-close="creator-modal">
+                    ×
+                </button>
 
                 <div class="creator-info">
+
                     <a href="https://github.com/Lizu333" target="_blank" rel="noopener noreferrer" class="github-link">
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                             viewBox="0 0 16 16">
                             <path
                                 d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
                         </svg>
 
-                        <span>GitHub</span>
+                        <span>
+                            GitHub
+                        </span>
+
                     </a>
 
                     <p class="copyright-text">
                         © Lilla Kecskes 2026
                     </p>
+
                 </div>
+
             </div>
+
         </div>
 
     </main>
 
     <div class="creator-tab-container">
+
         <button id="creator-modal-btn" class="creator-tab-btn" title="More about the creator"
             aria-label="More about the creator">
+
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path
@@ -1036,10 +1383,13 @@
             <span class="hover-text" data-i18n="moreAboutCreator">
                 More about the creator
             </span>
+
         </button>
+
     </div>
 
     <script type="module" src="main.js"></script>
+
 </body>
 
 </html>

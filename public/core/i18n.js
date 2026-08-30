@@ -40,6 +40,17 @@ const translations = {
         undosUsed2048: "UNDOS USED",
         confirmResetStats2048:
             "Are you sure you want to delete your 2048 appState.statistics history?",
+        boardSizeLabel: "Board:",
+        board3x3: "3 × 3",
+        board5x5: "5 × 5",
+        tictactoeYourTurn: "Your turn!",
+        tictactoeComputerTurn: "Computer is thinking...",
+        tictactoeYouWin: "YOU WIN!",
+        tictactoeYouLose: "YOU LOST!",
+        tictactoeDraw: "DRAW!",
+        tictactoeYouWinText: "Congratulations! You won the game.",
+        tictactoeYouLoseText: "The computer won this game.",
+        tictactoeDrawText: "The game ended in a draw.",
         startGame: "START GAME",
         profile: "PROFILE",
         settings: "SETTINGS",
@@ -95,7 +106,7 @@ const translations = {
             "If you experienced a bug in the game, let us know!",
         send: "SEND",
         privacyTitle: "PRIVACY POLICY",
-        privacyText: `
+        /*privacyText: `
             <p>
                 This notice, based on Regulation (EU) 2016/679 of the European Parliament and of the Council
                 (GDPR) and the relevant provisions of Hungarian Act C of 2003 on Electronic Communications,
@@ -295,7 +306,7 @@ const translations = {
                 changes. The currently applicable version is always available within the Game, on this page.
                 This version of the notice takes effect as of August 29, 2026.
             </p>
-        `
+        `*/
     },
 
     hu: {
@@ -320,6 +331,17 @@ const translations = {
         comingSoon: "HAMAROSAN",
         score2048: "PONTSZÁM",
         best2048: "REKORD",
+        boardSizeLabel: "Pálya:",
+        board3x3: "3 × 3",
+        board5x5: "5 × 5",
+        tictactoeYourTurn: "Te következel!",
+        tictactoeComputerTurn: "A gép gondolkodik...",
+        tictactoeYouWin: "NYERTÉL!",
+        tictactoeYouLose: "VESZTETTÉL!",
+        tictactoeDraw: "DÖNTETLEN!",
+        tictactoeYouWinText: "Gratulálok! Megnyerted a játékot.",
+        tictactoeYouLoseText: "A gép megnyerte a játékot.",
+        tictactoeDrawText: "A játék döntetlennel ért véget.",
         game2048Instructions: "Kombináld az azonos számokat, és érd el a 2048-at!",
         new2048Game: "ÚJ JÁTÉK",
         game2048Ready: "Használd a nyilakat vagy mozgasd a kártyákat!",
@@ -392,7 +414,7 @@ const translations = {
             "Ha hibát tapasztaltál a játékban, írd meg nekünk!",
         send: "KÜLDÉS",
         privacyTitle: "ADATVÉDELMI TÁJÉKOZTATÓ",
-        privacyText: `
+        /*privacyText: `
             <p>
                 Jelen tájékoztató az Európai Parlament és a Tanács (EU) 2016/679 rendelete (GDPR), valamint az
                 elektronikus hírközlésről szóló 2003. évi C. törvény vonatkozó rendelkezései alapján
@@ -595,7 +617,7 @@ const translations = {
                 frissíthetjük. A mindenkor hatályos szöveg ezen az oldalon, a Játékon belül érhető el. A
                 tájékoztató jelen változatának hatálybalépése: 2026. augusztus 29.
             </p>
-        `
+        `*/
     }
 };
 

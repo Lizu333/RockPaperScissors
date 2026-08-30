@@ -32,6 +32,10 @@ import {
     init2048Game
 } from "./games/puzzle/game2048.js";
 
+import {
+    initTicTacToe
+} from "./games/arcade/tictactoe.js";
+
 
 let pendingConfirmAction = null;
 
@@ -100,6 +104,16 @@ if (settingsBtn) {
         "click",
         () => openModal("settings-modal")
     );
+}
+
+const tictactoeGameBtn =
+    document.getElementById("tictactoe-game-btn");
+
+if (tictactoeGameBtn) {
+    tictactoeGameBtn.addEventListener("click", () => {
+        showScreen("tictactoe-screen");
+        initTicTacToe();
+    });
 }
 
 
@@ -464,9 +478,9 @@ document
         });
     });
 
-
 initRpsGame();
 init2048Game();
+initTicTacToe();
 
 
 const savedTheme =
