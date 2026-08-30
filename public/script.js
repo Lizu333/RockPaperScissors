@@ -2407,8 +2407,49 @@ let game2048TouchStartY = 0;
 let game2048Active = false;
 let game2048History = [];
 let game2048UndosRemaining = 0;
-let game2048MergedCells = new Set();
-let game2048NewCell = null;
+
+let game2048Tiles = [];
+let game2048TileIdCounter = 0;
+let game2048TileElements = new Map();
+let game2048MoveInProgress = false;
+
+const GAME_2048_SLIDE_MS = 130;
+
+
+function get2048TileLeft(col) {
+    return `calc(${col} * 25% + ${col} * var(--cell-gap) / 4)`;
+}
+
+function get2048TileTop(row) {
+    return `calc(${row} * 25% + ${row} * var(--cell-gap) / 4)`;
+}
+
+
+function ensure2048GridArea() {
+    let gridArea =
+        game2048BoardElement.querySelector(".game-2048-grid-area");
+
+    if (gridArea) {
+        return gridArea;
+    }
+
+    gridArea = document.createElement("div");
+    gridArea.className = "game-2048-grid-area";
+
+    for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 4; col++) {
+            const cellBg = document.createElement("div");
+            cellBg.className = "game-2048-cell-bg";
+            cellBg.style.left = get2048TileLeft(col);
+            cellBg.style.top = get2048TileTop(row);
+            gridArea.appendChild(cellBg);
+        }
+    }
+
+    game2048BoardElement.appendChild(gridArea);
+
+    return gridArea;
+}
 
 
 const game2048BoardElement =
@@ -2652,16 +2693,23 @@ function add2048RandomTile() {
         ];
 
 
-    game2048Board[randomCell.row][randomCell.col] =
+    const value =
         Math.random() < 0.9 ? 2 : 4;
 
-    game2048NewCell = {
+    game2048Board[randomCell.row][randomCell.col] = value;
+
+    game2048TileIdCounter++;
+
+    game2048Tiles.push({
+        id: game2048TileIdCounter,
         row: randomCell.row,
-        col: randomCell.col
-    };
+        col: randomCell.col,
+        value,
+        isNew: true,
+        justMerged: false
+    });
 
 }
-
 
 function render2048Board() {
 
@@ -2669,51 +2717,62 @@ function render2048Board() {
         return;
     }
 
-    game2048BoardElement.innerHTML = "";
+    const gridArea = ensure2048GridArea();
 
+    const currentIds =
+        new Set(game2048Tiles.map(tile => tile.id));
 
-    for (let row = 0; row < 4; row++) {
+    game2048TileElements.forEach((element, id) => {
+        if (!currentIds.has(id)) {
+            element.remove();
+            game2048TileElements.delete(id);
+        }
+    });
 
-        for (let col = 0; col < 4; col++) {
+    game2048Tiles.forEach(tile => {
 
-            const cell =
-                document.createElement("div");
+        let element =
+            game2048TileElements.get(tile.id);
 
-            const value =
-                game2048Board[row][col];
+        if (!element) {
 
-            cell.className =
-                "game-2048-cell";
+            element = document.createElement("div");
+            element.className = "game-2048-tile";
 
-            if (value > 0) {
+            gridArea.appendChild(element);
+            game2048TileElements.set(tile.id, element);
 
-                cell.textContent = value;
-                cell.dataset.value = value;
+            if (tile.isNew) {
+                element.classList.add("tile-new");
 
-                if (
-                    game2048NewCell &&
-                    game2048NewCell.row === row &&
-                    game2048NewCell.col === col
-                ) {
-                    cell.classList.add("tile-new");
-                }
-
-                if (
-                    game2048MergedCells.has(
-                        `${row}-${col}`
-                    )
-                ) {
-                    cell.classList.add("tile-merged");
-                }
-
+                setTimeout(() => {
+                    element.classList.remove("tile-new");
+                }, 200);
             }
-
-
-            game2048BoardElement.appendChild(cell);
 
         }
 
-    }
+        element.textContent = tile.value;
+        element.dataset.value = tile.value;
+
+        element.style.left = get2048TileLeft(tile.col);
+        element.style.top = get2048TileTop(tile.row);
+
+        if (tile.justMerged) {
+
+            element.classList.remove("tile-merged");
+            void element.offsetWidth;
+            element.classList.add("tile-merged");
+
+            setTimeout(() => {
+                element.classList.remove("tile-merged");
+            }, 220);
+
+            tile.justMerged = false;
+
+        }
+
+    });
 
 }
 
@@ -2758,15 +2817,163 @@ function set2048Message(message) {
 }
 
 
+function process2048Line(lineTiles) {
+
+    const movements = [];
+    const removedIds = [];
+
+    let index = 0;
+    let slot = 0;
+
+    while (index < lineTiles.length) {
+
+        const current = lineTiles[index];
+        const next = lineTiles[index + 1];
+
+        if (next && current.value === next.value) {
+
+            current.value *= 2;
+            current.justMerged = true;
+
+            game2048Score += current.value;
+
+            movements.push({ tile: current, slot });
+            movements.push({ tile: next, slot });
+
+            removedIds.push(next.id);
+
+            index += 2;
+
+        } else {
+
+            movements.push({ tile: current, slot });
+
+            index += 1;
+
+        }
+
+        slot++;
+
+    }
+
+    return { movements, removedIds };
+
+}
+
+
+function move2048Left(tiles) {
+
+    const allRemovedIds = [];
+
+    for (let row = 0; row < 4; row++) {
+
+        const lineTiles = tiles
+            .filter(tile => tile.row === row)
+            .sort((a, b) => a.col - b.col);
+
+        const { movements, removedIds } =
+            process2048Line(lineTiles);
+
+        movements.forEach(({ tile, slot }) => {
+            tile.col = slot;
+        });
+
+        allRemovedIds.push(...removedIds);
+
+    }
+
+    return allRemovedIds;
+
+}
+
+
+function move2048Right(tiles) {
+
+    const allRemovedIds = [];
+
+    for (let row = 0; row < 4; row++) {
+
+        const lineTiles = tiles
+            .filter(tile => tile.row === row)
+            .sort((a, b) => b.col - a.col);
+
+        const { movements, removedIds } =
+            process2048Line(lineTiles);
+
+        movements.forEach(({ tile, slot }) => {
+            tile.col = 3 - slot;
+        });
+
+        allRemovedIds.push(...removedIds);
+
+    }
+
+    return allRemovedIds;
+
+}
+
+
+function move2048Up(tiles) {
+
+    const allRemovedIds = [];
+
+    for (let col = 0; col < 4; col++) {
+
+        const lineTiles = tiles
+            .filter(tile => tile.col === col)
+            .sort((a, b) => a.row - b.row);
+
+        const { movements, removedIds } =
+            process2048Line(lineTiles);
+
+        movements.forEach(({ tile, slot }) => {
+            tile.row = slot;
+        });
+
+        allRemovedIds.push(...removedIds);
+
+    }
+
+    return allRemovedIds;
+
+}
+
+
+function move2048Down(tiles) {
+
+    const allRemovedIds = [];
+
+    for (let col = 0; col < 4; col++) {
+
+        const lineTiles = tiles
+            .filter(tile => tile.col === col)
+            .sort((a, b) => b.row - a.row);
+
+        const { movements, removedIds } =
+            process2048Line(lineTiles);
+
+        movements.forEach(({ tile, slot }) => {
+            tile.row = 3 - slot;
+        });
+
+        allRemovedIds.push(...removedIds);
+
+    }
+
+    return allRemovedIds;
+
+}
+
+
 function move2048(direction) {
 
     if (
         game2048GameOver ||
-        !game2048Board.length
+        !game2048Board.length ||
+        game2048MoveInProgress
     ) {
         return;
     }
-
 
     const previousBoard =
         JSON.stringify(game2048Board);
@@ -2774,31 +2981,45 @@ function move2048(direction) {
     const previousScore = game2048Score;
     const previousWon = game2048Won;
 
-    game2048MergedCells = new Set();
+    const previousTilesSnapshot =
+        game2048Tiles.map(tile => ({ ...tile }));
 
+    const workingTiles =
+        game2048Tiles.map(tile => ({
+            ...tile,
+            isNew: false,
+            justMerged: false
+        }));
+
+    let removedIds = [];
 
     if (direction === "left") {
-        move2048Left();
+        removedIds = move2048Left(workingTiles);
     }
 
     if (direction === "right") {
-        move2048Right();
+        removedIds = move2048Right(workingTiles);
     }
 
     if (direction === "up") {
-        move2048Up();
+        removedIds = move2048Up(workingTiles);
     }
 
     if (direction === "down") {
-        move2048Down();
+        removedIds = move2048Down(workingTiles);
     }
 
+    const newBoard = create2048EmptyBoard();
 
-    const newBoard =
-        JSON.stringify(game2048Board);
+    workingTiles
+        .filter(tile => !removedIds.includes(tile.id))
+        .forEach(tile => {
+            newBoard[tile.row][tile.col] = tile.value;
+        });
 
+    const newBoardString = JSON.stringify(newBoard);
 
-    if (previousBoard === newBoard) {
+    if (previousBoard === newBoardString) {
 
         game2048Score = previousScore;
 
@@ -2807,11 +3028,14 @@ function move2048(direction) {
         }
 
         return;
+
     }
 
+    game2048MoveInProgress = true;
 
     game2048History.push({
         board: JSON.parse(previousBoard),
+        tiles: previousTilesSnapshot,
         score: previousScore,
         won: previousWon
     });
@@ -2820,232 +3044,43 @@ function move2048(direction) {
         game2048History.shift();
     }
 
-    game2048NewCell = null;
-    add2048RandomTile();
+    game2048Tiles = workingTiles;
+    game2048Board = newBoard;
 
-    update2048Score();
     render2048Board();
-    update2048UndoUI();
 
+    setTimeout(() => {
 
-    if (!game2048Won && has2048Won()) {
-
-        game2048Won = true;
-
-        show2048Overlay(
-            translations[currentLanguage].game2048Won,
-            translations[currentLanguage].game2048WonText
+        game2048Tiles = game2048Tiles.filter(
+            tile => !removedIds.includes(tile.id)
         );
 
-        return;
-    }
+        add2048RandomTile();
 
+        update2048Score();
+        render2048Board();
+        update2048UndoUI();
 
-    if (!can2048Move()) {
+        game2048MoveInProgress = false;
 
-        end2048Game(false);
+        if (!game2048Won && has2048Won()) {
 
-    }
+            game2048Won = true;
 
-}
-
-
-function merge2048Line(line) {
-
-    const filtered =
-        line.filter(value => value !== 0);
-
-
-    const merged = [];
-    const mergedFlags = [];
-    let gainedScore = 0;
-
-
-    for (
-        let index = 0;
-        index < filtered.length;
-        index++
-    ) {
-
-        if (
-            filtered[index] ===
-            filtered[index + 1]
-        ) {
-
-            const mergedValue =
-                filtered[index] * 2;
-
-            merged.push(mergedValue);
-            mergedFlags.push(true);
-
-            gainedScore += mergedValue;
-
-            index++;
-
-        } else {
-
-            merged.push(filtered[index]);
-            mergedFlags.push(false);
-
-        }
-
-    }
-
-
-    while (merged.length < 4) {
-        merged.push(0);
-        mergedFlags.push(false);
-    }
-
-
-    game2048Score += gainedScore;
-
-
-    return {
-        merged,
-        mergedFlags
-    };
-
-}
-
-
-function move2048Left() {
-
-    for (let row = 0; row < 4; row++) {
-
-        const result =
-            merge2048Line(
-                game2048Board[row]
+            show2048Overlay(
+                translations[currentLanguage].game2048Won,
+                translations[currentLanguage].game2048WonText
             );
 
-        game2048Board[row] = result.merged;
-
-        for (let col = 0; col < 4; col++) {
-
-            if (result.mergedFlags[col]) {
-                game2048MergedCells.add(
-                    `${row}-${col}`
-                );
-            }
+            return;
 
         }
 
-    }
-
-}
-
-
-function move2048Right() {
-
-    for (let row = 0; row < 4; row++) {
-
-        const reversed =
-            [...game2048Board[row]].reverse();
-
-        const result =
-            merge2048Line(reversed);
-
-        const mergedRow =
-            [...result.merged].reverse();
-
-        const flagsRow =
-            [...result.mergedFlags].reverse();
-
-        game2048Board[row] = mergedRow;
-
-        for (let col = 0; col < 4; col++) {
-
-            if (flagsRow[col]) {
-                game2048MergedCells.add(
-                    `${row}-${col}`
-                );
-            }
-
+        if (!can2048Move()) {
+            end2048Game(false);
         }
 
-    }
-
-}
-
-
-function move2048Up() {
-
-    for (let col = 0; col < 4; col++) {
-
-        const column = [];
-
-        for (let row = 0; row < 4; row++) {
-
-            column.push(
-                game2048Board[row][col]
-            );
-
-        }
-
-
-        const result =
-            merge2048Line(column);
-
-
-        for (let row = 0; row < 4; row++) {
-
-            game2048Board[row][col] =
-                result.merged[row];
-
-            if (result.mergedFlags[row]) {
-                game2048MergedCells.add(
-                    `${row}-${col}`
-                );
-            }
-
-        }
-
-    }
-
-}
-
-
-function move2048Down() {
-
-    for (let col = 0; col < 4; col++) {
-
-        const column = [];
-
-        for (let row = 0; row < 4; row++) {
-
-            column.push(
-                game2048Board[row][col]
-            );
-
-        }
-
-
-        const result =
-            merge2048Line(
-                [...column].reverse()
-            );
-
-        const finalCol =
-            [...result.merged].reverse();
-
-        const finalFlags =
-            [...result.mergedFlags].reverse();
-
-
-        for (let row = 0; row < 4; row++) {
-
-            game2048Board[row][col] =
-                finalCol[row];
-
-            if (finalFlags[row]) {
-                game2048MergedCells.add(
-                    `${row}-${col}`
-                );
-            }
-
-        }
-
-    }
+    }, GAME_2048_SLIDE_MS);
 
 }
 
@@ -3175,10 +3210,17 @@ async function undo2048() {
             return;
         }
 
-        const previous =
+               const previous =
             game2048History.pop();
 
         game2048Board = previous.board;
+
+        game2048Tiles = previous.tiles.map(tile => ({
+            ...tile,
+            isNew: false,
+            justMerged: false
+        }));
+
         game2048Score = previous.score;
         game2048Won = previous.won;
         game2048GameOver = false;
@@ -3186,9 +3228,7 @@ async function undo2048() {
         game2048UndosRemaining =
             Number(data.undosRemaining) || 0;
 
-        game2048MergedCells = new Set();
-        game2048NewCell = null;
-
+       
         hide2048Overlay();
         update2048Score();
         render2048Board();
