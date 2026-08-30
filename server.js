@@ -637,7 +637,11 @@ app.post("/api/game/start", csrfProtection, (req, res) => {
         });
     }
 
-    const targetScore = getUserDifficulty(req.session.userId);
+    const requestedDifficulty = Number(req.body.difficulty);
+
+    const targetScore = ALLOWED_DIFFICULTIES.includes(requestedDifficulty)
+        ? requestedDifficulty
+        : getUserDifficulty(req.session.userId);
 
     req.session.game = {
         playerScore: 0,

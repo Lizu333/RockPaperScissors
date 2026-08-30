@@ -950,7 +950,10 @@ async function startGame() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            body: JSON.stringify({
+                difficulty: currentDifficulty
+            })
         });
 
         const data = await response.json();
