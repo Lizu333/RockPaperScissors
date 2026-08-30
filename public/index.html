@@ -66,20 +66,28 @@
 
             <div class="games-grid">
 
+
                 <button id="rps-game-btn" class="game-card">
 
                     <div class="game-card-icon">
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 
                             <path
                                 d="M11.264 2.205A4 4 0 0 0 6.42 4.211l-4 8a4 4 0 0 0 1.359 5.117l6 4a4 4 0 0 0 4.438 0l6-4a4 4 0 0 0 1.576-4.592l-2-6a4 4 0 0 0-2.53-2.53z" />
+
                             <path d="M11.99 22 14 12l7.822 3.184" />
+
                             <path d="M14 12 8.47 2.302" />
+
                         </svg>
+
                     </div>
 
+
                     <div class="game-card-content">
+
                         <h2 data-i18n="rpsTitle">
                             Kő - Papír - Olló
                         </h2>
@@ -87,19 +95,29 @@
                         <p data-i18n="rpsDescription">
                             Érd el elsőként a célpontszámot!
                         </p>
+
                     </div>
 
-                    <span class="game-card-arrow">→</span>
+
+                    <span class="game-card-arrow">
+                        →
+                    </span>
 
                 </button>
 
                 <button id="2048-game-btn" class="game-card">
 
                     <div class="game-card-icon">
-                        <span class="game-2048-icon">2048</span>
+
+                        <span class="game-2048-icon">
+                            2048
+                        </span>
+
                     </div>
 
+
                     <div class="game-card-content">
+
                         <h2 data-i18n="game2048Title">
                             2048
                         </h2>
@@ -107,9 +125,101 @@
                         <p data-i18n="game2048Description">
                             Rakd össze a 2048-as csempét!
                         </p>
+
                     </div>
 
-                    <span class="game-card-arrow">→</span>
+
+                    <span class="game-card-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <button id="tictactoe-game-btn" class="game-card game-card-disabled" disabled aria-disabled="true">
+
+                    <span class="game-card-coming-soon" data-i18n="comingSoon">
+                        HAMAROSAN
+                    </span>
+
+
+                    <div class="game-card-icon">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+
+                            <path d="M8 2v20" />
+                            <path d="M16 2v20" />
+
+                            <path d="M2 8h20" />
+                            <path d="M2 16h20" />
+
+                        </svg>
+
+                    </div>
+
+
+                    <div class="game-card-content" data-i18n="tictactoeTitle">
+
+                        <h2 data-i18n="tictactoeTitle">
+                            Tic-Tac-Toe
+                        </h2>
+
+                        <p data-i18n="tictactoeDescription">
+                            3 a sorban.
+                        </p>
+
+                    </div>
+
+
+                    <span class="game-card-arrow">
+                        →
+                    </span>
+
+                </button>
+
+
+                <button id="sudoku-game-btn" class="game-card game-card-disabled" disabled aria-disabled="true">
+
+                    <span class="game-card-coming-soon" data-i18n="comingSoon">
+                        HAMAROSAN
+                    </span>
+
+
+                    <div class="game-card-icon">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+
+                            <path d="M3 9h18" />
+                            <path d="M3 15h18" />
+
+                            <path d="M9 3v18" />
+                            <path d="M15 3v18" />
+
+                        </svg>
+
+                    </div>
+
+
+                    <div class="game-card-content" data-i18n="sudokuTitle">
+
+                        <h2 data-i18n="sudokuTitle">
+                            Sudoku
+                        </h2>
+
+                        <p data-i18n="sudokuDescription">
+                            A klasszikus Sudoku játék.
+                        </p>
+
+                    </div>
+
+
+                    <span class="game-card-arrow">
+                        →
+                    </span>
 
                 </button>
 
@@ -929,7 +1039,7 @@
         </button>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>
