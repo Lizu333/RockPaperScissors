@@ -1984,3 +1984,68 @@ button {
         font-size: clamp(24px, 10vw, 42px);
     }
 }
+
+.auth-screen {
+    min-height: 600px;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-screen-card {
+    width: min(520px, 100%);
+    text-align: center;
+}
+
+.auth-screen-card .games-subtitle {
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.auth-mode-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 24px 0 18px;
+}
+
+.auth-mode-buttons button.active {
+    transform: translateY(-1px);
+}
+
+.auth-screen-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+.auth-screen-form input[type="text"],
+.auth-screen-form input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
+    outline: none;
+}
+
+.auth-screen-form input:focus {
+    box-shadow: 0 0 0 3px var(--surface-hover);
+}
+
+.auth-screen-form .gender-selection {
+    margin-top: 4px;
+}
+
+.auth-screen-form .privacy-consent-row {
+    margin-top: 2px;
+}
+
+@media (max-width: 600px) {
+    .auth-screen { min-height: 100vh; }
+    .auth-mode-buttons { grid-template-columns: 1fr; }
+}

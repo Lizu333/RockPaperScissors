@@ -11,7 +11,50 @@
 <body>
     <main class="game-container">
 
-        <section id="menu-screen" class="screen active">
+        <section id="auth-screen" class="screen active auth-screen">
+            <div class="auth-screen-card">
+                <div class="logo"><span class="logo-heart-text">♡</span></div>
+                <h1 class="games-title" data-i18n="playerProfile">Játékos profil</h1>
+                <p class="games-subtitle" data-i18n="authContinueText">Jelentkezz be a már meglévő profilodba, vagy regisztrálj a folytatáshoz.</p>
+
+                <div class="auth-mode-buttons">
+                    <button id="auth-login-mode-btn" class="primary-btn" data-i18n="login">BEJELENTKEZÉS</button>
+                    <button id="auth-register-mode-btn" class="secondary-btn" data-i18n="register">REGISZTRÁCIÓ</button>
+                </div>
+
+                <form id="login-form" class="auth-screen-form">
+                    <input type="text" id="auth-login-username" placeholder="Felhasználónév" maxlength="20" autocomplete="username" required>
+                    <input type="password" id="auth-login-password" placeholder="Jelszó" maxlength="128" autocomplete="current-password" required>
+                    <p id="login-error" class="error-text"></p>
+                    <button type="submit" class="primary-btn" data-i18n="login">BEJELENTKEZÉS</button>
+                </form>
+
+                <form id="register-form" class="auth-screen-form" style="display:none">
+                    <input type="text" id="auth-register-username" placeholder="Felhasználónév" maxlength="20" autocomplete="username" required>
+                    <input type="password" id="auth-register-password" placeholder="Jelszó (8-128 karakter)" maxlength="128" autocomplete="new-password" required>
+                    <input type="password" id="auth-register-password-confirm" placeholder="Jelszó újra" maxlength="128" autocomplete="new-password" required>
+
+                    <div class="gender-selection">
+                        <label class="gender-btn"><input type="radio" name="auth-gender" value="girl"><span data-i18n="girl">Lány</span></label>
+                        <label class="gender-btn"><input type="radio" name="auth-gender" value="boy"><span data-i18n="boy">Fiú</span></label>
+                        <label class="gender-btn"><input type="radio" name="auth-gender" value="" checked><span data-i18n="genderNone">Nem adom meg</span></label>
+                    </div>
+                    <p class="field-note" data-i18n="genderOptionalNote">A nemed megadása opcionális.</p>
+
+                    <div class="privacy-consent-row">
+                        <label class="privacy-checkbox-label">
+                            <input type="checkbox" id="auth-privacy-checkbox" required>
+                            <span data-i18n="privacyCheckboxLabel">Elolvastam és tudomásul veszem az adatvédelmi tájékoztatót.</span>
+                        </label>
+                        <button type="button" id="auth-privacy-link" class="privacy-link-btn" data-i18n="privacyCheckboxLink">Adatvédelmi tájékoztató megtekintése</button>
+                    </div>
+                    <p id="register-error" class="error-text"></p>
+                    <button type="submit" class="primary-btn" data-i18n="register">REGISZTRÁLÁS</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="menu-screen" class="screen">
 
             <div class="top-settings-bar">
 

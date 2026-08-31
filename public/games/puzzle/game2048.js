@@ -1165,4 +1165,4 @@ update2048Score();
 update2048UndoUI();
 
 
-export function init2048Game() { }
+export function init2048Game() {}
