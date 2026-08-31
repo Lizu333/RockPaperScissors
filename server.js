@@ -32,7 +32,6 @@ if (isProduction) {
 
 app.disable("x-powered-by");
 
-
 const db = new Database(
     path.join(__dirname, "database.sqlite")
 );
@@ -114,7 +113,6 @@ if (!statisticsColumns.includes("undos_used_2048")) {
         ADD COLUMN undos_used_2048 INTEGER NOT NULL DEFAULT 0
     `);
 }
-
 
 class SqliteSessionStore extends session.Store {
     constructor(client) {
@@ -279,7 +277,6 @@ setInterval(
     1000 * 60 * 60
 ).unref();
 
-
 app.use(
     helmet({
         contentSecurityPolicy: {
@@ -416,7 +413,6 @@ const ALLOWED_CHOICES = [
     "scissors"
 ];
 
-
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
 
@@ -542,8 +538,6 @@ function csrfProtection(req, res, next) {
     next();
 }
 
-
-
 const sitePasswordHash = String(process.env.SITE_PASSWORD_HASH || "").trim();
 
 if (isProduction && !sitePasswordHash) {
@@ -649,6 +643,7 @@ function requireSiteUnlock(req, res, next) {
     }
 
     const acceptsHtml = String(req.get("accept") || "").includes("text/html");
+
     if (!acceptsHtml) {
         return res.status(403).send("Az oldal jelszóval védett.");
     }
@@ -709,7 +704,6 @@ function destroySession(req) {
     );
 }
 
-
 function requireLogin(req, res, next) {
     if (
         !req.session ||
@@ -740,7 +734,6 @@ function cleanUsername(value) {
     ) {
         return null;
     }
-
 
     if (
         !/^[A-Za-z0-9_]+$/.test(
@@ -792,7 +785,6 @@ function ensureStatistics(userId) {
     return stats;
 }
 
-
 function getUserDifficulty(userId) {
     const user = db
         .prepare(`
@@ -837,7 +829,6 @@ function getFinalResult(
     return null;
 }
 
-
 app.get(
     "/api/csrf",
     (req, res) => {
@@ -847,6 +838,7 @@ app.get(
         saveSession(req)
             .then(() => {
                 res.set("Cache-Control", "no-store");
+
                 res.json({
                     csrfToken
                 });
@@ -864,7 +856,6 @@ app.get(
             });
     }
 );
-
 
 app.post(
     "/api/register",
@@ -915,7 +906,8 @@ app.post(
                 password !== passwordConfirm
             ) {
                 return res.status(400).json({
-                    error: "A két jelszó nem egyezik."
+                    error:
+                        "A két jelszó nem egyezik."
                 });
             }
 
@@ -1018,9 +1010,13 @@ app.post(
             const result =
                 transaction();
 
-            const siteUnlocked = isSiteUnlocked(req);
+            const siteUnlocked =
+                isSiteUnlocked(req);
+
             await regenerateSession(req);
-            req.session.siteUnlocked = siteUnlocked;
+
+            req.session.siteUnlocked =
+                siteUnlocked;
 
             req.session.userId =
                 Number(
@@ -1073,7 +1069,6 @@ app.post(
         }
     }
 );
-
 
 app.post(
     "/api/login",
@@ -1134,9 +1129,13 @@ app.post(
                 });
             }
 
-            const siteUnlocked = isSiteUnlocked(req);
+            const siteUnlocked =
+                isSiteUnlocked(req);
+
             await regenerateSession(req);
-            req.session.siteUnlocked = siteUnlocked;
+
+            req.session.siteUnlocked =
+                siteUnlocked;
 
             req.session.userId =
                 user.id;
@@ -1185,25 +1184,32 @@ app.post(
     }
 );
 
-
 app.post(
     "/api/logout",
     csrfProtection,
     requireLogin,
     async (req, res) => {
         try {
-            const siteUnlocked = isSiteUnlocked(req);
+            const siteUnlocked =
+                isSiteUnlocked(req);
+
             await regenerateSession(req);
-            req.session.siteUnlocked = siteUnlocked;
+
+            req.session.siteUnlocked =
+                siteUnlocked;
+
             req.session.userId = null;
             req.session.game = null;
             req.session.game2048 = null;
+
             ensureCsrfToken(req);
+
             await saveSession(req);
 
             res.json({
                 success: true,
-                csrfToken: req.session.csrfToken
+                csrfToken:
+                    req.session.csrfToken
             });
         } catch (error) {
             console.error(
@@ -1337,7 +1343,6 @@ app.put(
     }
 );
 
-
 app.put(
     "/api/difficulty",
     csrfProtection,
@@ -1376,7 +1381,6 @@ app.put(
     }
 );
 
-
 app.post(
     "/api/game/start",
     csrfProtection,
@@ -1414,7 +1418,6 @@ app.post(
         });
     }
 );
-
 
 app.post(
     "/api/game/round",
@@ -1559,7 +1562,6 @@ app.post(
     }
 );
 
-
 app.post(
     "/api/game/finish",
     csrfProtection,
@@ -1634,7 +1636,6 @@ app.post(
     }
 );
 
-
 app.post(
     "/api/game2048/start",
     csrfProtection,
@@ -1653,7 +1654,6 @@ app.post(
         });
     }
 );
-
 
 app.post(
     "/api/game2048/undo",
@@ -1792,7 +1792,6 @@ app.post(
     }
 );
 
-
 app.delete(
     "/api/statistics/2048",
     csrfProtection,
@@ -1814,7 +1813,6 @@ app.delete(
         });
     }
 );
-
 
 app.delete(
     "/api/statistics",
@@ -1841,7 +1839,6 @@ app.delete(
         });
     }
 );
-
 
 if (isProduction) {
     app.use(
@@ -1870,7 +1867,6 @@ if (isProduction) {
     );
 }
 
-
 app.use(
     express.static(
         path.join(
@@ -1891,7 +1887,6 @@ app.use(
     )
 );
 
-
 app.get(
     "/*splat",
     (req, res) => {
@@ -1904,7 +1899,6 @@ app.get(
         );
     }
 );
-
 
 app.use(
     (error, req, res, next) => {
@@ -1946,7 +1940,6 @@ const server =
             }
         }
     );
-
 
 function shutdown(signal) {
     console.log(

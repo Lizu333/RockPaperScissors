@@ -17,64 +17,55 @@ function emptyStatistics() {
 }
 
 function applyStatistics(data) {
-    if (!data) {
-        return;
-    }
+    if (!data) return;
 
     appState.statistics = {
-        gamesPlayed:
-            Number(data.games_played) || 0,
-
-        wins:
-            Number(data.wins) || 0,
-
-        losses:
-            Number(data.losses) || 0,
-
-        draws:
-            Number(data.draws) || 0,
-
-        rock:
-            Number(data.rock) || 0,
-
-        paper:
-            Number(data.paper) || 0,
-
-        scissors:
-            Number(data.scissors) || 0,
-
-        matches2048:
-            Number(data.matches_2048) || 0,
-
-        maxScore2048:
-            Number(data.max_score_2048) || 0,
-
-        undosUsed2048:
-            Number(data.undos_used_2048) || 0
+        gamesPlayed: Number(data.games_played) || 0,
+        wins: Number(data.wins) || 0,
+        losses: Number(data.losses) || 0,
+        draws: Number(data.draws) || 0,
+        rock: Number(data.rock) || 0,
+        paper: Number(data.paper) || 0,
+        scissors: Number(data.scissors) || 0,
+        matches2048: Number(data.matches_2048) || 0,
+        maxScore2048: Number(data.max_score_2048) || 0,
+        undosUsed2048: Number(data.undos_used_2048) || 0
     };
 
     updateStatisticsUI();
 }
 
-async function apiFetch(
-    url,
-    options = {}
-) {
+function setLoggedOutState() {
+    appState.currentUser = null;
+    appState.csrfToken = null;
+    appState.statistics = emptyStatistics();
+
+    updateProfileUI();
+    updateStatisticsUI();
+}
+
+function getAuthErrorElement() {
+    return document.getElementById("auth-error");
+}
+
+function setAuthError(message = "") {
+    const element = getAuthErrorElement();
+
+    if (element) {
+        element.textContent = message;
+    }
+}
+
+async function apiFetch(url, options = {}) {
     const method =
-        options.method || "GET";
+        String(
+            options.method || "GET"
+        ).toUpperCase();
 
-    const headers = new Headers(
-        options.headers || {}
-    );
-
-    const fetchOptions = {
-        ...options,
-
-        credentials:
-            "same-origin",
-
-        headers
-    };
+    const headers =
+        new Headers(
+            options.headers || {}
+        );
 
     if (
         [
@@ -82,13 +73,13 @@ async function apiFetch(
             "PUT",
             "PATCH",
             "DELETE"
-        ].includes(
-            method.toUpperCase()
-        )
+        ].includes(method)
     ) {
-        if (
-            appState.csrfToken
-        ) {
+        if (!appState.csrfToken) {
+            await loadCsrfToken();
+        }
+
+        if (appState.csrfToken) {
             headers.set(
                 "X-CSRF-Token",
                 appState.csrfToken
@@ -98,7 +89,14 @@ async function apiFetch(
 
     return fetch(
         url,
-        fetchOptions
+        {
+            ...options,
+            credentials: "same-origin",
+            cache:
+                options.cache ||
+                "no-store",
+            headers
+        }
     );
 }
 
@@ -111,7 +109,8 @@ async function loadCsrfToken() {
                     method: "GET",
                     credentials:
                         "same-origin",
-                    cache: "no-store"
+                    cache:
+                        "no-store"
                 }
             );
 
@@ -123,6 +122,7 @@ async function loadCsrfToken() {
             !data.csrfToken
         ) {
             throw new Error(
+                data.error ||
                 "CSRF token betöltése sikertelen."
             );
         }
@@ -149,42 +149,40 @@ async function checkLogin() {
                 {
                     credentials:
                         "same-origin",
-                    cache: "no-store"
+                    cache:
+                        "no-store"
                 }
             );
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
 
         const data =
             await response.json();
 
-        if (
-            !data.loggedIn
-        ) {
-            appState.currentUser =
-                null;
-
-            appState.csrfToken =
-                null;
-
-            appState.statistics =
-                emptyStatistics();
+        if (!data.loggedIn) {
+            setLoggedOutState();
 
             await loadCsrfToken();
 
-            updateProfileUI();
-            updateStatisticsUI();
+            showScreen(
+                "auth-screen"
+            );
 
-            return;
+            return false;
         }
 
         appState.currentUser =
             data.user;
 
         appState.csrfToken =
-            data.csrfToken || null;
+            data.csrfToken ||
+            null;
 
-        if (
-            data.user.theme
-        ) {
+        if (data.user.theme) {
             setTheme(
                 data.user.theme,
                 false
@@ -192,7 +190,8 @@ async function checkLogin() {
         }
 
         setDifficulty(
-            data.user.difficulty || 5,
+            data.user.difficulty ||
+                5,
             false
         );
 
@@ -201,33 +200,39 @@ async function checkLogin() {
         );
 
         updateProfileUI();
+
+        showScreen(
+            "menu-screen"
+        );
+
+        return true;
     } catch (error) {
         console.error(
             "checkLogin error:",
             error
         );
+
+        setLoggedOutState();
+
+        showScreen(
+            "auth-screen"
+        );
+
+        return false;
     }
 }
 
 async function registerUser(
     username,
     password,
+    passwordConfirm,
     privacyAccepted
 ) {
-    const errorElement =
-        document.getElementById(
-            "auth-error"
-        );
-
-    if (!errorElement) {
-        return;
-    }
-
-    errorElement.textContent = "";
+    setAuthError("");
 
     const genderElement =
         document.querySelector(
-            'input[name="gender"]:checked'
+            'input[name="auth-gender"]:checked'
         );
 
     const gender =
@@ -237,16 +242,12 @@ async function registerUser(
 
     try {
         if (
-            !appState.csrfToken
+            !appState.csrfToken &&
+            !(await loadCsrfToken())
         ) {
-            const csrfOk =
-                await loadCsrfToken();
-
-            if (!csrfOk) {
-                throw new Error(
-                    "CSRF token unavailable"
-                );
-            }
+            throw new Error(
+                "CSRF token unavailable"
+            );
         }
 
         const response =
@@ -263,6 +264,7 @@ async function registerUser(
                     body: JSON.stringify({
                         username,
                         password,
+                        passwordConfirm,
                         gender,
                         privacyAccepted
                     })
@@ -272,25 +274,23 @@ async function registerUser(
         const data =
             await response.json();
 
-        if (
-            !response.ok
-        ) {
-            errorElement.textContent =
+        if (!response.ok) {
+            setAuthError(
                 data.error ||
-                "Hiba történt.";
+                "Hiba történt."
+            );
 
-            return;
+            return false;
         }
 
         appState.currentUser =
             data.user;
 
         appState.csrfToken =
-            data.csrfToken || null;
+            data.csrfToken ||
+            null;
 
-        if (
-            data.user.theme
-        ) {
+        if (data.user.theme) {
             setTheme(
                 data.user.theme,
                 false
@@ -306,48 +306,43 @@ async function registerUser(
         await loadUserStatistics();
 
         updateProfileUI();
+
+        showScreen(
+            "menu-screen"
+        );
+
+        return true;
     } catch (error) {
         console.error(
             "registerUser error:",
             error
         );
 
-        errorElement.textContent =
+        setAuthError(
             appState.currentLanguage ===
-            "hu"
+                "hu"
                 ? "Nem sikerült kapcsolódni a szerverhez."
-                : "Could not connect to the server.";
+                : "Could not connect to the server."
+        );
+
+        return false;
     }
 }
-
 
 async function loginUser(
     username,
     password
 ) {
-    const errorElement =
-        document.getElementById(
-            "auth-error"
-        );
-
-    if (!errorElement) {
-        return;
-    }
-
-    errorElement.textContent = "";
+    setAuthError("");
 
     try {
         if (
-            !appState.csrfToken
+            !appState.csrfToken &&
+            !(await loadCsrfToken())
         ) {
-            const csrfOk =
-                await loadCsrfToken();
-
-            if (!csrfOk) {
-                throw new Error(
-                    "CSRF token unavailable"
-                );
-            }
+            throw new Error(
+                "CSRF token unavailable"
+            );
         }
 
         const response =
@@ -371,31 +366,28 @@ async function loginUser(
         const data =
             await response.json();
 
-        if (
-            !response.ok
-        ) {
-            errorElement.textContent =
+        if (!response.ok) {
+            setAuthError(
                 data.error ||
                 (
                     appState.currentLanguage ===
-                    "hu"
+                        "hu"
                         ? "Hibás felhasználónév vagy jelszó!"
                         : "Invalid username or password!"
-                );
+                )
+            );
 
-            return;
+            return false;
         }
 
-        
         appState.currentUser =
             data.user;
 
         appState.csrfToken =
-            data.csrfToken || null;
+            data.csrfToken ||
+            null;
 
-        if (
-            data.user.theme
-        ) {
+        if (data.user.theme) {
             setTheme(
                 data.user.theme,
                 false
@@ -411,20 +403,28 @@ async function loginUser(
         await loadUserStatistics();
 
         updateProfileUI();
+
+        showScreen(
+            "menu-screen"
+        );
+
+        return true;
     } catch (error) {
         console.error(
             "loginUser error:",
             error
         );
 
-        errorElement.textContent =
+        setAuthError(
             appState.currentLanguage ===
-            "hu"
+                "hu"
                 ? "Nem sikerült kapcsolódni a szerverhez."
-                : "Could not connect to the server.";
+                : "Could not connect to the server."
+        );
+
+        return false;
     }
 }
-
 
 async function logoutUser() {
     try {
@@ -436,9 +436,7 @@ async function logoutUser() {
                 }
             );
 
-        if (
-            !response.ok
-        ) {
+        if (!response.ok) {
             const data =
                 await response
                     .json()
@@ -458,30 +456,17 @@ async function logoutUser() {
         );
     }
 
-    appState.currentUser =
-        null;
-
-    appState.csrfToken =
-        null;
-
-    appState.statistics =
-        emptyStatistics();
-
-    updateProfileUI();
-    updateStatisticsUI();
+    setLoggedOutState();
 
     await loadCsrfToken();
 
     showScreen(
-        "menu-screen"
+        "auth-screen"
     );
 }
 
-
 async function loadUserStatistics() {
-    if (
-        !appState.currentUser
-    ) {
+    if (!appState.currentUser) {
         return;
     }
 
@@ -492,7 +477,8 @@ async function loadUserStatistics() {
                 {
                     credentials:
                         "same-origin",
-                    cache: "no-store"
+                    cache:
+                        "no-store"
                 }
             );
 
@@ -500,30 +486,26 @@ async function loadUserStatistics() {
             await response.json();
 
         if (
+            !response.ok ||
             !data.loggedIn
         ) {
-            appState.currentUser =
-                null;
-
-            appState.csrfToken =
-                null;
-
-            appState.statistics =
-                emptyStatistics();
+            setLoggedOutState();
 
             await loadCsrfToken();
 
-            updateProfileUI();
-            updateStatisticsUI();
+            showScreen(
+                "auth-screen"
+            );
 
-            return;
+            return false;
         }
 
         appState.currentUser =
             data.user;
 
         appState.csrfToken =
-            data.csrfToken || null;
+            data.csrfToken ||
+            appState.csrfToken;
 
         setDifficulty(
             data.user.difficulty ||
@@ -536,18 +518,22 @@ async function loadUserStatistics() {
         );
 
         updateProfileUI();
+
+        return true;
     } catch (error) {
         console.error(
             "loadUserStatistics error:",
             error
         );
+
+        return false;
     }
 }
 
 function updateProfileUI() {
     const authForms =
         document.getElementById(
-            "auth-forms"
+            "profile-auth-forms"
         );
 
     const loggedInView =
@@ -574,9 +560,7 @@ function updateProfileUI() {
         return;
     }
 
-    if (
-        appState.currentUser
-    ) {
+    if (appState.currentUser) {
         authForms.style.display =
             "none";
 
@@ -599,7 +583,6 @@ function updateProfileUI() {
             "none";
     }
 }
-
 
 async function setTheme(
     themeKey,
@@ -643,15 +626,9 @@ async function setTheme(
                 }
             );
 
-        if (
-            response.ok
-        ) {
+        if (response.ok) {
             appState.currentUser.theme =
                 themeKey;
-        } else {
-            console.error(
-                "A téma mentése sikertelen."
-            );
         }
     } catch (error) {
         console.error(
@@ -685,9 +662,11 @@ async function setDifficulty(
         Number(value);
 
     if (
-        ![3, 5, 10].includes(
-            parsedValue
-        )
+        ![
+            3,
+            5,
+            10
+        ].includes(parsedValue)
     ) {
         return;
     }
@@ -723,18 +702,10 @@ async function setDifficulty(
                 }
             );
 
-        if (
-            !response.ok
-        ) {
-            console.error(
-                "A nehézségi szint mentése sikertelen."
-            );
-
-            return;
+        if (response.ok) {
+            appState.currentUser.difficulty =
+                parsedValue;
         }
-
-        appState.currentUser.difficulty =
-            parsedValue;
     } catch (error) {
         console.error(
             "setDifficulty error:",
@@ -742,7 +713,6 @@ async function setDifficulty(
         );
     }
 }
-
 
 function updateStatisticsUI() {
     const gamesPlayed =
@@ -787,58 +757,48 @@ function updateStatisticsUI() {
 
     if (gamesPlayed) {
         gamesPlayed.textContent =
-            appState.statistics
-                .gamesPlayed;
+            appState.statistics.gamesPlayed;
     }
 
     if (totalWins) {
         totalWins.textContent =
-            appState.statistics
-                .wins;
+            appState.statistics.wins;
     }
 
     if (totalLosses) {
         totalLosses.textContent =
-            appState.statistics
-                .losses;
+            appState.statistics.losses;
     }
 
     if (totalDraws) {
         totalDraws.textContent =
-            appState.statistics
-                .draws;
+            appState.statistics.draws;
     }
 
     if (rockUsed) {
         rockUsed.textContent =
-            appState.statistics
-                .rock;
+            appState.statistics.rock;
     }
 
     if (paperUsed) {
         paperUsed.textContent =
-            appState.statistics
-                .paper;
+            appState.statistics.paper;
     }
 
     if (scissorsUsed) {
         scissorsUsed.textContent =
-            appState.statistics
-                .scissors;
+            appState.statistics.scissors;
     }
 
     const winRate =
-        appState.statistics
-            .gamesPlayed > 0
+        appState.statistics.gamesPlayed >
+        0
             ? Math.round(
                   (
-                      appState
-                          .statistics
-                          .wins /
-                      appState
-                          .statistics
-                          .gamesPlayed
-                  ) * 100
+                      appState.statistics.wins /
+                      appState.statistics.gamesPlayed
+                  ) *
+                      100
               )
             : 0;
 
@@ -864,23 +824,19 @@ function updateStatisticsUI() {
 
     if (matches2048Elem) {
         matches2048Elem.textContent =
-            appState.statistics
-                .matches2048;
+            appState.statistics.matches2048;
     }
 
     if (bestScore2048Elem) {
         bestScore2048Elem.textContent =
-            appState.statistics
-                .maxScore2048;
+            appState.statistics.maxScore2048;
     }
 
     if (undosUsed2048Elem) {
         undosUsed2048Elem.textContent =
-            appState.statistics
-                .undosUsed2048;
+            appState.statistics.undosUsed2048;
     }
 }
-
 
 function setActiveProfileGame(
     game
@@ -894,8 +850,7 @@ function setActiveProfileGame(
         )
         .forEach(btn => {
             const isActive =
-                btn.dataset
-                    .profileGame ===
+                btn.dataset.profileGame ===
                 game;
 
             btn.classList.toggle(
@@ -936,7 +891,6 @@ function setActiveProfileGame(
     }
 }
 
-
 document
     .querySelectorAll(
         ".profile-game-tab"
@@ -946,13 +900,11 @@ document
             "click",
             () => {
                 setActiveProfileGame(
-                    btn.dataset
-                        .profileGame
+                    btn.dataset.profileGame
                 );
             }
         );
     });
-
 
 export {
     emptyStatistics,
