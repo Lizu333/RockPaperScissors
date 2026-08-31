@@ -1923,10 +1923,10 @@ app.use(
 const server =
     app.listen(
         PORT,
-        "127.0.0.1",
+        "0.0.0.0",
         () => {
             console.log(
-                `Szerver fut: http://127.0.0.1:${PORT}`
+                `Szerver fut: ${PORT}`
             );
 
             if (isProduction) {
