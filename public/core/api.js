@@ -17,7 +17,9 @@ function emptyStatistics() {
 }
 
 function applyStatistics(data) {
-    if (!data) return;
+    if (!data) {
+        return;
+    }
 
     appState.statistics = {
         gamesPlayed: Number(data.games_played) || 0,
@@ -44,82 +46,56 @@ function setLoggedOutState() {
     updateStatisticsUI();
 }
 
-function getAuthErrorElement() {
-    return document.getElementById("auth-error");
+function getAuthErrorElements() {
+    return [
+        document.getElementById("auth-error"),
+        document.getElementById("profile-auth-error"),
+        document.getElementById("auth-register-error")
+    ].filter(Boolean);
 }
 
 function setAuthError(message = "") {
-    const element = getAuthErrorElement();
-
-    if (element) {
+    getAuthErrorElements().forEach(element => {
         element.textContent = message;
-    }
+    });
 }
 
-async function apiFetch(url, options = {}) {
-    const method =
-        String(
-            options.method || "GET"
-        ).toUpperCase();
-
-    const headers =
-        new Headers(
-            options.headers || {}
-        );
+async function parseJsonResponse(response) {
+    const contentType =
+        response.headers.get("content-type") || "";
 
     if (
-        [
-            "POST",
-            "PUT",
-            "PATCH",
-            "DELETE"
-        ].includes(method)
+        contentType
+            .toLowerCase()
+            .includes("application/json")
     ) {
-        if (!appState.csrfToken) {
-            await loadCsrfToken();
-        }
-
-        if (appState.csrfToken) {
-            headers.set(
-                "X-CSRF-Token",
-                appState.csrfToken
-            );
-        }
+        return await response.json();
     }
 
-    return fetch(
-        url,
-        {
-            ...options,
-            credentials: "same-origin",
-            cache:
-                options.cache ||
-                "no-store",
-            headers
-        }
-    );
+    return {};
 }
 
 async function loadCsrfToken() {
     try {
-        const response =
-            await fetch(
-                "/api/csrf",
-                {
-                    method: "GET",
-                    credentials:
-                        "same-origin",
-                    cache:
-                        "no-store"
+        const response = await fetch(
+            "/api/csrf",
+            {
+                method: "GET",
+                credentials: "same-origin",
+                cache: "no-store",
+                headers: {
+                    "Accept": "application/json"
                 }
-            );
+            }
+        );
 
         const data =
-            await response.json();
+            await parseJsonResponse(response);
 
         if (
             !response.ok ||
-            !data.csrfToken
+            typeof data.csrfToken !== "string" ||
+            data.csrfToken.length === 0
         ) {
             throw new Error(
                 data.error ||
@@ -137,8 +113,58 @@ async function loadCsrfToken() {
             error
         );
 
+        appState.csrfToken = null;
+
         return false;
     }
+}
+
+async function apiFetch(url, options = {}) {
+    const method =
+        String(
+            options.method || "GET"
+        ).toUpperCase();
+
+    const headers =
+        new Headers(
+            options.headers || {}
+        );
+
+    const protectedMethods = [
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE"
+    ];
+
+    if (
+        protectedMethods.includes(method)
+    ) {
+        if (
+            !appState.csrfToken &&
+            !(await loadCsrfToken())
+        ) {
+            throw new Error(
+                "CSRF token unavailable"
+            );
+        }
+
+        headers.set(
+            "X-CSRF-Token",
+            appState.csrfToken
+        );
+    }
+
+    return fetch(
+        url,
+        {
+            ...options,
+            method,
+            credentials: "same-origin",
+            cache: "no-store",
+            headers
+        }
+    );
 }
 
 async function checkLogin() {
@@ -147,12 +173,24 @@ async function checkLogin() {
             await fetch(
                 "/api/me",
                 {
-                    credentials:
-                        "same-origin",
-                    cache:
-                        "no-store"
+                    method: "GET",
+                    credentials: "same-origin",
+                    cache: "no-store",
+                    headers: {
+                        "Accept": "application/json"
+                    }
                 }
             );
+
+        if (
+            response.status === 403
+        ) {
+            showScreen(
+                "auth-screen"
+            );
+
+            return false;
+        }
 
         if (!response.ok) {
             throw new Error(
@@ -166,7 +204,11 @@ async function checkLogin() {
         if (!data.loggedIn) {
             setLoggedOutState();
 
-            await loadCsrfToken();
+            if (
+                !appState.csrfToken
+            ) {
+                await loadCsrfToken();
+            }
 
             showScreen(
                 "auth-screen"
@@ -179,21 +221,32 @@ async function checkLogin() {
             data.user;
 
         appState.csrfToken =
-            data.csrfToken ||
-            null;
+            data.csrfToken || null;
 
-        if (data.user.theme) {
+        if (
+            data.user &&
+            data.user.theme
+        ) {
             setTheme(
                 data.user.theme,
                 false
             );
         }
 
-        setDifficulty(
-            data.user.difficulty ||
+        if (
+            data.user &&
+            data.user.difficulty
+        ) {
+            setDifficulty(
+                data.user.difficulty,
+                false
+            );
+        } else {
+            setDifficulty(
                 5,
-            false
-        );
+                false
+            );
+        }
 
         applyStatistics(
             data.statistics
@@ -258,6 +311,8 @@ async function registerUser(
 
                     headers: {
                         "Content-Type":
+                            "application/json",
+                        "Accept":
                             "application/json"
                     },
 
@@ -272,25 +327,43 @@ async function registerUser(
             );
 
         const data =
-            await response.json();
+            await parseJsonResponse(
+                response
+            );
 
         if (!response.ok) {
             setAuthError(
                 data.error ||
-                "Hiba történt."
+                (
+                    appState.currentLanguage ===
+                        "hu"
+                        ? "A regisztráció sikertelen."
+                        : "Registration failed."
+                )
             );
 
             return false;
+        }
+
+        if (
+            !data.user ||
+            typeof data.user.username !==
+                "string"
+        ) {
+            throw new Error(
+                "Invalid registration response"
+            );
         }
 
         appState.currentUser =
             data.user;
 
         appState.csrfToken =
-            data.csrfToken ||
-            null;
+            data.csrfToken || null;
 
-        if (data.user.theme) {
+        if (
+            data.user.theme
+        ) {
             setTheme(
                 data.user.theme,
                 false
@@ -298,12 +371,18 @@ async function registerUser(
         }
 
         setDifficulty(
-            data.user.difficulty ||
-                5,
+            data.user.difficulty || 5,
             false
         );
 
-        await loadUserStatistics();
+        const loaded =
+            await loadUserStatistics();
+
+        if (!loaded) {
+            throw new Error(
+                "A regisztráció után a munkamenet nem volt elérhető."
+            );
+        }
 
         updateProfileUI();
 
@@ -353,6 +432,8 @@ async function loginUser(
 
                     headers: {
                         "Content-Type":
+                            "application/json",
+                        "Accept":
                             "application/json"
                     },
 
@@ -364,7 +445,9 @@ async function loginUser(
             );
 
         const data =
-            await response.json();
+            await parseJsonResponse(
+                response
+            );
 
         if (!response.ok) {
             setAuthError(
@@ -380,14 +463,25 @@ async function loginUser(
             return false;
         }
 
+        if (
+            !data.user ||
+            typeof data.user.username !==
+                "string"
+        ) {
+            throw new Error(
+                "Invalid login response"
+            );
+        }
+
         appState.currentUser =
             data.user;
 
         appState.csrfToken =
-            data.csrfToken ||
-            null;
+            data.csrfToken || null;
 
-        if (data.user.theme) {
+        if (
+            data.user.theme
+        ) {
             setTheme(
                 data.user.theme,
                 false
@@ -395,12 +489,18 @@ async function loginUser(
         }
 
         setDifficulty(
-            data.user.difficulty ||
-                5,
+            data.user.difficulty || 5,
             false
         );
 
-        await loadUserStatistics();
+        const loaded =
+            await loadUserStatistics();
+
+        if (!loaded) {
+            throw new Error(
+                "A bejelentkezés után a session nem volt elérhető."
+            );
+        }
 
         updateProfileUI();
 
@@ -428,26 +528,39 @@ async function loginUser(
 
 async function logoutUser() {
     try {
+        if (!appState.csrfToken) {
+            await loadCsrfToken();
+        }
+
         const response =
             await apiFetch(
                 "/api/logout",
                 {
-                    method: "POST"
+                    method: "POST",
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
                 }
             );
 
-        if (!response.ok) {
-            const data =
-                await response
-                    .json()
-                    .catch(
-                        () => ({})
-                    );
+        const data =
+            await parseJsonResponse(
+                response
+            );
 
+        if (
+            !response.ok
+        ) {
             console.error(
                 "Logout error:",
                 data
             );
+        } else if (
+            data.csrfToken
+        ) {
+            appState.csrfToken =
+                data.csrfToken;
         }
     } catch (error) {
         console.error(
@@ -458,8 +571,6 @@ async function logoutUser() {
 
     setLoggedOutState();
 
-    await loadCsrfToken();
-
     showScreen(
         "auth-screen"
     );
@@ -467,7 +578,7 @@ async function logoutUser() {
 
 async function loadUserStatistics() {
     if (!appState.currentUser) {
-        return;
+        return false;
     }
 
     try {
@@ -475,27 +586,39 @@ async function loadUserStatistics() {
             await fetch(
                 "/api/me",
                 {
-                    credentials:
-                        "same-origin",
-                    cache:
-                        "no-store"
+                    method: "GET",
+                    credentials: "same-origin",
+                    cache: "no-store",
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
                 }
             );
+
+        if (
+            response.status === 401 ||
+            response.status === 403
+        ) {
+            setLoggedOutState();
+
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
 
         const data =
             await response.json();
 
         if (
-            !response.ok ||
-            !data.loggedIn
+            !data.loggedIn ||
+            !data.user
         ) {
             setLoggedOutState();
-
-            await loadCsrfToken();
-
-            showScreen(
-                "auth-screen"
-            );
 
             return false;
         }
@@ -503,13 +626,15 @@ async function loadUserStatistics() {
         appState.currentUser =
             data.user;
 
-        appState.csrfToken =
-            data.csrfToken ||
-            appState.csrfToken;
+        if (
+            data.csrfToken
+        ) {
+            appState.csrfToken =
+                data.csrfToken;
+        }
 
         setDifficulty(
-            data.user.difficulty ||
-                5,
+            data.user.difficulty || 5,
             false
         );
 
@@ -560,7 +685,9 @@ function updateProfileUI() {
         return;
     }
 
-    if (appState.currentUser) {
+    if (
+        appState.currentUser
+    ) {
         authForms.style.display =
             "none";
 
@@ -588,6 +715,23 @@ async function setTheme(
     themeKey,
     saveToServer = true
 ) {
+    const allowedThemes = [
+        "cream-teal",
+        "wine-pink",
+        "olive-cream",
+        "pink-brown",
+        "blue-brown",
+        "yellow-plum"
+    ];
+
+    if (
+        !allowedThemes.includes(
+            themeKey
+        )
+    ) {
+        return;
+    }
+
     appState.currentTheme =
         themeKey;
 
@@ -617,6 +761,8 @@ async function setTheme(
 
                     headers: {
                         "Content-Type":
+                            "application/json",
+                        "Accept":
                             "application/json"
                     },
 
@@ -626,7 +772,9 @@ async function setTheme(
                 }
             );
 
-        if (response.ok) {
+        if (
+            response.ok
+        ) {
             appState.currentUser.theme =
                 themeKey;
         }
@@ -692,6 +840,8 @@ async function setDifficulty(
 
                     headers: {
                         "Content-Type":
+                            "application/json",
+                        "Accept":
                             "application/json"
                     },
 
@@ -702,7 +852,9 @@ async function setDifficulty(
                 }
             );
 
-        if (response.ok) {
+        if (
+            response.ok
+        ) {
             appState.currentUser.difficulty =
                 parsedValue;
         }
@@ -791,8 +943,7 @@ function updateStatisticsUI() {
     }
 
     const winRate =
-        appState.statistics.gamesPlayed >
-        0
+        appState.statistics.gamesPlayed > 0
             ? Math.round(
                   (
                       appState.statistics.wins /

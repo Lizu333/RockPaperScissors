@@ -184,7 +184,7 @@ class SqliteSessionStore extends session.Store {
                 sess.cookie && sess.cookie.expires
                     ? new Date(sess.cookie.expires).getTime()
                     : Date.now() +
-                      1000 * 60 * 60 * 24 * 7;
+                    1000 * 60 * 60 * 24 * 7;
 
             this.db
                 .prepare(`
@@ -330,10 +330,10 @@ app.use(
 
         hsts: isProduction
             ? {
-                  maxAge: 31536000,
-                  includeSubDomains: true,
-                  preload: true
-              }
+                maxAge: 31536000,
+                includeSubDomains: true,
+                preload: true
+            }
             : false
     })
 );
@@ -497,9 +497,9 @@ function csrfProtection(req, res, next) {
 
     if (
         typeof tokenFromClient !==
-            "string" ||
+        "string" ||
         typeof tokenFromSession !==
-            "string"
+        "string"
     ) {
         return res.status(403).json({
             error:
@@ -920,7 +920,7 @@ app.post(
 
             const cleanGender =
                 gender === "girl" ||
-                gender === "boy"
+                    gender === "boy"
                     ? gender
                     : "";
 
@@ -1054,7 +1054,7 @@ app.post(
             if (
                 error &&
                 error.code ===
-                    "SQLITE_CONSTRAINT_UNIQUE"
+                "SQLITE_CONSTRAINT_UNIQUE"
             ) {
                 return res.status(409).json({
                     error:
@@ -1087,7 +1087,7 @@ app.post(
             if (
                 !cleanUser ||
                 typeof password !==
-                    "string"
+                "string"
             ) {
                 return res.status(401).json({
                     error:
@@ -1259,7 +1259,9 @@ app.get(
                         "lizugames.sid",
                         {
                             httpOnly: true,
-                            secure: isProduction,
+                            secure:
+                                isProduction ||
+                                process.env.USE_SECURE_COOKIE === "true",
                             sameSite: "lax",
                             path: "/"
                         }
@@ -1397,8 +1399,8 @@ app.post(
             )
                 ? requestedDifficulty
                 : getUserDifficulty(
-                      req.session.userId
-                  );
+                    req.session.userId
+                );
 
         req.session.game = {
             playerScore: 0,
@@ -1455,10 +1457,10 @@ app.post(
 
         const computerChoice =
             ALLOWED_CHOICES[
-                Math.floor(
-                    Math.random() *
-                        ALLOWED_CHOICES.length
-                )
+            Math.floor(
+                Math.random() *
+                ALLOWED_CHOICES.length
+            )
             ];
 
         let result;
@@ -1471,21 +1473,21 @@ app.post(
         } else if (
             (
                 playerChoice ===
-                    "rock" &&
+                "rock" &&
                 computerChoice ===
-                    "scissors"
+                "scissors"
             ) ||
             (
                 playerChoice ===
-                    "paper" &&
+                "paper" &&
                 computerChoice ===
-                    "rock"
+                "rock"
             ) ||
             (
                 playerChoice ===
-                    "scissors" &&
+                "scissors" &&
                 computerChoice ===
-                    "paper"
+                "paper"
             )
         ) {
             result = "win";
@@ -1520,9 +1522,9 @@ app.post(
 
         const gameFinished =
             game.playerScore >=
-                targetScore ||
+            targetScore ||
             game.computerScore >=
-                targetScore;
+            targetScore;
 
         let finalResult = null;
 
@@ -1857,8 +1859,8 @@ if (isProduction) {
                 return res.redirect(
                     301,
                     "https://" +
-                        req.get("host") +
-                        req.originalUrl
+                    req.get("host") +
+                    req.originalUrl
                 );
             }
 
