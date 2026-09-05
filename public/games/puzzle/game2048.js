@@ -1,7 +1,11 @@
 import { appState } from "../../core/state.js";
 import { showScreen, openModal } from "../../core/ui.js";
 import { translations } from "../../core/i18n.js";
-import { applyStatistics, updateProfileUI } from "../../core/api.js";
+import {
+    apiFetch,
+    applyStatistics,
+    updateProfileUI
+} from "../../core/api.js";
 
 
 let game2048Board = [];
@@ -110,7 +114,7 @@ async function finish2048Match() {
     }
 
     try {
-        const response = await fetch(
+        const response = await apiFetch(
             "/api/game2048/finish",
             {
                 method: "POST",
@@ -181,10 +185,12 @@ async function start2048Game() {
         return;
     }
 
-    await finish2048Match();
+    if (game2048Active) {
+        await finish2048Match();
+    }
 
     try {
-        const response = await fetch(
+        const response = await apiFetch(
             "/api/game2048/start",
             {
                 method: "POST",
@@ -782,7 +788,7 @@ async function undo2048() {
     }
 
     try {
-        const response = await fetch(
+        const response = await apiFetch(
             "/api/game2048/undo",
             {
                 method: "POST"

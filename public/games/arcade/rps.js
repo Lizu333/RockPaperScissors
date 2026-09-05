@@ -13,6 +13,7 @@ import {
 } from "../../core/i18n.js";
 
 import {
+    apiFetch,
     applyStatistics,
     updateProfileUI
 } from "../../core/api.js";
@@ -29,6 +30,7 @@ let currentTargetScore = 5;
 let gameFinished = false;
 let gameStarting = false;
 let roundInProgress = false;
+let initialized = false;
 
 
 const choiceIcons = {
@@ -150,7 +152,7 @@ async function startGame() {
 
     try {
         const response =
-            await fetch(
+            await apiFetch(
                 "/api/game/start",
                 {
                     method: "POST",
@@ -351,7 +353,7 @@ async function playRound(playerChoice) {
 
     try {
         const responsePromise =
-            fetch(
+            apiFetch(
                 "/api/game/round",
                 {
                     method: "POST",
@@ -530,7 +532,7 @@ async function finishGame(
 
     try {
         const response =
-            await fetch(
+            await apiFetch(
                 "/api/game/finish",
                 {
                     method: "POST",
@@ -691,6 +693,11 @@ function resetGame() {
 
 
 function initRpsGame() {
+    if (initialized) {
+        return;
+    }
+
+    initialized = true;
     const rpsGameBtn =
         document.getElementById("rps-game-btn");
 

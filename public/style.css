@@ -1,10 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
-
-:root {
+:root
+{
     --bg: #efcedb;
     --accent: #4f2b1f;
-    --surface: rgba(0, 0, 0, 0.15);
-    --surface-hover: rgba(255, 255, 255, 0.12);
+    --surface: #f7e4ea;
+    --surface-hover: #f1d7e0;
     --radius: 14px;
     --transition: 0.25s ease;
 }
@@ -12,31 +11,43 @@
 body[data-theme="cream-teal"] {
     --bg: #ffefb3;
     --accent: #013e37;
+    --surface: #fff7d5;
+    --surface-hover: #ffefb3;
 }
 
 body[data-theme="wine-pink"] {
     --bg: #802b35;
     --accent: #ffdee2;
+    --surface: #963a46;
+    --surface-hover: #a94451;
 }
 
 body[data-theme="olive-cream"] {
-    --bg: #9ca764;
+    --bg: #72794e;
     --accent: #f1e8c7;
+    --surface: #565a3e; 
+    --surface-hover: #858d57;
 }
 
 body[data-theme="pink-brown"] {
     --bg: #efcedb;
     --accent: #4f2b1f;
+    --surface: #f7e4ea;
+    --surface-hover: #f1d7e0;
 }
 
 body[data-theme="blue-brown"] {
-    --bg: #a0beda;
+    --bg: #8badcd; /*#a0beda;*/
     --accent: #34211b;
+    --surface: #b8cee3;
+    --surface-hover: #aec6de;
 }
 
 body[data-theme="yellow-plum"] {
     --bg: #ffec8e;
     --accent: #631d3f;
+    --surface: #fff3b8;
+    --surface-hover: #ffef9f;
 }
 
 * {
@@ -51,7 +62,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
-    font-family: "Poppins", sans-serif;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background-color: var(--bg);
     color: var(--accent);
     transition: background-color var(--transition), color var(--transition);
@@ -961,7 +972,6 @@ button {
     border-radius: 20px;
     color: var(--accent);
     cursor: pointer;
-    backdrop-filter: blur(4px);
     transition: var(--transition);
     overflow: hidden;
 }
@@ -1499,9 +1509,6 @@ button {
     }
 
 }
-
-
-/*2048*/
 
 .game-2048-header {
     position: relative;
@@ -2048,4 +2055,705 @@ button {
 @media (max-width: 600px) {
     .auth-screen { min-height: 100vh; }
     .auth-mode-buttons { grid-template-columns: 1fr; }
+}
+
+
+html {
+    min-height: 100%;
+    background: var(--bg);
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px;
+    overflow-x: hidden;
+    background: var(--bg);
+    color: var(--accent);
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    outline-offset: 2px;
+}
+
+.game-container {
+    width: min(960px, 100%);
+    min-height: min(720px, calc(100vh - 48px));
+    padding: 48px;
+    border: 1.5px solid color-mix(in srgb, var(--accent) 85%, transparent);
+    border-radius: 30px;
+    background: var(--surface);
+    box-shadow: 0 18px 45px rgba(79, 43, 31, 0.10);
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn,
+.reset-btn,
+.choice-btn,
+.target-score-btn,
+.setting-lang-btn,
+.sound-toggle,
+.gender-btn,
+.auth-mode-buttons button {
+    transition:
+        transform 0.18s ease,
+        background-color 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.danger-btn:hover,
+.reset-btn:hover,
+.choice-btn:hover,
+.target-score-btn:hover,
+.setting-lang-btn:hover,
+.sound-toggle:hover,
+.gender-btn:hover,
+.auth-mode-buttons button:hover {
+    transform: translateY(-2px);
+}
+
+.primary-btn:active,
+.secondary-btn:active,
+.danger-btn:active,
+.reset-btn:active,
+.choice-btn:active,
+.target-score-btn:active,
+.setting-lang-btn:active,
+.sound-toggle:active,
+.gender-btn:active,
+.auth-mode-buttons button:active {
+    transform: translateY(0);
+}
+
+.primary-btn,
+.secondary-btn,
+.danger-btn {
+    min-height: 48px;
+    border-radius: 14px;
+    padding: 12px 22px;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+}
+
+
+.auth-screen.active {
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-screen-card {
+    width: min(560px, 100%);
+    margin: 0 auto;
+    padding: 8px 0;
+    text-align: center;
+}
+
+.auth-screen-card .games-title {
+    margin-bottom: 10px;
+    font-size: clamp(30px, 5vw, 44px);
+    letter-spacing: -0.035em;
+}
+
+.auth-screen-card .games-subtitle {
+    max-width: 500px;
+    margin: 0 auto 24px;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.auth-mode-buttons {
+    width: 100%;
+    margin: 22px 0 16px;
+    padding: 4px;
+    gap: 4px;
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.auth-mode-buttons button {
+    min-height: 44px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--accent);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.auth-mode-buttons button.active {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 7px 18px rgba(79, 43, 31, 0.14);
+}
+
+.auth-screen-form {
+    width: min(560px, 100%);
+    margin: 0 auto;
+    gap: 13px;
+}
+
+.auth-screen-form input[type="text"],
+.auth-screen-form input[type="password"] {
+    min-height: 50px;
+    padding: 13px 16px;
+    border: 1.5px solid color-mix(in srgb, var(--accent) 72%, transparent);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--accent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.auth-screen-form input::placeholder {
+    color: var(--accent);
+    opacity: 0.52;
+}
+
+.auth-screen-form input:hover {
+    border-color: var(--accent);
+}
+
+.auth-screen-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.auth-screen-form .gender-selection {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 2px 0 0;
+}
+
+.auth-screen-form .gender-btn {
+    min-height: 58px;
+    padding: 10px;
+    border-width: 1.5px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.auth-screen-form .privacy-consent-row {
+    padding: 8px 2px 0;
+    text-align: left;
+}
+
+.auth-screen-form .privacy-checkbox-label {
+    font-size: 12px;
+}
+
+.auth-screen-form .privacy-link-btn {
+    font-size: 12px;
+}
+
+.auth-screen-form .error-text {
+    min-height: 18px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.auth-screen-form > button[type="submit"] {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.games-title {
+    letter-spacing: -0.035em;
+}
+
+.games-subtitle {
+    line-height: 1.6;
+}
+
+.games-grid {
+    max-width: 760px;
+    gap: 18px;
+}
+
+.game-card {
+    min-height: 205px;
+    padding: 26px;
+    border-width: 1.5px;
+    border-radius: 20px;
+    background: var(--surface);
+}
+
+.game-card:not(:disabled):hover {
+    background: var(--surface-hover);
+    box-shadow: 0 16px 34px rgba(79, 43, 31, 0.10);
+}
+
+.game-card-icon {
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.modal {
+    background: rgba(30, 18, 14, 0.48);
+}
+
+.modal-content,
+.game-2048-overlay-content {
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+}
+
+@media (max-width: 700px) {
+    body {
+        padding: 10px;
+    }
+
+    .game-container {
+        min-height: calc(100vh - 20px);
+        padding: 26px 18px;
+        border-radius: 22px;
+    }
+
+    .auth-screen-card {
+        width: 100%;
+    }
+
+    .auth-screen-form .gender-selection {
+        grid-template-columns: 1fr;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+#auth-screen {
+    position: relative;
+    width: 100%;
+}
+
+#auth-screen.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#auth-screen .auth-page-content {
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#auth-screen .logo {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#auth-screen .games-title,
+#auth-screen .games-subtitle {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#auth-screen .games-subtitle {
+    max-width: 520px;
+}
+
+#auth-screen .auth-page-switch {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#auth-screen .auth-page-top-buttons {
+    position: absolute;
+    top: -8px;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    z-index: 20;
+}
+
+#auth-screen .auth-page-top-buttons .icon-btn {
+    flex: 0 0 auto;
+}
+
+#auth-screen .auth-page-form {
+    width: min(420px, 100%);
+    margin: 0 auto;
+    text-align: center;
+}
+
+#auth-screen .auth-inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+#auth-screen .auth-inputs input {
+    width: 100%;
+}
+
+#auth-screen .gender-selection {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 8px 0;
+}
+
+#auth-screen .gender-btn {
+    width: 100%;
+}
+
+#auth-screen .field-note {
+    width: 100%;
+    text-align: center;
+}
+
+#auth-screen .privacy-consent-row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 2px 0;
+    text-align: center;
+}
+
+#auth-screen .privacy-checkbox-label {
+    width: auto;
+    max-width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+}
+
+#auth-screen .privacy-checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex: 0 0 16px;
+}
+
+#auth-screen .privacy-checkbox-label span {
+    text-align: center;
+}
+
+#auth-screen .privacy-link-btn {
+    align-self: center;
+    text-align: center;
+}
+
+#auth-screen .error-text {
+    width: 100%;
+    text-align: center;
+}
+
+#auth-screen .auth-submit-btn {
+    display: flex;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 700px) {
+    #auth-screen .auth-page-content {
+        padding-top: 42px;
+    }
+
+    #auth-screen .auth-page-top-buttons {
+        top: -34px;
+        right: 0;
+        gap: 5px;
+    }
+
+    #auth-screen .auth-page-top-buttons .icon-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    #auth-screen .auth-page-switch {
+        flex-wrap: wrap;
+    }
+
+    #auth-screen .gender-selection {
+        grid-template-columns: 1fr;
+    }
+
+    #auth-screen .privacy-checkbox-label {
+        align-items: flex-start;
+    }
+}
+
+textarea {
+    resize: none;
+}
+
+
+#auth-screen .auth-page-content {
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+
+#auth-screen.auth-choice-mode .games-title,
+#auth-screen.auth-choice-mode .games-subtitle {
+    display: block;
+}
+
+#auth-screen.auth-choice-mode .auth-choice-view {
+    display: flex;
+}
+
+
+#auth-screen.auth-form-mode .games-title,
+#auth-screen.auth-form-mode .games-subtitle {
+    display: none;
+}
+
+#auth-screen .auth-page-top-buttons {
+    position: absolute;
+    top: -8px;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+#auth-screen .auth-page-top-buttons .icon-btn {
+    flex: 0 0 auto;
+}
+
+#auth-screen .auth-choice-view {
+    width: 360px;
+    max-width: 100%;
+    margin: 10px auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#auth-screen .auth-choice-question {
+    margin: 0 0 18px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+#auth-screen .auth-choice-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#auth-screen .auth-choice-btn {
+    width: 100%;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+
+#auth-screen .auth-form-view {
+    position: relative;
+    width: 360px;
+    max-width: 100%;
+    margin: 24px auto 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#auth-screen.auth-form-mode .auth-form-view {
+    display: flex;
+}
+
+#auth-screen .auth-form-header {
+    position: relative;
+    width: 100%;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+#auth-screen .auth-back-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: none;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#auth-screen .auth-back-btn:hover {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+#auth-screen .auth-form-title {
+    margin: 0;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+}
+
+#auth-screen .auth-form-view .auth-page-form {
+    width: 100%;
+    margin: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#auth-screen .auth-form-view .auth-inputs {
+    width: 100%;
+    margin: 10px 0 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#auth-screen .auth-form-view .auth-inputs input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#auth-screen .auth-form-view .gender-selection {
+    width: 100%;
+}
+
+#auth-screen .auth-form-view .privacy-consent-row {
+    width: 100%;
+}
+
+#auth-screen .auth-form-view .auth-submit-btn {
+    width: 170px;
+    min-width: 170px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#auth-screen .auth-form-view .error-text {
+    width: 100%;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    #auth-screen .auth-page-top-buttons {
+        top: -38px;
+        right: 0;
+        gap: 5px;
+    }
+
+    #auth-screen .auth-page-top-buttons .icon-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    #auth-screen .auth-choice-view,
+    #auth-screen .auth-form-view {
+        width: min(360px, 100%);
+    }
+
+    #auth-screen .auth-form-header {
+        margin-top: 4px;
+    }
+
+    #auth-screen .auth-form-view .gender-selection {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.game-container,
+.game-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.game-container {
+    background: var(--surface);
+}
+
+.game-card {
+    background: var(--surface);
+}
+
+.game-card:not(:disabled):hover {
+    background: var(--surface-hover);
 }

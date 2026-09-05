@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="hu">
 
 <head>
@@ -11,7 +10,6 @@
 <body>
     <main class="game-container">
 
-        <!-- AUTH SCREEN -->
         <section id="auth-screen" class="screen active">
             <div class="auth-page-content">
 
@@ -29,148 +27,74 @@
                     Jelentkezz be a már meglévő profilodba, vagy regisztrálj a folytatáshoz.
                 </p>
 
-                <div class="auth-page-switch">
-                    <button
-                        id="auth-login-tab"
-                        class="primary-btn"
-                        type="button"
-                        data-i18n="login">
-                        BEJELENTKEZÉS
-                    </button>
+                <div
+                    id="auth-choice-view"
+                    class="auth-choice-view">
 
-                    <button
-                        id="auth-register-tab"
-                        class="secondary-btn"
-                        type="button"
-                        data-i18n="register">
-                        REGISZTRÁCIÓ
-                    </button>
-                </div>
+                    <p
+                        class="auth-choice-question">
+                        Mit szeretnél csinálni?
+                    </p>
 
-                <!-- AUTH PAGE QUICK ACTIONS -->
-                <div class="auth-page-top-buttons">
+                    <div class="auth-choice-buttons">
 
-                    <button
-                        id="auth-profile-btn"
-                        class="icon-btn"
-                        title="Profil"
-                        aria-label="Profil">
+                        <button
+                            id="auth-login-tab"
+                            class="primary-btn auth-choice-btn"
+                            type="button"
+                            data-i18n="login">
+                            BEJELENTKEZÉS
+                        </button>
 
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
+                        <button
+                            id="auth-register-tab"
+                            class="secondary-btn auth-choice-btn"
+                            type="button"
+                            data-i18n="register">
+                            REGISZTRÁCIÓ
+                        </button>
 
-                            <circle cx="12" cy="8" r="5" />
-                            <path d="M20 21a8 8 0 0 0-16 0" />
-
-                        </svg>
-                    </button>
-
-                    <button
-                        id="auth-settings-btn"
-                        class="icon-btn"
-                        title="Beállítások"
-                        aria-label="Beállítások">
-
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
-
-                            <path
-                                d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0
-                                2.34 2.34 0 0 0 3.319 1.915
-                                2.34 2.34 0 0 1 2.33 4.033
-                                2.34 2.34 0 0 0 0 3.831
-                                2.34 2.34 0 0 1-2.33 4.033
-                                2.34 2.34 0 0 0-3.319 1.915
-                                2.34 2.34 0 0 1-4.659 0
-                                2.34 2.34 0 0 0-3.32-1.915
-                                2.34 2.34 0 0 1-2.33-4.033
-                                2.34 2.34 0 0 0 0-3.831
-                                A2.34 2.34 0 0 1 6.35 6.051
-                                a2.34 2.34 0 0 0 3.319-1.915" />
-
-                            <circle cx="12" cy="12" r="3" />
-
-                        </svg>
-                    </button>
-
-                    <button
-                        id="auth-report-modal-btn"
-                        class="icon-btn"
-                        title="Hibabejelentés"
-                        aria-label="Hibabejelentés">
-
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
-
-                            <path
-                                d="M4 22V4a1 1 0 0 1 .4-.8
-                                A6 6 0 0 1 8 2c3 0 5 2
-                                7.333 2q2 0 3.067-.8
-                                A1 1 0 0 1 20 4v10
-                                a1 1 0 0 1-.4.8
-                                A6 6 0 0 1 16 16
-                                c-3 0-5-2-8-2
-                                a6 6 0 0 0-4 1.528" />
-
-                        </svg>
-                    </button>
-
-                    <button
-                        id="auth-privacy-modal-btn"
-                        class="icon-btn"
-                        title="Adatvédelmi tájékoztató"
-                        aria-label="Adatvédelmi tájékoztató">
-
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round">
-
-                            <path
-                                d="M20 13c0 5-3.5 7.5-7.66 8.95
-                                a1 1 0 0 1-.67-.01
-                                C7.5 20.5 4 18 4 13V6
-                                a1 1 0 0 1 1-1
-                                c2 0 4.5-1.2 6.24-2.72
-                                a1.17 1.17 0 0 1 1.52 0
-                                C14.51 3.81 17 5 19 5
-                                a1 1 0 0 1 1 1z" />
-
-                            <path d="M12 8v4" />
-                            <path d="M12 16h.01" />
-
-                        </svg>
-                    </button>
+                    </div>
 
                 </div>
 
-                <!-- LOGIN -->
+                <div
+                    id="auth-form-view"
+                    class="auth-form-view">
+
+                    <div class="auth-form-header">
+
+                        <button
+                            id="auth-back-btn"
+                            class="auth-back-btn"
+                            type="button"
+                            aria-label="Vissza"
+                            title="Vissza">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true">
+                                <path d="M19 12H5" />
+                                <path d="M12 19l-7-7 7-7" />
+                            </svg>
+
+                        </button>
+
+                        <h2
+                            id="auth-form-title"
+                            class="auth-form-title">
+                            BEJELENTKEZÉS
+                        </h2>
+
+                    </div>
+
                 <div id="auth-login-form" class="auth-page-form">
 
                     <div class="auth-inputs">
@@ -207,11 +131,9 @@
 
                 </div>
 
-                <!-- REGISTER -->
                 <div
                     id="auth-register-form"
-                    class="auth-page-form"
-                    style="display:none;">
+                    class="auth-page-form">
 
                     <div class="auth-inputs">
 
@@ -328,11 +250,11 @@
 
                 </div>
 
+                </div>
+
             </div>
         </section>
 
-
-        <!-- MAIN MENU -->
         <section id="menu-screen" class="screen">
 
             <div class="top-settings-bar">
@@ -475,7 +397,6 @@
 
             <div class="games-grid">
 
-                <!-- RPS -->
                 <button
                     id="rps-game-btn"
                     class="game-card">
@@ -525,7 +446,6 @@
                 </button>
 
 
-                <!-- 2048 -->
                 <button
                     id="2048-game-btn"
                     class="game-card">
@@ -556,8 +476,6 @@
 
                 </button>
 
-
-                <!-- TIC TAC TOE -->
                 <button
                     id="tictactoe-game-btn"
                     class="game-card">
@@ -586,11 +504,9 @@
                     <div class="game-card-content">
 
                         <h2 data-i18n="tictactoeTitle">
-                            Tic-Tac-Toe
                         </h2>
 
                         <p data-i18n="tictactoeDescription">
-                            3 a sorban.
                         </p>
 
                     </div>
@@ -601,8 +517,6 @@
 
                 </button>
 
-
-                <!-- SUDOKU -->
                 <button
                     id="sudoku-game-btn"
                     class="game-card game-card-disabled"
@@ -612,7 +526,6 @@
                     <span
                         class="game-card-coming-soon"
                         data-i18n="comingSoon">
-                        HAMAROSAN
                     </span>
 
                     <div class="game-card-icon">
@@ -641,11 +554,9 @@
                     <div class="game-card-content">
 
                         <h2 data-i18n="sudokuTitle">
-                            Sudoku
                         </h2>
 
                         <p data-i18n="sudokuDescription">
-                            A klasszikus Sudoku játék.
                         </p>
 
                     </div>
@@ -660,8 +571,6 @@
 
         </section>
 
-
-        <!-- RPS GAME -->
         <section id="game-screen" class="screen">
 
             <header class="game-header">
@@ -925,8 +834,6 @@
 
         </section>
 
-
-        <!-- 2048 -->
         <section id="game-2048-screen" class="screen">
 
             <header class="game-2048-header">
@@ -1068,8 +975,6 @@
 
         </section>
 
-
-        <!-- TIC TAC TOE -->
         <section id="tictactoe-screen" class="screen">
 
             <header class="game-header">
@@ -1178,8 +1083,6 @@
 
         </section>
 
-
-        <!-- TIC TAC TOE END -->
         <section id="tictactoe-end-screen" class="screen">
 
             <div class="end-icon">
@@ -1213,8 +1116,6 @@
 
         </section>
 
-
-        <!-- RPS END -->
         <section id="end-screen" class="screen">
 
             <div
@@ -1266,8 +1167,6 @@
 
         </section>
 
-
-        <!-- PROFILE MODAL -->
         <div
             id="profile-modal"
             class="modal">
@@ -1684,8 +1583,6 @@
 
         </div>
 
-
-        <!-- SETTINGS -->
         <div
             id="settings-modal"
             class="modal">
@@ -1822,8 +1719,6 @@
 
         </div>
 
-
-        <!-- REPORT -->
         <div
             id="report-modal"
             class="modal">
@@ -1877,8 +1772,6 @@
 
         </div>
 
-
-        <!-- PRIVACY -->
         <div
             id="privacy-modal"
             class="modal">
@@ -1911,8 +1804,6 @@
 
         </div>
 
-
-        <!-- CONFIRM -->
         <div
             id="confirm-modal"
             class="modal">
@@ -1976,8 +1867,6 @@
 
         </div>
 
-
-        <!-- CREATOR -->
         <div
             id="creator-modal"
             class="modal">
@@ -2053,8 +1942,6 @@
 
     </main>
 
-
-    <!-- CREATOR TAB -->
     <div class="creator-tab-container">
 
         <button
@@ -2108,3 +1995,4 @@
 </body>
 
 </html>
+

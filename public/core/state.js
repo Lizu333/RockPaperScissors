@@ -24,30 +24,6 @@ export const appState = {
 };
 
 
-(function setupCsrfFetchWrapper() {
-    const originalFetch = window.fetch.bind(window);
-
-    window.fetch = (input, init = {}) => {
-        const method = (init.method || "GET").toUpperCase();
-
-        if (
-            appState.csrfToken &&
-            ["POST", "PUT", "DELETE", "PATCH"].includes(method)
-        ) {
-            init = {
-                ...init,
-                headers: {
-                    ...(init.headers || {}),
-                    "X-CSRF-Token": appState.csrfToken
-                }
-            };
-        }
-
-        return originalFetch(input, init);
-    };
-})();
-
-
 export function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

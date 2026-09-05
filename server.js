@@ -10,6 +10,8 @@ require("dotenv").config();
 
 const app = express();
 
+app.disable("x-powered-by");
+
 const PORT = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -351,6 +353,16 @@ app.use(
         limit: "50kb"
     })
 );
+
+app.use((error, req, res, next) => {
+    if (error instanceof SyntaxError && error.status === 400 && "body" in error) {
+        return res.status(400).json({
+            error: "Érvénytelen kérésformátum."
+        });
+    }
+
+    next(error);
+});
 
 const sessionStore =
     new SqliteSessionStore(db);
@@ -863,13 +875,17 @@ app.post(
     csrfProtection,
     async (req, res) => {
         try {
+            const body = req.body && typeof req.body === "object"
+                ? req.body
+                : {};
+
             const {
                 username,
                 password,
                 passwordConfirm,
                 gender,
                 privacyAccepted
-            } = req.body;
+            } = body;
 
             const cleanUser =
                 cleanUsername(username);
@@ -1046,10 +1062,12 @@ app.post(
                 }
             });
         } catch (error) {
-            console.error(
-                "Register error:",
-                error
-            );
+            console.error("Register error:", {
+                name: error?.name,
+                code: error?.code,
+                message: error?.message,
+                stack: error?.stack
+            });
 
             if (
                 error &&
@@ -1076,10 +1094,14 @@ app.post(
     csrfProtection,
     async (req, res) => {
         try {
+            const body = req.body && typeof req.body === "object"
+                ? req.body
+                : {};
+
             const {
                 username,
                 password
-            } = req.body;
+            } = body;
 
             const cleanUser =
                 cleanUsername(username);
@@ -1171,10 +1193,12 @@ app.post(
                 }
             });
         } catch (error) {
-            console.error(
-                "Login error:",
-                error
-            );
+            console.error("Login error:", {
+                name: error?.name,
+                code: error?.code,
+                message: error?.message,
+                stack: error?.stack
+            });
 
             res.status(500).json({
                 error:

@@ -19,7 +19,8 @@ import {
     setTheme,
     setDifficulty,
     updateProfileUI,
-    updateStatisticsUI
+    updateStatisticsUI,
+    apiFetch
 } from "./core/api.js";
 
 import { playSound } from "./core/audio.js";
@@ -179,25 +180,6 @@ if (settingsBtn) {
             openModal(
                 "settings-modal"
             )
-    );
-}
-
-
-const authProfileBtn =
-    document.getElementById(
-        "auth-profile-btn"
-    );
-
-if (authProfileBtn) {
-    authProfileBtn.addEventListener(
-        "click",
-        () => {
-            updateProfileUI();
-
-            openModal(
-                "profile-modal"
-            );
-        }
     );
 }
 
@@ -434,9 +416,22 @@ if (soundToggle) {
 }
 
 
-function switchAuthMode(
-    mode
-) {
+function showAuthChoice() {
+    const authScreen =
+        document.getElementById(
+            "auth-screen"
+        );
+
+    const choiceView =
+        document.getElementById(
+            "auth-choice-view"
+        );
+
+    const formView =
+        document.getElementById(
+            "auth-form-view"
+        );
+
     const loginForm =
         document.getElementById(
             "auth-login-form"
@@ -447,17 +442,72 @@ function switchAuthMode(
             "auth-register-form"
         );
 
-    const loginTab =
+    if (authScreen) {
+        authScreen.classList.remove(
+            "auth-form-mode"
+        );
+        authScreen.classList.add(
+            "auth-choice-mode"
+        );
+    }
+
+    if (choiceView) {
+        choiceView.style.display =
+            "flex";
+    }
+
+    if (formView) {
+        formView.style.display =
+            "none";
+    }
+
+    if (loginForm) {
+        loginForm.style.display =
+            "none";
+    }
+
+    if (registerForm) {
+        registerForm.style.display =
+            "none";
+    }
+}
+
+
+function switchAuthMode(
+    mode
+) {
+    const choiceView =
         document.getElementById(
-            "auth-login-tab"
+            "auth-choice-view"
         );
 
-    const registerTab =
+    const formView =
         document.getElementById(
-            "auth-register-tab"
+            "auth-form-view"
+        );
+
+    const backButton =
+        document.getElementById(
+            "auth-back-btn"
+        );
+
+    const loginForm =
+        document.getElementById(
+            "auth-login-form"
+        );
+
+    const registerForm =
+        document.getElementById(
+            "auth-register-form"
+        );
+
+    const title =
+        document.getElementById(
+            "auth-form-title"
         );
 
     if (
+        !formView ||
         !loginForm ||
         !registerForm
     ) {
@@ -467,27 +517,58 @@ function switchAuthMode(
     const isLogin =
         mode === "login";
 
+    const authScreen =
+        document.getElementById(
+            "auth-screen"
+        );
+
+    if (authScreen) {
+        authScreen.classList.remove(
+            "auth-choice-mode"
+        );
+        authScreen.classList.add(
+            "auth-form-mode"
+        );
+    }
+
+    if (choiceView) {
+        choiceView.style.display =
+            "none";
+    }
+
+    formView.style.display =
+        "flex";
+
     loginForm.style.display =
         isLogin
-            ? "block"
+            ? "flex"
             : "none";
 
     registerForm.style.display =
         isLogin
             ? "none"
-            : "block";
+            : "flex";
 
-    if (loginTab) {
-        loginTab.classList.toggle(
-            "active",
+    if (title) {
+        title.textContent =
             isLogin
-        );
+                ? getTranslation(
+                      "login",
+                      "BEJELENTKEZÉS"
+                  )
+                : getTranslation(
+                      "register",
+                      "REGISZTRÁCIÓ"
+                  );
     }
 
-    if (registerTab) {
-        registerTab.classList.toggle(
-            "active",
-            !isLogin
+    if (backButton) {
+        backButton.setAttribute(
+            "aria-label",
+            getTranslation(
+                "back",
+                "Vissza"
+            )
         );
     }
 
@@ -511,6 +592,9 @@ function switchAuthMode(
             "";
     }
 }
+
+
+showAuthChoice();
 
 
 const authLoginTab =
@@ -541,6 +625,19 @@ if (authRegisterTab) {
             switchAuthMode(
                 "register"
             )
+    );
+}
+
+
+const authBackBtn =
+    document.getElementById(
+        "auth-back-btn"
+    );
+
+if (authBackBtn) {
+    authBackBtn.addEventListener(
+        "click",
+        showAuthChoice
     );
 }
 
@@ -812,6 +909,7 @@ if (logoutBtn) {
                     await logoutUser();
 
                     resetGame();
+                    showAuthChoice();
                 }
             );
         }
@@ -859,18 +957,11 @@ if (resetStatisticsBtn) {
                 async () => {
                     try {
                         const response =
-                            await fetch(
+                            await apiFetch(
                                 endpoint,
                                 {
-                                    method:
-                                        "DELETE",
-                                    credentials:
-                                        "same-origin",
-                                    cache:
-                                        "no-store",
+                                    method: "DELETE",
                                     headers: {
-                                        "X-CSRF-Token":
-                                            appState.csrfToken,
                                         "Accept":
                                             "application/json"
                                     }
@@ -1058,194 +1149,6 @@ document
     });
 
 
-document
-    .querySelectorAll(
-        ".profile-game-tab"
-    )
-    .forEach(btn => {
-        btn.addEventListener(
-            "click",
-            () => {
-                appState.activeProfileGame =
-                    btn.dataset.profileGame;
-            }
-        );
-    });
-
-
-const menuGameBtn =
-    document.getElementById(
-        "menu-game-btn"
-    );
-
-if (menuGameBtn) {
-    menuGameBtn.addEventListener(
-        "click",
-        () => {
-            showScreen(
-                "menu-screen"
-            );
-        }
-    );
-}
-
-
-const resetGameBtn =
-    document.getElementById(
-        "reset-btn"
-    );
-
-if (resetGameBtn) {
-    resetGameBtn.addEventListener(
-        "click",
-        () => {
-            if (
-                !appState.currentUser
-            ) {
-                showScreen(
-                    "auth-screen"
-                );
-
-                return;
-            }
-
-            resetGame();
-        }
-    );
-}
-
-
-const game2048MenuBtn =
-    document.getElementById(
-        "2048-menu-btn"
-    );
-
-if (game2048MenuBtn) {
-    game2048MenuBtn.addEventListener(
-        "click",
-        () => {
-            showScreen(
-                "menu-screen"
-            );
-        }
-    );
-}
-
-
-const game2048NewGameBtn =
-    document.getElementById(
-        "2048-new-game-btn"
-    );
-
-if (game2048NewGameBtn) {
-    game2048NewGameBtn.addEventListener(
-        "click",
-        () => {
-            if (
-                !appState.currentUser
-            ) {
-                showScreen(
-                    "auth-screen"
-                );
-
-                return;
-            }
-
-            init2048Game();
-        }
-    );
-}
-
-
-const game2048OverlayNewGame =
-    document.getElementById(
-        "2048-overlay-new-game"
-    );
-
-if (game2048OverlayNewGame) {
-    game2048OverlayNewGame.addEventListener(
-        "click",
-        () => {
-            if (
-                !appState.currentUser
-            ) {
-                showScreen(
-                    "auth-screen"
-                );
-
-                return;
-            }
-
-            init2048Game();
-        }
-    );
-}
-
-
-const game2048OverlayMenu =
-    document.getElementById(
-        "2048-overlay-menu"
-    );
-
-if (game2048OverlayMenu) {
-    game2048OverlayMenu.addEventListener(
-        "click",
-        () => {
-            showScreen(
-                "menu-screen"
-            );
-        }
-    );
-}
-
-
-const tictactoeMenuBtn =
-    document.getElementById(
-        "tictactoe-menu-btn"
-    );
-
-if (tictactoeMenuBtn) {
-    tictactoeMenuBtn.addEventListener(
-        "click",
-        () => {
-            showScreen(
-                "menu-screen"
-            );
-        }
-    );
-}
-
-
-const tictactoeNewGameBtn =
-    document.getElementById(
-        "tictactoe-new-game-btn"
-    );
-
-if (tictactoeNewGameBtn) {
-    tictactoeNewGameBtn.addEventListener(
-        "click",
-        () => {
-            if (
-                !appState.currentUser
-            ) {
-                showScreen(
-                    "auth-screen"
-                );
-
-                return;
-            }
-
-            initTicTacToe();
-        }
-    );
-}
-
-
-initRpsGame();
-init2048Game();
-initTicTacToe();
-
-
 const savedTheme =
     localStorage.getItem(
         "gameTheme"
@@ -1345,3 +1248,4 @@ document.addEventListener(
 
 
 checkLogin();
+
