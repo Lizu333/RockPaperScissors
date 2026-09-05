@@ -1,5 +1,4 @@
-:root
-{
+:root{
     --bg: #efcedb;
     --accent: #4f2b1f;
     --surface: #f7e4ea;
@@ -2535,11 +2534,6 @@ textarea {
     resize: none;
 }
 
-
-/* =========================================================
-   FINAL AUTH LAYOUT
-   ========================================================= */
-
 #auth-screen .auth-page-content {
     position: relative;
     width: 100%;
@@ -2551,7 +2545,6 @@ textarea {
     text-align: center;
 }
 
-/* The first auth page contains the title, subtitle and two choices. */
 #auth-screen.auth-choice-mode .games-title,
 #auth-screen.auth-choice-mode .games-subtitle {
     display: block !important;
@@ -2561,7 +2554,6 @@ textarea {
     display: flex !important;
 }
 
-/* The actual login/register page contains only the logo and form. */
 #auth-screen.auth-form-mode .games-title,
 #auth-screen.auth-form-mode .games-subtitle,
 #auth-screen.auth-form-mode .auth-choice-view {
@@ -2583,7 +2575,6 @@ textarea {
     flex: 0 0 auto;
 }
 
-/* Choice buttons */
 #auth-screen .auth-choice-view {
     width: 360px;
     max-width: 100%;
@@ -2617,7 +2608,7 @@ textarea {
     text-align: center;
 }
 
-/* Form view */
+
 #auth-screen .auth-form-view {
     position: relative;
     width: 360px;
@@ -2633,7 +2624,6 @@ textarea {
     display: flex !important;
 }
 
-/* Back button in the upper-left corner of the form area */
 #auth-screen .auth-form-header {
     position: relative;
     width: 100%;
@@ -2676,7 +2666,6 @@ textarea {
     text-align: center;
 }
 
-/* Exactly one form is visible at a time. */
 #auth-screen .auth-form-view .auth-page-form {
     width: 100%;
     margin: 0;
@@ -2702,7 +2691,7 @@ textarea {
     display: none !important;
 }
 
-/* Inputs stay compact and centered. */
+
 #auth-screen .auth-form-view .auth-inputs {
     width: 100%;
     margin: 8px 0 18px;
@@ -2718,7 +2707,7 @@ textarea {
     text-align: left;
 }
 
-/* Gender buttons */
+
 #auth-screen .auth-form-view .gender-selection {
     width: 100%;
     display: grid;
@@ -2734,7 +2723,7 @@ textarea {
     justify-content: center;
 }
 
-/* Privacy area */
+
 #auth-screen .auth-form-view .privacy-consent-row {
     width: 100%;
     display: flex;
@@ -2758,7 +2747,7 @@ textarea {
     align-self: center;
 }
 
-/* Errors and submit buttons */
+
 #auth-screen .auth-form-view .error-text {
     width: 100%;
     min-height: 18px;
@@ -2776,8 +2765,6 @@ textarea {
     text-align: center;
 }
 
-/* Since the same form container is used for both modes, this class is
-   added by JS to identify registration mode. */
 #auth-screen.auth-register-mode .auth-form-view #auth-login-form {
     display: none !important;
 }
