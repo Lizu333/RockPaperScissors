@@ -23,10 +23,10 @@ body[data-theme="wine-pink"] {
 }
 
 body[data-theme="olive-cream"] {
-    --bg: #72794e;
+    --bg: #3f442a;
     --accent: #f1e8c7;
-    --surface: #565a3e; 
-    --surface-hover: #858d57;
+    --surface: #676c4b;
+    --surface-hover: #bac286;
 }
 
 body[data-theme="pink-brown"] {
@@ -37,7 +37,7 @@ body[data-theme="pink-brown"] {
 }
 
 body[data-theme="blue-brown"] {
-    --bg: #8badcd; /*#a0beda;*/
+    --bg: #a0beda;
     --accent: #34211b;
     --surface: #b8cee3;
     --surface-hover: #aec6de;
@@ -2536,6 +2536,10 @@ textarea {
 }
 
 
+/* =========================================================
+   FINAL AUTH LAYOUT
+   ========================================================= */
+
 #auth-screen .auth-page-content {
     position: relative;
     width: 100%;
@@ -2547,25 +2551,26 @@ textarea {
     text-align: center;
 }
 
-
+/* The first auth page contains the title, subtitle and two choices. */
 #auth-screen.auth-choice-mode .games-title,
 #auth-screen.auth-choice-mode .games-subtitle {
-    display: block;
+    display: block !important;
 }
 
 #auth-screen.auth-choice-mode .auth-choice-view {
-    display: flex;
+    display: flex !important;
 }
 
-
+/* The actual login/register page contains only the logo and form. */
 #auth-screen.auth-form-mode .games-title,
-#auth-screen.auth-form-mode .games-subtitle {
-    display: none;
+#auth-screen.auth-form-mode .games-subtitle,
+#auth-screen.auth-form-mode .auth-choice-view {
+    display: none !important;
 }
 
 #auth-screen .auth-page-top-buttons {
     position: absolute;
-    top: -8px;
+    top: 0;
     right: 0;
     z-index: 20;
     display: flex;
@@ -2578,21 +2583,22 @@ textarea {
     flex: 0 0 auto;
 }
 
+/* Choice buttons */
 #auth-screen .auth-choice-view {
     width: 360px;
     max-width: 100%;
-    margin: 10px auto 0;
-    display: flex;
+    margin: 12px auto 0;
+    display: none !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
 #auth-screen .auth-choice-question {
-    margin: 0 0 18px;
+    margin: 0 0 16px;
     font-size: 14px;
     font-weight: 600;
-    opacity: 0.85;
+    text-align: center;
 }
 
 #auth-screen .auth-choice-buttons {
@@ -2611,37 +2617,37 @@ textarea {
     text-align: center;
 }
 
-
+/* Form view */
 #auth-screen .auth-form-view {
     position: relative;
     width: 360px;
     max-width: 100%;
     margin: 24px auto 0;
-    display: none;
+    display: none !important;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
 #auth-screen.auth-form-mode .auth-form-view {
-    display: flex;
+    display: flex !important;
 }
 
+/* Back button in the upper-left corner of the form area */
 #auth-screen .auth-form-header {
     position: relative;
     width: 100%;
     min-height: 46px;
+    margin: 0 0 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
 }
 
 #auth-screen .auth-back-btn {
     position: absolute;
     left: 0;
     top: 0;
-    transform: none;
     width: 42px;
     height: 42px;
     padding: 0;
@@ -2659,48 +2665,109 @@ textarea {
 #auth-screen .auth-back-btn:hover {
     background: var(--accent);
     color: var(--bg);
+    transform: translateY(-1px);
 }
 
 #auth-screen .auth-form-title {
     margin: 0;
-    font-size: clamp(22px, 4vw, 30px);
+    font-size: clamp(24px, 4vw, 32px);
     font-weight: 700;
     color: var(--accent);
     text-align: center;
 }
 
+/* Exactly one form is visible at a time. */
 #auth-screen .auth-form-view .auth-page-form {
     width: 100%;
     margin: 0;
-    display: none;
+    display: none !important;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
+#auth-screen .auth-form-view #auth-login-form {
+    display: none !important;
+}
+
+#auth-screen .auth-form-view #auth-register-form {
+    display: none !important;
+}
+
+#auth-screen.auth-form-mode .auth-form-view #auth-login-form {
+    display: flex !important;
+}
+
+#auth-screen.auth-form-mode .auth-form-view #auth-register-form {
+    display: none !important;
+}
+
+/* Inputs stay compact and centered. */
 #auth-screen .auth-form-view .auth-inputs {
     width: 100%;
-    margin: 10px 0 18px;
+    margin: 8px 0 18px;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 12px;
 }
 
 #auth-screen .auth-form-view .auth-inputs input {
     width: 100%;
     box-sizing: border-box;
+    text-align: left;
 }
 
+/* Gender buttons */
 #auth-screen .auth-form-view .gender-selection {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
 }
 
+#auth-screen .auth-form-view .gender-btn {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Privacy area */
 #auth-screen .auth-form-view .privacy-consent-row {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    text-align: center;
+}
+
+#auth-screen .auth-form-view .privacy-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: auto;
+    max-width: 100%;
+    text-align: center;
+}
+
+#auth-screen .auth-form-view .privacy-link-btn {
+    align-self: center;
+}
+
+/* Errors and submit buttons */
+#auth-screen .auth-form-view .error-text {
+    width: 100%;
+    min-height: 18px;
+    margin: 0;
+    text-align: center;
 }
 
 #auth-screen .auth-form-view .auth-submit-btn {
-    width: 170px;
+    width: 170px !important;
     min-width: 170px;
     margin: 0 auto;
     display: flex;
@@ -2709,14 +2776,23 @@ textarea {
     text-align: center;
 }
 
-#auth-screen .auth-form-view .error-text {
-    width: 100%;
-    text-align: center;
+/* Since the same form container is used for both modes, this class is
+   added by JS to identify registration mode. */
+#auth-screen.auth-register-mode .auth-form-view #auth-login-form {
+    display: none !important;
+}
+
+#auth-screen.auth-register-mode .auth-form-view #auth-register-form {
+    display: flex !important;
+}
+
+#auth-screen.auth-register-mode .auth-form-view #auth-login-form {
+    display: none !important;
 }
 
 @media (max-width: 700px) {
     #auth-screen .auth-page-top-buttons {
-        top: -38px;
+        top: 0;
         right: 0;
         gap: 5px;
     }
@@ -2726,34 +2802,16 @@ textarea {
         height: 38px;
     }
 
+    #auth-screen .auth-page-content {
+        padding-top: 48px;
+    }
+
     #auth-screen .auth-choice-view,
     #auth-screen .auth-form-view {
         width: min(360px, 100%);
     }
 
-    #auth-screen .auth-form-header {
-        margin-top: 4px;
-    }
-
     #auth-screen .auth-form-view .gender-selection {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-}
-
-.game-container,
-.game-card {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-}
-
-.game-container {
-    background: var(--surface);
-}
-
-.game-card {
-    background: var(--surface);
-}
-
-.game-card:not(:disabled):hover {
-    background: var(--surface-hover);
 }

@@ -444,7 +444,8 @@ function showAuthChoice() {
 
     if (authScreen) {
         authScreen.classList.remove(
-            "auth-form-mode"
+            "auth-form-mode",
+            "auth-register-mode"
         );
         authScreen.classList.add(
             "auth-choice-mode"
@@ -452,23 +453,27 @@ function showAuthChoice() {
     }
 
     if (choiceView) {
-        choiceView.style.display =
-            "flex";
+        choiceView.removeAttribute(
+            "style"
+        );
     }
 
     if (formView) {
-        formView.style.display =
-            "none";
+        formView.removeAttribute(
+            "style"
+        );
     }
 
     if (loginForm) {
-        loginForm.style.display =
-            "none";
+        loginForm.removeAttribute(
+            "style"
+        );
     }
 
     if (registerForm) {
-        registerForm.style.display =
-            "none";
+        registerForm.removeAttribute(
+            "style"
+        );
     }
 }
 
@@ -524,30 +529,37 @@ function switchAuthMode(
 
     if (authScreen) {
         authScreen.classList.remove(
-            "auth-choice-mode"
+            "auth-choice-mode",
+            "auth-register-mode"
         );
         authScreen.classList.add(
             "auth-form-mode"
         );
+
+        if (!isLogin) {
+            authScreen.classList.add(
+                "auth-register-mode"
+            );
+        }
     }
 
     if (choiceView) {
-        choiceView.style.display =
-            "none";
+        choiceView.removeAttribute(
+            "style"
+        );
     }
 
-    formView.style.display =
-        "flex";
+    formView.removeAttribute(
+        "style"
+    );
 
-    loginForm.style.display =
-        isLogin
-            ? "flex"
-            : "none";
+    loginForm.removeAttribute(
+        "style"
+    );
 
-    registerForm.style.display =
-        isLogin
-            ? "none"
-            : "flex";
+    registerForm.removeAttribute(
+        "style"
+    );
 
     if (title) {
         title.textContent =
@@ -1195,10 +1207,33 @@ document.addEventListener(
                     "auth-register-form"
                 );
 
-            if (
+            const authScreen =
+                document.getElementById(
+                    "auth-screen"
+                );
+
+            const isFormMode =
+                authScreen &&
+                authScreen.classList.contains(
+                    "auth-form-mode"
+                );
+
+            const isLoginMode =
+                isFormMode &&
                 loginForm &&
-                loginForm.style.display !==
-                    "none"
+                window.getComputedStyle(
+                    loginForm
+                ).display !== "none";
+
+            const isRegisterMode =
+                isFormMode &&
+                registerForm &&
+                window.getComputedStyle(
+                    registerForm
+                ).display !== "none";
+
+            if (
+                isLoginMode
             ) {
                 const active =
                     document.activeElement;
@@ -1219,9 +1254,7 @@ document.addEventListener(
             }
 
             if (
-                registerForm &&
-                registerForm.style.display !==
-                    "none"
+                isRegisterMode
             ) {
                 const active =
                     document.activeElement;
